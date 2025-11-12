@@ -48,7 +48,7 @@
               </p>
               <p>
                 I'm a student developer who discovered my passion for coding through building 
-                small projects and solving real-world problems. What started as curiosity has 
+                contributory projects and solving real-world problems. What started as curiosity has 
                 become a journey of continuous learning and growth.
               </p>
               <p>
