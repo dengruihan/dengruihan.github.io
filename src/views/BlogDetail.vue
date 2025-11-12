@@ -24,7 +24,7 @@ export default {
     const fetchPost = async () => {
       const id = route.params.id
       try {
-        const response = await fetch('/data/blog.json')
+        const response = await fetch('./data/blog.json')
         const posts = await response.json()
         post.value = posts.find(p => p.id === id)
       } catch (error) {
