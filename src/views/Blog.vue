@@ -44,6 +44,8 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  background: #1a1a1a;
+  color: #fff;
 }
 
 .blog-list {
@@ -51,15 +53,15 @@ export default {
 }
 
 .blog-post {
-  background: white;
+  background: #2d2d2d;
   padding: 2rem;
   margin-bottom: 2rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .post-date {
-  color: #666;
+  color: #888;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
@@ -67,11 +69,16 @@ export default {
 .post-excerpt {
   margin-bottom: 1rem;
   line-height: 1.6;
+  color: #bbb;
 }
 
 .blog-post a {
-  color: #42b883;
+  color: #aaa;
   text-decoration: none;
   font-weight: 500;
+}
+
+.blog-post a:hover {
+  text-decoration: underline;
 }
 </style>

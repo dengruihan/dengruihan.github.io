@@ -4,7 +4,7 @@
     <div class="nav-container">
       <div class="nav-brand">
         <router-link to="/" class="brand-link">
-          <span class="brand-text">Your Name</span>
+          <span class="brand-text">RuiHan Deng</span>
         </router-link>
       </div>
       
@@ -70,7 +70,7 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(26, 32, 44, 0.95);
+  background: rgba(26, 26, 26, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,0.1);
   z-index: 1000;
@@ -94,7 +94,7 @@ export default {
 .brand-text {
   font-size: 1.5rem;
   font-weight: 700;
-  background: var(--gradient-primary);
+  background: linear-gradient(to right, #ffffff, #888888);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -108,21 +108,21 @@ export default {
 
 .nav-link {
   text-decoration: none;
-  color: var(--text-secondary);
+  color: #bbbbbb;
   padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
+  border-radius: 8px;
   transition: all 0.3s ease;
   position: relative;
 }
 
 .nav-link:hover {
-  color: var(--primary-light);
-  background: rgba(102, 126, 234, 0.1);
+  color: #ffffff;
+  background: rgba(128, 128, 128, 0.2);
 }
 
 .nav-link.router-link-exact-active {
-  color: var(--primary-light);
-  background: rgba(102, 126, 234, 0.2);
+  color: #ffffff;
+  background: rgba(128, 128, 128, 0.3);
 }
 
 .nav-toggle {
@@ -135,7 +135,7 @@ export default {
 .nav-toggle span {
   width: 25px;
   height: 3px;
-  background: var(--primary-color);
+  background: #888888;
   margin: 3px 0;
   transition: 0.3s;
   border-radius: 2px;
@@ -152,7 +152,7 @@ export default {
     left: -100%;
     width: 100%;
     height: calc(100vh - 70px);
-    background: var(--bg-secondary);
+    background: #1a1a1a;
     flex-direction: column;
     justify-content: flex-start;
     padding: 2rem;
@@ -167,7 +167,7 @@ export default {
   .nav-link {
     width: 100%;
     padding: 1rem;
-    border-radius: var(--radius-md);
+    border-radius: 8px;
     font-size: 1.1rem;
   }
   

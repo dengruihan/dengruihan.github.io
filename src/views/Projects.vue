@@ -44,6 +44,8 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  background: #1a1a1a;
+  color: #fff;
 }
 
 .project-grid {
@@ -54,10 +56,10 @@ export default {
 }
 
 .project-card {
-  background: white;
+  background: #2d2d2d;
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
 .project-card img {
@@ -66,15 +68,22 @@ export default {
   object-fit: cover;
   border-radius: 5px;
   margin-bottom: 1rem;
+  filter: grayscale(100%);
 }
 
 .project-card h3 {
   margin-bottom: 0.5rem;
+  color: #aaa;
 }
 
 .project-card a {
-  color: #42b883;
+  color: #aaa;
   text-decoration: none;
   font-weight: 500;
 }
+
+.project-card a:hover {
+  text-decoration: underline;
+}
 </style>
+

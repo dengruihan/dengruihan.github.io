@@ -45,22 +45,25 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  background: #1a1a1a;
+  color: #fff;
 }
 
 .back-link {
-  color: #42b883;
+  color: #aaa;
   text-decoration: none;
   margin-bottom: 1rem;
   display: inline-block;
 }
 
 .post-date {
-  color: #666;
+  color: #888;
   margin-bottom: 2rem;
 }
 
 .post-content {
   line-height: 1.8;
   font-size: 1.1rem;
+  color: #bbb;
 }
 </style>

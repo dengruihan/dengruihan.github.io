@@ -1,3 +1,4 @@
+<!-- src/views/Home.vue -->
 <template>
   <div class="home">
     <div class="container">
@@ -11,7 +12,7 @@
           </div>
           
           <!-- 姓名 -->
-          <h1 class="name">Your Name</h1>
+          <h1 class="name">RuiHan Deng</h1>
           
           <!-- 一句话总结 -->
           <p class="tagline">Full Stack Developer & Creative Thinker</p>
@@ -19,39 +20,39 @@
           <!-- 简介 -->
           <div class="bio">
             <p>
-              Passionate about building beautiful, functional web applications. 
-              Specializing in Vue.js, modern JavaScript, and responsive design. 
+              Passionate about building creative and contributory product. 
+              Specialize in Python, LLM, and Politics.
               Always learning, always creating.
             </p>
           </div>
           
           <!-- 联系方式按钮 -->
           <div class="contact-buttons">
-            <a href="mailto:your.email@example.com" class="contact-btn primary">
+            <a href="mailto:Raymond.dengruihan@gmail.com" class="contact-btn primary">
               <span class="btn-icon">📧</span>
               Email Me
             </a>
-            <a href="https://github.com/yourusername" target="_blank" class="contact-btn secondary">
-              <span class="btn-icon">📦</span>
+            <a href="https://github.com/dengruihan" target="_blank" class="contact-btn secondary">
+              <span class="btn-icon"><img src="/github_logo.png"/></span>
               GitHub
-            </a>
-            <a href="https://linkedin.com/in/yourprofile" target="_blank" class="contact-btn secondary">
-              <span class="btn-icon">💼</span>
-              LinkedIn
             </a>
           </div>
           
-          <!-- 社交链接 -->
-          <div class="social-links">
-            <a href="#" class="social-link" title="Twitter">
-              <span>🐦</span>
-            </a>
-            <a href="#" class="social-link" title="Instagram">
-              <span>📷</span>
-            </a>
-            <a href="#" class="social-link" title="Discord">
-              <span>💬</span>
-            </a>
+          
+          <!-- 额外内容，使左侧可滚动 -->
+          <div class="additional-content">
+            <h3>Quick Facts</h3>
+            <ul>
+              <li>3+ years of coding experience</li>
+              <li>Passionate about clean code</li>
+              <li>Open source contributor</li>
+            </ul>
+            
+            <h3>Current Focus</h3>
+            <p>Currently exploring advanced Vue.js patterns, TypeScript integration, and performance optimization techniques.</p>
+            
+            <h3>Hobbies</h3>
+            <p>When I'm not coding, I enjoy photography, hiking, and reading tech blogs.</p>
           </div>
         </div>
       </aside>
@@ -148,23 +149,23 @@ export default {
     const updates = ref([
       {
         id: 1,
-        date: '2024-01-15',
+        date: '2025-11-10',
         title: '🎉 New Portfolio Launched',
         description: 'Just launched my new personal portfolio website built with Vue 3 and Vite!',
         link: null
       },
       {
         id: 2,
-        date: '2024-01-10',
+        date: '2025-11-08',
         title: '📝 Published New Blog Post',
-        description: 'Wrote about my experience learning Vue 3 Composition API.',
-        link: '/blog/vue3-composition-api'
+        description: 'Wrote about my experience training LLM to detect species.',
+        link: '/blog/ai-forest-ranger-hangzhou'
       },
       {
         id: 3,
-        date: '2024-01-05',
-        title: '🚀 Completed E-commerce Project',
-        description: 'Finished a full-stack e-commerce application with Vue and Node.js.',
+        date: '2025-04-23',
+        title: '🐌 Completed Eco Protect Project',
+        description: 'Finished a AI powered Eco Protect application with GUI',
         link: '/projects/ecommerce'
       }
     ])
@@ -211,35 +212,52 @@ export default {
 <style scoped>
 /* 整体布局 */
 .home {
-  min-height: 100vh;
-  padding: 80px 20px 20px;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  height: calc(100vh - var(--navbar-height));
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
 }
 
 .container {
-  max-width: 1400px;
-  margin: 0 auto;
+  height: 100%;
   display: grid;
   grid-template-columns: 350px 1fr;
-  gap: 3rem;
-  height: 100%;
+  gap: 0;
+  max-width: 100%;
 }
 
-/* 左侧边栏 */
+/* 左侧边栏 - 可滚动 */
 .sidebar {
-  position: sticky;
-  top: 100px;
-  height: fit-content;
+  height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 自定义滚动条样式 */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .profile-section {
-  background: rgba(45, 55, 72, 0.8);
+  background: rgba(40, 40, 40, 0.9);
   backdrop-filter: blur(10px);
-  border-radius: 24px;
   padding: 2.5rem;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  min-height: 100%;
 }
 
 /* 头像 */
@@ -254,8 +272,8 @@ export default {
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid var(--primary-color);
-  box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+  border: 4px solid #555;
+  box-shadow: 0 0 30px rgba(128, 128, 128, 0.5);
 }
 
 .avatar-ring {
@@ -264,7 +282,7 @@ export default {
   left: -10px;
   right: -10px;
   bottom: -10px;
-  border: 2px solid var(--primary-light);
+  border: 2px solid #777;
   border-radius: 50%;
   animation: rotate 20s linear infinite;
 }
@@ -279,7 +297,7 @@ export default {
   font-size: 2rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  background: var(--gradient-primary);
+  background: linear-gradient(to right, #fff, #aaa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -287,7 +305,7 @@ export default {
 
 .tagline {
   font-size: 1.1rem;
-  color: var(--primary-light);
+  color: #aaa;
   margin-bottom: 1.5rem;
   font-weight: 500;
 }
@@ -297,7 +315,7 @@ export default {
 }
 
 .bio p {
-  color: var(--text-secondary);
+  color: #bbb;
   line-height: 1.6;
   font-size: 0.95rem;
 }
@@ -323,24 +341,24 @@ export default {
 }
 
 .contact-btn.primary {
-  background: var(--gradient-primary);
+  background: linear-gradient(to right, #444, #666);
   color: white;
-  box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .contact-btn.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 .contact-btn.secondary {
-  background: rgba(102, 126, 234, 0.1);
-  color: var(--primary-light);
-  border: 1px solid rgba(102, 126, 234, 0.3);
+  background: rgba(128, 128, 128, 0.1);
+  color: #aaa;
+  border: 1px solid rgba(128, 128, 128, 0.3);
 }
 
 .contact-btn.secondary:hover {
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(128, 128, 128, 0.2);
   transform: translateY(-2px);
 }
 
@@ -348,11 +366,18 @@ export default {
   font-size: 1.1rem;
 }
 
+.btn-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
 /* 社交链接 */
 .social-links {
   display: flex;
   justify-content: center;
   gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .social-link {
@@ -361,14 +386,14 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(128, 128, 128, 0.1);
   border-radius: 50%;
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 .social-link:hover {
-  background: var(--primary-color);
+  background: #555;
   transform: translateY(-3px);
 }
 
@@ -376,16 +401,80 @@ export default {
   font-size: 1.2rem;
 }
 
-/* 右侧主内容 */
+/* 额外内容区域 */
+.additional-content {
+  text-align: left;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.additional-content h3 {
+  color: #aaa;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.additional-content h3:first-child {
+  margin-top: 0;
+}
+
+.additional-content ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.additional-content li {
+  color: #bbb;
+  margin-bottom: 0.5rem;
+  padding-left: 1.2rem;
+  position: relative;
+}
+
+.additional-content li::before {
+  content: "•";
+  color: #666;
+  position: absolute;
+  left: 0;
+}
+
+.additional-content p {
+  color: #bbb;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* 右侧主内容 - 可滚动 */
 .main-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
+}
+
+/* 自定义滚动条样式 */
+.main-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* 通用区域样式 */
 section {
-  background: rgba(45, 55, 72, 0.6);
+  background: rgba(40, 40, 40, 0.7);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 2rem;
@@ -398,7 +487,7 @@ section {
   gap: 1rem;
   margin-bottom: 2rem;
   font-size: 1.5rem;
-  color: var(--primary-light);
+  color: #aaa;
 }
 
 .title-icon {
@@ -416,35 +505,35 @@ section {
   display: flex;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: rgba(102, 126, 234, 0.05);
+  background: rgba(128, 128, 128, 0.05);
   border-radius: 12px;
-  border-left: 3px solid var(--primary-color);
+  border-left: 3px solid #555;
   transition: all 0.3s ease;
 }
 
 .update-item:hover {
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(128, 128, 128, 0.1);
   transform: translateX(5px);
 }
 
 .update-date {
-  color: var(--text-muted);
+  color: #888;
   font-size: 0.9rem;
   min-width: 100px;
 }
 
 .update-content h3 {
-  color: var(--text-primary);
+  color: #fff;
   margin-bottom: 0.5rem;
 }
 
 .update-content p {
-  color: var(--text-secondary);
+  color: #bbb;
   margin-bottom: 0.5rem;
 }
 
 .update-link {
-  color: var(--primary-light);
+  color: #aaa;
   text-decoration: none;
   font-weight: 500;
 }
@@ -462,7 +551,7 @@ section {
 }
 
 .project-card {
-  background: rgba(102, 126, 234, 0.05);
+  background: rgba(128, 128, 128, 0.05);
   border-radius: 16px;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -470,7 +559,7 @@ section {
 
 .project-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .project-image {
@@ -483,6 +572,7 @@ section {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: grayscale(100%);
 }
 
 .project-overlay {
@@ -507,7 +597,7 @@ section {
 .project-link {
   width: 40px;
   height: 40px;
-  background: var(--primary-color);
+  background: #555;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -518,7 +608,7 @@ section {
 
 .project-link:hover {
   transform: scale(1.1);
-  background: var(--primary-light);
+  background: #777;
 }
 
 .project-content {
@@ -526,12 +616,12 @@ section {
 }
 
 .project-content h3 {
-  color: var(--text-primary);
+  color: #fff;
   margin-bottom: 0.5rem;
 }
 
 .project-content p {
-  color: var(--text-secondary);
+  color: #bbb;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
@@ -543,8 +633,8 @@ section {
 }
 
 .tech-tag {
-  background: rgba(102, 126, 234, 0.2);
-  color: var(--primary-light);
+  background: rgba(128, 128, 128, 0.2);
+  color: #aaa;
   padding: 0.3rem 0.8rem;
   border-radius: 12px;
   font-size: 0.8rem;
@@ -560,13 +650,13 @@ section {
 
 .blog-post {
   padding: 1.5rem;
-  background: rgba(102, 126, 234, 0.05);
+  background: rgba(128, 128, 128, 0.05);
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
 .blog-post:hover {
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(128, 128, 128, 0.1);
   transform: translateX(5px);
 }
 
@@ -577,23 +667,23 @@ section {
 }
 
 .blog-date, .blog-reading-time {
-  color: var(--text-muted);
+  color: #888;
   font-size: 0.9rem;
 }
 
 .blog-post h3 {
-  color: var(--text-primary);
+  color: #fff;
   margin-bottom: 0.5rem;
 }
 
 .blog-excerpt {
-  color: var(--text-secondary);
+  color: #bbb;
   margin-bottom: 1rem;
   line-height: 1.6;
 }
 
 .blog-link {
-  color: var(--primary-light);
+  color: #aaa;
   text-decoration: none;
   font-weight: 500;
 }
@@ -609,17 +699,17 @@ section {
 }
 
 .view-all-btn {
-  color: var(--primary-light);
+  color: #aaa;
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 1rem;
-  border: 1px solid var(--primary-color);
+  border: 1px solid #555;
   border-radius: 20px;
   transition: all 0.3s ease;
 }
 
 .view-all-btn:hover {
-  background: var(--primary-color);
+  background: #555;
   color: white;
 }
 
@@ -627,13 +717,17 @@ section {
 @media (max-width: 1024px) {
   .container {
     grid-template-columns: 1fr;
-    gap: 2rem;
   }
   
   .sidebar {
-    position: static;
-    max-width: 500px;
-    margin: 0 auto;
+    height: auto;
+    max-height: 40vh;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .main-content {
+    height: 60vh;
   }
   
   .projects-grid {
@@ -643,7 +737,7 @@ section {
 
 @media (max-width: 768px) {
   .home {
-    padding: 80px 1rem 1rem;
+    height: calc(100vh - var(--navbar-height));
   }
   
   .profile-section {

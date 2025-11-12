@@ -44,10 +44,15 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  background: #1a1a1a;
+  color: #fff;
 }
 
 .skill-section, .resume-section {
   margin-bottom: 3rem;
+  background: #2d2d2d;
+  padding: 2rem;
+  border-radius: 12px;
 }
 
 .skills-grid {
@@ -58,17 +63,18 @@ export default {
 
 .skill-item h3 {
   margin-bottom: 0.5rem;
+  color: #aaa;
 }
 
 .skill-bar {
-  background-color: #e0e0e0;
+  background-color: #444;
   height: 10px;
   border-radius: 5px;
   overflow: hidden;
 }
 
 .skill-progress {
-  background-color: #42b883;
+  background-color: #777;
   height: 100%;
   transition: width 0.3s ease;
 }

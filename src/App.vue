@@ -24,6 +24,7 @@ export default {
 <style>
 #app {
   min-height: 100vh;
+  background: #1a1a1a;
 }
 
 .fade-enter-active, .fade-leave-active {

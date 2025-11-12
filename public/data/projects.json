@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "title": "E-Commerce Platform",
+    "introduction": "A full-stack e-commerce solution with modern UI and secure payment integration",
+    "image": "https://picsum.photos/seed/ecommerce/400/300.jpg",
+    "githubUrl": "https://github.com/yourusername/ecommerce-platform",
+    "liveDemoUrl": "https://ecommerce-demo.example.com",
+    "techStack": [
+      "Vue.js",
+      "Node.js",
+      "MongoDB",
+      "Stripe API"
+    ],
+    "details": "This is a comprehensive e-commerce platform built with Vue.js and Node.js. It features user authentication, product catalog, shopping cart, secure payment processing with Stripe, order management, and admin dashboard. The application uses RESTful APIs and implements responsive design for optimal mobile experience."
+  },
+  {
+    "id": 2,
+    "title": "Task Management App",
+    "introduction": "A collaborative task management tool with real-time updates and team features",
+    "image": "https://picsum.photos/seed/taskapp/400/300.jpg",
+    "githubUrl": "https://github.com/yourusername/task-manager",
+    "liveDemoUrl": "https://taskmanager-demo.example.com",
+    "techStack": [
+      "Vue.js",
+      "Firebase",
+      "Vuex",
+      "CSS3"
+    ],
+    "details": "A real-time task management application that allows teams to collaborate efficiently. Features include drag-and-drop task organization, real-time updates, user authentication, project categorization, deadline tracking, and team member assignment. Built with Vue.js and Firebase for real-time database functionality."
+  },
+  {
+    "id": 3,
+    "title": "Weather Dashboard",
+    "introduction": "A beautiful weather application with detailed forecasts and interactive maps",
+    "image": "https://picsum.photos/seed/weather/400/300.jpg",
+    "githubUrl": "https://github.com/yourusername/weather-dashboard",
+    "liveDemoUrl": "https://weather-demo.example.com",
+    "techStack": [
+      "Vue.js",
+      "OpenWeather API",
+      "Chart.js",
+      "Leaflet"
+    ],
+    "details": "An interactive weather dashboard that provides current conditions, 7-day forecasts, and historical weather data. Features include location search, interactive weather maps, temperature charts, severe weather alerts, and customizable widgets. Integrates with OpenWeather API for accurate weather data."
+  },
+  {
+    "id": 4,
+    "title": "Social Media Analytics",
+    "introduction": "Analytics dashboard for social media performance tracking and insights",
+    "image": "https://picsum.photos/seed/analytics/400/300.jpg",
+    "githubUrl": "https://github.com/yourusername/social-analytics",
+    "liveDemoUrl": "https://analytics-demo.example.com",
+    "techStack": [
+      "Vue.js",
+      "D3.js",
+      "Express",
+      "PostgreSQL"
+    ],
+    "details": "A comprehensive analytics platform for tracking social media performance across multiple platforms. Features include real-time data visualization, engagement metrics, audience demographics, content performance analysis, and automated reporting. Uses D3.js for interactive charts and graphs."
+  },
+  {
+    "id": 5,
+    "title": "Portfolio Generator",
+    "introduction": "A dynamic portfolio website generator with customizable templates",
+    "image": "https://picsum.photos/seed/portfolio/400/300.jpg",
+    "githubUrl": "https://github.com/yourusername/portfolio-generator",
+    "liveDemoUrl": "https://portfolio-gen-demo.example.com",
+    "techStack": [
+      "Vue.js",
+      "Nuxt.js",
+      "Sass",
+      "Netlify"
+    ],
+    "details": "A tool that allows users to create professional portfolio websites with no coding required. Features include drag-and-drop interface, multiple templates, SEO optimization, responsive design, and one-click deployment. Built with Nuxt.js for server-side rendering and optimal performance."
+  }
+]

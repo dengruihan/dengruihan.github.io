@@ -57,10 +57,12 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  background: #1a1a1a;
+  color: #fff;
 }
 
 .back-link {
-  color: #42b883;
+  color: #aaa;
   text-decoration: none;
   margin-bottom: 1rem;
   display: inline-block;
@@ -72,7 +74,11 @@ export default {
 
 .project-links a {
   margin-right: 1rem;
-  color: #42b883;
+  color: #aaa;
   text-decoration: none;
+}
+
+.project-links a:hover {
+  text-decoration: underline;
 }
 </style>

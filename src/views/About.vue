@@ -19,7 +19,7 @@
               <div class="status-indicator"></div>
             </div>
             <div class="profile-info">
-              <h1 class="profile-name">Your Name</h1>
+              <h1 class="profile-name">Raymond</h1>
               <p class="profile-title">Full Stack Developer</p>
               <div class="profile-badges">
                 <span class="badge">🚀 Vue.js Expert</span>
@@ -202,7 +202,7 @@ export default {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
 }
 
 .hero-bg {
@@ -220,7 +220,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--gradient-primary);
+  background: linear-gradient(to right, #444, #666);
   opacity: 0.1;
 }
 
@@ -233,7 +233,7 @@ export default {
 .shape {
   position: absolute;
   border-radius: 50%;
-  background: var(--gradient-primary);
+  background: linear-gradient(to right, #444, #666);
   opacity: 0.1;
   animation: float-shape 6s ease-in-out infinite;
 }
@@ -277,13 +277,13 @@ export default {
 }
 
 .profile-card {
-  background: rgba(45, 55, 72, 0.8);
+  background: rgba(40, 40, 40, 0.9);
   backdrop-filter: blur(10px);
   border-radius: 24px;
   padding: 3rem;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
 .profile-image {
@@ -297,8 +297,8 @@ export default {
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid var(--primary-color);
-  box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+  border: 4px solid #555;
+  box-shadow: 0 0 30px rgba(128, 128, 128, 0.5);
 }
 
 .status-indicator {
@@ -307,23 +307,23 @@ export default {
   right: 10px;
   width: 30px;
   height: 30px;
-  background: #48bb78;
+  background: #666;
   border-radius: 50%;
-  border: 4px solid var(--bg-secondary);
+  border: 4px solid #2d2d2d;
   animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(72, 187, 120, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(128, 128, 128, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(128, 128, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(128, 128, 128, 0); }
 }
 
 .profile-name {
   font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  background: var(--gradient-primary);
+  background: linear-gradient(to right, #fff, #aaa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -331,7 +331,7 @@ export default {
 
 .profile-title {
   font-size: 1.5rem;
-  color: var(--primary-light);
+  color: #aaa;
   margin-bottom: 1.5rem;
 }
 
@@ -343,19 +343,19 @@ export default {
 }
 
 .badge {
-  background: rgba(102, 126, 234, 0.2);
-  color: var(--primary-light);
+  background: rgba(128, 128, 128, 0.2);
+  color: #aaa;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 500;
-  border: 1px solid rgba(102, 126, 234, 0.3);
+  border: 1px solid rgba(128, 128, 128, 0.3);
 }
 
 /* About Content */
 .about-content {
   padding: 4rem 2rem;
-  background: var(--bg-secondary);
+  background: #2d2d2d;
 }
 
 .content-grid {
@@ -367,7 +367,7 @@ export default {
 }
 
 .content-card {
-  background: var(--bg-tertiary);
+  background: #1a1a1a;
   border-radius: 20px;
   padding: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -383,12 +383,12 @@ export default {
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--gradient-primary);
+  background: linear-gradient(to right, #444, #666);
 }
 
 .content-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
 .card-header {
@@ -405,25 +405,25 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(128, 128, 128, 0.2);
   border-radius: 12px;
 }
 
 .card-header h2 {
-  color: var(--primary-light);
+  color: #aaa;
   font-size: 1.5rem;
   margin: 0;
 }
 
 .lead-text {
   font-size: 1.2rem;
-  color: var(--text-secondary);
+  color: #bbb;
   margin-bottom: 1.5rem;
   font-weight: 500;
 }
 
 .card-body p {
-  color: var(--text-secondary);
+  color: #bbb;
   line-height: 1.8;
   margin-bottom: 1rem;
 }
@@ -441,7 +441,7 @@ export default {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: var(--primary-color);
+  background: #555;
 }
 
 .timeline-item {
@@ -456,17 +456,17 @@ export default {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--primary-color);
-  border: 3px solid var(--bg-tertiary);
+  background: #555;
+  border: 3px solid #1a1a1a;
 }
 
 .timeline-content h3 {
-  color: var(--primary-light);
+  color: #aaa;
   margin-bottom: 0.5rem;
 }
 
 .timeline-content p {
-  color: var(--text-secondary);
+  color: #bbb;
   margin: 0;
 }
 
@@ -483,17 +483,18 @@ export default {
   display: flex;
   align-items: center;
   padding: 0.8rem 1.2rem;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(128, 128, 128, 0.1);
   border-radius: 20px;
   transition: all 0.3s ease;
   cursor: default;
   border: 1px solid transparent;
+  color: #bbb;
 }
 
 .interest-tag:hover {
   transform: translateY(-3px) scale(1.05);
-  border-color: var(--primary-color);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+  border-color: #555;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .interest-icon {
@@ -510,51 +511,51 @@ export default {
 .stat-item {
   text-align: center;
   padding: 1.5rem;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(128, 128, 128, 0.1);
   border-radius: 16px;
   transition: all 0.3s ease;
 }
 
 .stat-item:hover {
   transform: translateY(-3px);
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(128, 128, 128, 0.2);
 }
 
 .stat-number {
   font-size: 2rem;
   font-weight: 800;
-  color: var(--primary-light);
+  color: #aaa;
   margin-bottom: 0.5rem;
 }
 
 .stat-label {
-  color: var(--text-secondary);
+  color: #bbb;
   font-size: 0.9rem;
 }
 
 /* Contact Section */
 .contact-section {
   padding: 4rem 2rem;
-  background: var(--bg-primary);
+  background: #1a1a1a;
 }
 
 .contact-card {
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
-  background: var(--bg-secondary);
+  background: #2d2d2d;
   padding: 3rem;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .contact-card h2 {
-  color: var(--primary-light);
+  color: #aaa;
   margin-bottom: 1rem;
 }
 
 .contact-card p {
-  color: var(--text-secondary);
+  color: #bbb;
   margin-bottom: 2rem;
 }
 
@@ -568,17 +569,17 @@ export default {
 .contact-link {
   display: flex;
   align-items: center;
-  color: var(--text-secondary);
+  color: #bbb;
   text-decoration: none;
   padding: 1rem 1.5rem;
-  background: var(--bg-tertiary);
+  background: #1a1a1a;
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
 .contact-link:hover {
   transform: translateY(-3px);
-  background: var(--primary-color);
+  background: #555;
   color: white;
 }
 
