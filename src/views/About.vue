@@ -22,9 +22,9 @@
               <h1 class="profile-name">Raymond</h1>
               <p class="profile-title">Full Stack Developer</p>
               <div class="profile-badges">
-                <span class="badge">🚀 Vue.js Expert</span>
+                <span class="badge">🚀 AI Expert</span>
                 <span class="badge">💡 Creative Thinker</span>
-                <span class="badge">📱 Mobile Dev</span>
+                <span class="badge">🖥️ Web Dev</span>
               </div>
             </div>
           </div>
@@ -172,17 +172,15 @@ export default {
         { name: "Web Development", icon: "💻", size: 24, color: "#667eea", rotation: -5 },
         { name: "UI/UX Design", icon: "🎨", size: 20, color: "#f56565", rotation: 3 },
         { name: "Machine Learning", icon: "🤖", size: 18, color: "#48bb78", rotation: -2 },
-        { name: "Mobile Apps", icon: "📱", size: 22, color: "#ed8936", rotation: 5 },
         { name: "Cloud Computing", icon: "☁️", size: 19, color: "#38b2ac", rotation: -3 },
-        { name: "Cybersecurity", icon: "🔒", size: 17, color: "#9f7aea", rotation: 2 },
         { name: "DevOps", icon: "⚙️", size: 21, color: "#4299e1", rotation: -4 },
         { name: "Blockchain", icon: "🔗", size: 16, color: "#f6ad55", rotation: 1 }
       ],
       stats: [
-        { label: "Projects Completed", value: "20+" },
-        { label: "Technologies", value: "15+" },
+        { label: "Projects Completed", value: "2+" },
+        { label: "Technologies", value: "6+" },
         { label: "Happy Clients", value: "10+" },
-        { label: "Coffee Cups", value: "∞" }
+        { label: "Caffeine", value: "∞" }
       ]
     }
   }

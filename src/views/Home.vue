@@ -68,24 +68,6 @@
 
       <!-- 右侧内容区域 -->
       <main class="main-content">
-        <!-- 动态区域 -->
-        <section class="updates-section">
-          <h2 class="section-title">
-            <span class="title-icon">🔔</span>
-            Latest Updates
-          </h2>
-          <div class="updates-list">
-            <div class="update-item" v-for="update in updates" :key="update.id">
-              <div class="update-date">{{ update.date }}</div>
-              <div class="update-content">
-                <h3>{{ update.title }}</h3>
-                <p>{{ update.description }}</p>
-                <a v-if="update.link" :href="update.link" class="update-link">Learn more →</a>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- 个人项目 -->
         <section class="projects-section">
           <h2 class="section-title">
@@ -144,6 +126,24 @@
             <router-link to="/blog" class="view-all-btn">View All Posts →</router-link>
           </div>
         </section>
+
+        <section class="updates-section">
+          <h2 class="section-title">
+            <span class="title-icon">🔔</span>
+            Latest Updates
+          </h2>
+          <div class="updates-list">
+            <div class="update-item" v-for="update in updates" :key="update.id">
+              <div class="update-date">{{ update.date }}</div>
+              <div class="update-content">
+                <h3>{{ update.title }}</h3>
+                <p>{{ update.description }}</p>
+                <a v-if="update.link" :href="update.link" class="update-link">Learn more →</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
   </div>
