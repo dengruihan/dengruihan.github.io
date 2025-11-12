@@ -196,7 +196,7 @@ export default {
     // 加载博客数据
     const loadPosts = async () => {
       try {
-        const response = await fetch(`${import.meta.env.BASE_URL}data/projects.json`)
+        const response = await fetch(`${import.meta.env.BASE_URL}data/blog.json`)
         const posts = await response.json()
         recentPosts.value = posts.slice(0, 3) // 只显示前3篇文章
       } catch (error) {
