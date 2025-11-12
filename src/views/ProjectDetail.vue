@@ -36,7 +36,7 @@ export default {
     const fetchProject = async () => {
       const id = parseInt(route.params.id)
       try {
-        const response = await fetch('/data/projects.json')
+        const response = await fetch('./data/projects.json')
         const projects = await response.json()
         project.value = projects.find(p => p.id === id)
       } catch (error) {
