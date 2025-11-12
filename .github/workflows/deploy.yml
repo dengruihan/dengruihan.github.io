@@ -1,0 +1,57 @@
+# 文件名: .github/workflows/deploy.yml
+
+# 当代码被推送到 main 分支时，触发这个工作流
+on:
+  push:
+    branches:
+      - main
+
+# 设置权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 定义任务
+jobs:
+  build:
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu 系统作为运行环境
+    steps:
+      # 步骤 1: 检出代码
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 步骤 2: 设置 Node.js 环境
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # 使用你项目需要的 Node.js 版本
+
+      # 步骤 3: 安装依赖
+      - name: Install dependencies
+        run: npm ci # 或者 npm install
+
+      # 步骤 4: 构建项目
+      - name: Build project
+        run: npm run build # 这是你的构建命令，通常是 npm run build
+
+      # 步骤 5: 上传构建产物
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist' # **重要**: 这是你构建后的文件夹名称
+                           # Vite 默认是 dist
+                           # Create React App 默认是 build
+                           # 请根据你的项目修改
+
+  deploy:
+    needs: build # 依赖 build 任务成功完成
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # 步骤 6: 部署到 GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
