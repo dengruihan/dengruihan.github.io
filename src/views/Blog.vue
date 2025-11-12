@@ -25,7 +25,7 @@ export default {
 
     onMounted(async () => {
       try {
-        const response = await fetch('./data/blog.json')
+        const response = await fetch('/data/blog.json')
         posts.value = await response.json()
       } catch (error) {
         console.error("Failed to load blog posts:", error)
