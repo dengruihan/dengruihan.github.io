@@ -47,9 +47,7 @@
             </a>
           </div>
           
-          
           <!-- 额外内容，使左侧可滚动 -->
-          <!-- 在Home.vue的侧边栏部分 -->
           <div class="additional-content">
             <h3>Quick Facts</h3>
             <ul>
@@ -73,26 +71,62 @@
             <span class="title-icon">🚀</span>
             Featured Projects
           </h2>
-          <div class="projects-grid">
-            <div v-for="project in featuredProjects" :key="project.id" class="project-card">
-              <div class="project-image">
-                <img :src="project.image" :alt="project.title" />
-                <div class="project-overlay">
-                  <a :href="project.githubUrl" target="_blank" class="project-link">
-                    <span>📦</span>
-                  </a>
-                  <a v-if="project.liveDemoUrl" :href="project.liveDemoUrl" target="_blank" class="project-link">
-                    <span>🌐</span>
-                  </a>
+          <div v-if="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading projects...</p>
+          </div>
+          <div v-else class="project-grid">
+            <div 
+              v-for="project in featuredProjects" 
+              :key="project.id" 
+              class="project-card"
+              @mouseenter="hoveredProject = project.id"
+              @mouseleave="hoveredProject = null"
+            >
+              <div class="project-image-container">
+                <img 
+                  :src="project.image" 
+                  :alt="project.title"
+                  :class="{ 'image-hovered': hoveredProject === project.id }"
+                />
+                <div class="project-overlay" v-if="hoveredProject === project.id">
+                  <div class="tech-stack">
+                    <span 
+                      v-for="tech in project.techStack?.slice(0, 3)" 
+                      :key="tech"
+                      class="tech-tag"
+                    >
+                      {{ tech }}
+                    </span>
+                  </div>
                 </div>
               </div>
+              
               <div class="project-content">
                 <h3>{{ project.title }}</h3>
                 <p>{{ project.introduction }}</p>
-                <div class="project-tech">
-                  <span v-for="tech in project.techStack" :key="tech" class="tech-tag">
-                    {{ tech }}
-                  </span>
+              </div>
+              
+              <div class="card-footer">
+                <div class="project-links">
+                  <router-link 
+                    :to="`/projects/${project.id}`" 
+                    class="view-details-btn"
+                  >
+                    View Details
+                  </router-link>
+                  <a 
+                    v-if="project.githubUrl" 
+                    :href="project.githubUrl" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="github-link"
+                    title="View on GitHub"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                  </a>
                 </div>
               </div>
             </div>
@@ -142,7 +176,6 @@
             </div>
           </div>
         </section>
-
       </main>
     </div>
   </div>
@@ -183,15 +216,20 @@ export default {
     const quickFacts = ref([])
     const currentFocus = ref("")
     const hobbies = ref("")
+    const loading = ref(true)
+    const hoveredProject = ref(null)
 
     // 加载项目数据
     const loadProjects = async () => {
+      loading.value = true
       try {
         const response = await fetch(`${import.meta.env.BASE_URL}data/projects.json`)
         const projects = await response.json()
         featuredProjects.value = projects.slice(0, 3)
       } catch (error) {
         console.error("Failed to load projects:", error)
+      } finally {
+        loading.value = false
       }
     }
 
@@ -231,12 +269,13 @@ export default {
       recentPosts,
       quickFacts,
       currentFocus,
-      hobbies
+      hobbies,
+      loading,
+      hoveredProject
     }
   }
 }
 </script>
-
 
 <style scoped>
 /* 整体布局 */
@@ -523,85 +562,83 @@ section {
   font-size: 1.5rem;
 }
 
-/* 动态区域 */
-.updates-list {
+/* 加载状态 */
+.loading {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
 }
 
-.update-item {
-  display: flex;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background: rgba(128, 128, 128, 0.05);
-  border-radius: 12px;
-  border-left: 3px solid #555;
-  transition: all 0.3s ease;
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  margin-bottom: 1rem;
 }
 
-.update-item:hover {
-  background: rgba(128, 128, 128, 0.1);
-  transform: translateX(5px);
+.loading-spinner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  border: 3px solid #333333;
+  border-top-color: #ffffff;
+  animation: spin 1s linear infinite;
 }
 
-.update-date {
-  color: #888;
-  font-size: 0.9rem;
-  min-width: 100px;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.update-content h3 {
-  color: #fff;
-  margin-bottom: 0.5rem;
-}
-
-.update-content p {
-  color: #bbb;
-  margin-bottom: 0.5rem;
-}
-
-.update-link {
-  color: #aaa;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.update-link:hover {
-  text-decoration: underline;
-}
-
-/* 项目区域 */
-.projects-grid {
+/* 项目网格 */
+.project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
   margin-bottom: 2rem;
 }
 
 .project-card {
-  background: rgba(128, 128, 128, 0.05);
-  border-radius: 16px;
+  background: #1a1a1a;
+  border-radius: 12px;
   overflow: hidden;
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid #333333;
 }
 
 .project-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.7);
 }
 
-.project-image {
+.project-image-container {
   position: relative;
-  height: 180px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
-.project-image img {
+.project-card img {
   width: 100%;
-  height: 100%;
+  height: 250px;
   object-fit: cover;
+  transition: transform 0.3s ease, filter 0.3s ease;
   filter: grayscale(100%);
+}
+
+.project-card img.image-hovered {
+  transform: scale(1.05);
+  filter: grayscale(80%);
 }
 
 .project-overlay {
@@ -610,63 +647,101 @@ section {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0,0,0,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.project-card:hover .project-overlay {
-  opacity: 1;
-}
-
-.project-link {
-  width: 40px;
-  height: 40px;
-  background: #555;
-  border-radius: 50%;
+.tech-stack {
   display: flex;
-  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
   justify-content: center;
-  text-decoration: none;
-  transition: all 0.3s ease;
 }
 
-.project-link:hover {
-  transform: scale(1.1);
-  background: #777;
+.tech-tag {
+  background: rgba(128, 128, 128, 0.8);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
 .project-content {
   padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .project-content h3 {
-  color: #fff;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+  font-size: 1.3rem;
 }
 
 .project-content p {
-  color: #bbb;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
+  color: #c0c0c0;
+  line-height: 1.6;
+  margin-bottom: 0;
+  flex: 1;
 }
 
-.project-tech {
+.card-footer {
+  padding: 1.5rem;
+  padding-top: 0;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.project-links {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 1rem;
 }
 
-.tech-tag {
-  background: rgba(128, 128, 128, 0.2);
-  color: #aaa;
-  padding: 0.3rem 0.8rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
+.view-details-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #404040 0%, #606060 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  flex: 1;
+  text-align: center;
+  border: 1px solid #555555;
+}
+
+.view-details-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(128, 128, 128, 0.3);
+  background: linear-gradient(135deg, #505050 0%, #707070 100%);
+  text-decoration: none;
+}
+
+.github-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #2a2a2a;
+  color: #a0a0a0;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  flex-shrink: 0;
+  border: 1px solid #444444;
+}
+
+.github-link:hover {
+  background: #3a3a3a;
+  color: #ffffff;
+  text-decoration: none;
 }
 
 /* Blog区域 */
@@ -721,6 +796,54 @@ section {
   text-decoration: underline;
 }
 
+/* 动态区域 */
+.updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.update-item {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(128, 128, 128, 0.05);
+  border-radius: 12px;
+  border-left: 3px solid #555;
+  transition: all 0.3s ease;
+}
+
+.update-item:hover {
+  background: rgba(128, 128, 128, 0.1);
+  transform: translateX(5px);
+}
+
+.update-date {
+  color: #888;
+  font-size: 0.9rem;
+  min-width: 100px;
+}
+
+.update-content h3 {
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.update-content p {
+  color: #bbb;
+  margin-bottom: 0.5rem;
+}
+
+.update-link {
+  color: #aaa;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.update-link:hover {
+  text-decoration: underline;
+}
+
 /* 区域底部 */
 .section-footer {
   text-align: center;
@@ -759,7 +882,7 @@ section {
     height: 60vh;
   }
   
-  .projects-grid {
+  .project-grid {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
@@ -781,7 +904,7 @@ section {
     padding: 1.5rem;
   }
   
-  .projects-grid {
+  .project-grid {
     grid-template-columns: 1fr;
   }
   
@@ -793,24 +916,5 @@ section {
   .update-date {
     min-width: auto;
   }
-}
-
-.github-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: #333;
-  color: #aaa;
-  border-radius: 6px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  flex-shrink: 0; /* 防止GitHub图标被压缩 */
-}
-
-.github-link:hover {
-  background: #444;
-  color: #fff;
-  text-decoration: none;
 }
 </style>
