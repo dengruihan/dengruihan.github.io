@@ -103,7 +103,10 @@
               </div>
               
               <div class="project-content">
-                <h3>{{ project.title }}</h3>
+                <!-- 👇 修改点：项目标题现在是可点击的链接 -->
+                <router-link :to="`/projects/${project.id}`" class="project-title-link">
+                  <h3>{{ project.title }}</h3>
+                </router-link>
                 <p>{{ project.introduction }}</p>
               </div>
               
@@ -148,7 +151,10 @@
                 <span class="blog-date">{{ post.date }}</span>
                 <span class="blog-reading-time">5 min read</span>
               </div>
-              <h3>{{ post.title }}</h3>
+              <!-- 👇 修改点：博客标题现在是可点击的链接 -->
+              <router-link :to="`/blog/${post.id}`" class="blog-title-link">
+                <h3>{{ post.title }}</h3>
+              </router-link>
               <p class="blog-excerpt">{{ post.excerpt }}</p>
               <router-link :to="`/blog/${post.id}`" class="blog-link">
                 Read more →
@@ -677,10 +683,22 @@ section {
   flex-direction: column;
 }
 
-.project-content h3 {
+/* 👇 新增/修改的样式：项目标题链接 */
+.project-content .project-title-link {
+  text-decoration: none;
+  display: block;
   margin-bottom: 0.75rem;
+}
+
+.project-content .project-title-link h3 {
+  margin-bottom: 0;
   color: #ffffff;
   font-size: 1.3rem;
+  transition: color 0.2s ease;
+}
+
+.project-content .project-title-link:hover h3 {
+  color: #a0a0a0;
 }
 
 .project-content p {
@@ -775,9 +793,21 @@ section {
   font-size: 0.9rem;
 }
 
-.blog-post h3 {
-  color: #fff;
+/* 👇 新增/修改的样式：博客标题链接 */
+.blog-post .blog-title-link {
+  text-decoration: none;
+  display: block;
   margin-bottom: 0.5rem;
+}
+
+.blog-post .blog-title-link h3 {
+  margin-bottom: 0;
+  color: #fff;
+  transition: color 0.2s ease;
+}
+
+.blog-post .blog-title-link:hover h3 {
+  color: #a0a0a0;
 }
 
 .blog-excerpt {
