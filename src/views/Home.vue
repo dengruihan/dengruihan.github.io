@@ -109,10 +109,10 @@
               
               <div class="card-footer">
                 <div class="project-links">
-                  <router-link 
-                    :to="`/projects/${project.id}`" 
-                    class="view-details-btn"
-                  >
+                  <router-link :to="`/projects/${project.id}`" class="project-title-link">
+                    <h3>{{ project.title }}</h3>
+                  </router-link>
+
                     View Details
                   </router-link>
                   <a 
@@ -150,9 +150,10 @@
               </div>
               <h3>{{ post.title }}</h3>
               <p class="blog-excerpt">{{ post.excerpt }}</p>
-              <router-link :to="`/blog/${post.id}`" class="blog-link">
-                Read more →
+              <router-link :to="`/blog/${post.id}`" class="blog-title-link">
+                <h3>{{ post.title }}</h3>
               </router-link>
+
             </article>
           </div>
           <div class="section-footer">
@@ -597,6 +598,22 @@ section {
 }
 
 /* 项目网格 */
+.project-title-link, .blog-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.project-title-link:hover, .blog-title-link:hover {
+  text-decoration: underline;
+}
+
+.project-title-link h3, .blog-title-link h3 {
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
 .project-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
