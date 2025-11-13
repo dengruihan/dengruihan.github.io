@@ -22,9 +22,18 @@
               <h1 class="profile-name">Raymond</h1>
               <p class="profile-title">Full Stack Developer</p>
               <div class="profile-badges">
-                <span class="badge">🚀 AI Expert</span>
-                <span class="badge">💡 Creative Thinker</span>
-                <span class="badge">🖥️ Web Dev</span>
+                <span class="badge">
+                  <img src="/icons/rocket.svg" alt="AI Expert" class="badge-icon" />
+                  AI Expert
+                </span>
+                <span class="badge">
+                  <img src="/icons/lightbulb.svg" alt="Creative Thinker" class="badge-icon" />
+                  Creative Thinker
+                </span>
+                <span class="badge">
+                  <img src="/icons/laptop.svg" alt="Web Dev" class="badge-icon" />
+                  Web Dev
+                </span>
               </div>
             </div>
           </div>
@@ -39,7 +48,9 @@
           <!-- Story Card -->
           <div class="content-card story-card full-width">
             <div class="card-header">
-              <div class="card-icon">📖</div>
+              <div class="card-icon">
+                <img src="/icons/book.svg" alt="My Story" class="icon-svg" />
+              </div>
               <h2>My Story</h2>
             </div>
             <div class="card-body">
@@ -63,7 +74,9 @@
           <!-- Goals Card -->
           <div class="content-card goals-card full-width">
             <div class="card-header">
-              <div class="card-icon">🎯</div>
+              <div class="card-icon">
+                <img src="/icons/target.svg" alt="My Goals" class="icon-svg" />
+              </div>
               <h2>My Goals</h2>
             </div>
             <div class="card-body">
@@ -82,7 +95,9 @@
           <!-- Interests Card -->
           <div class="content-card interests-card half-width">
             <div class="card-header">
-              <div class="card-icon">🎨</div>
+              <div class="card-icon">
+                <img src="/icons/palette.svg" alt="Interests & Passions" class="icon-svg" />
+              </div>
               <h2>Interests & Passions</h2>
             </div>
             <div class="card-body">
@@ -98,7 +113,7 @@
                   }"
                   @click="navigateToProjects(interest.name)"
                 >
-                  <span class="interest-icon">{{ interest.icon }}</span>
+                  <img :src="interest.icon" :alt="interest.name" class="interest-icon-svg" />
                   {{ interest.name }}
                 </div>
               </div>
@@ -108,7 +123,9 @@
           <!-- Stats Card -->
           <div class="content-card stats-card half-width">
             <div class="card-header">
-              <div class="card-icon">📊</div>
+              <div class="card-icon">
+                <img src="/icons/chart.svg" alt="Quick Stats" class="icon-svg" />
+              </div>
               <h2>Quick Stats</h2>
             </div>
             <div class="card-body">
@@ -132,11 +149,11 @@
           <p>I'm always open to discussing new opportunities and interesting projects.</p>
           <div class="contact-links">
             <a href="mailto:your.email@example.com" class="contact-link">
-              <span class="contact-icon">📧</span>
+              <img src="/icons/email.svg" alt="Email" class="contact-icon-svg" />
               <span>Raymond.dengruihan@yungu.org</span>
             </a>
             <a href="tel:+86 18368725059" class="contact-link">
-              <span class="contact-icon">📞</span>
+              <img src="/icons/phone.svg" alt="Phone" class="contact-icon-svg" />
               <span>🇨🇳+86 18368725059</span>
             </a>
           </div>
@@ -160,12 +177,12 @@ export default {
       currentFocus: "",
       hobbies: "",
       interests: [
-        { name: "Machine Learning", icon: "🤖", size: 24, color: "#667eea", rotation: -5 },
-        { name: "Computer Vision", icon: "👁️", size: 22, color: "#f56565", rotation: 3 },
-        { name: "Web Development", icon: "💻", size: 20, color: "#48bb78", rotation: -2 },
-        { name: "UI/UX Design", icon: "🎨", size: 18, color: "#38b2ac", rotation: -3 },
-        { name: "Cloud Computing", icon: "☁️", size: 19, color: "#4299e1", rotation: -4 },
-        { name: "DevOps", icon: "⚙️", size: 16, color: "#f6ad55", rotation: 1 }
+        { name: "Machine Learning", icon: "/icons/robot.svg", size: 24, color: "#667eea", rotation: -5 },
+        { name: "Computer Vision", icon: "/icons/eye.svg", size: 22, color: "#f56565", rotation: 3 },
+        { name: "Web Development", icon: "/icons/code.svg", size: 20, color: "#48bb78", rotation: -2 },
+        { name: "UI/UX Design", icon: "/icons/design.svg", size: 18, color: "#38b2ac", rotation: -3 },
+        { name: "Cloud Computing", icon: "/icons/cloud.svg", size: 19, color: "#4299e1", rotation: -4 },
+        { name: "DevOps", icon: "/icons/gear.svg", size: 16, color: "#f6ad55", rotation: 1 }
       ],
       stats: [
         { label: "Projects Completed", value: "3+" },
@@ -349,6 +366,9 @@ export default {
 }
 
 .badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   background: rgba(128, 128, 128, 0.2);
   color: #aaa;
   padding: 0.5rem 1rem;
@@ -356,6 +376,12 @@ export default {
   font-size: 0.9rem;
   font-weight: 500;
   border: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.badge-icon {
+  width: 16px;
+  height: 16px;
+  filter: invert(1);
 }
 
 /* About Content */
@@ -412,7 +438,6 @@ export default {
 }
 
 .card-icon {
-  font-size: 2rem;
   margin-right: 1rem;
   width: 50px;
   height: 50px;
@@ -421,6 +446,12 @@ export default {
   justify-content: center;
   background: rgba(128, 128, 128, 0.2);
   border-radius: 12px;
+}
+
+.icon-svg {
+  width: 24px;
+  height: 24px;
+  filter: invert(1);
 }
 
 .card-header h2 {
@@ -516,8 +547,11 @@ export default {
   background: rgba(128, 128, 128, 0.2);
 }
 
-.interest-icon {
+.interest-icon-svg {
   margin-right: 0.5rem;
+  width: 18px;
+  height: 18px;
+  filter: invert(1);
 }
 
 /* Stats Grid */
@@ -602,9 +636,11 @@ export default {
   color: white;
 }
 
-.contact-icon {
+.contact-icon-svg {
   margin-right: 0.8rem;
-  font-size: 1.2rem;
+  width: 20px;
+  height: 20px;
+  filter: invert(1);
 }
 
 /* Responsive Design */

@@ -4,7 +4,10 @@
     <h1>Skills & Resume</h1>
     
     <section class="skill-section">
-      <h2>My Skillset</h2>
+      <h2>
+        <img src="/icons/book.svg" alt="My Skillset" class="section-icon-svg" />
+        My Skillset
+      </h2>
       <div class="skills-grid">
         <div class="skill-item" v-for="skill in skills" :key="skill.name">
           <h3>{{ skill.name }}</h3>
@@ -16,7 +19,10 @@
     </section>
 
     <section class="resume-section">
-      <h2>Education & Achievements</h2>
+      <h2>
+        <img src="/icons/target.svg" alt="Education & Achievements" class="section-icon-svg" />
+        Education & Achievements
+      </h2>
       
       <div class="timeline">
         <div class="timeline-item">
@@ -84,7 +90,6 @@ export default {
 }
 </script>
 
-
 <style scoped>
 .skills {
   max-width: 800px;
@@ -99,6 +104,20 @@ export default {
   background: #2d2d2d;
   padding: 2rem;
   border-radius: 12px;
+}
+
+.skill-section h2, .resume-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: #aaa;
+}
+
+.section-icon-svg {
+  width: 20px;
+  height: 20px;
+  filter: invert(1);
 }
 
 .skills-grid {
