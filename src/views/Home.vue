@@ -29,7 +29,8 @@
           <!-- 联系方式按钮 -->
           <div class="contact-buttons">
             <a href="mailto:Raymond.dengruihan@yungu.org" class="contact-btn primary">
-              <span class="btn-icon">📧</span>
+              <!-- 👇 修改点：将 emoji 📧 替换为 IcoFont 图标 -->
+              <i class="icofont-envelope btn-icon"></i>
               Email Me
             </a>
             <a 
@@ -39,6 +40,7 @@
               class="contact-btn secondary"
             >
               <span class="btn-icon">
+                <!-- GitHub 的 SVG 图标保持不变，因为它很专业 -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                 </svg>
@@ -68,7 +70,8 @@
         <!-- 个人项目 -->
         <section class="projects-section">
           <h2 class="section-title">
-            <span class="title-icon">🚀</span>
+            <!-- 👇 修改点：将 emoji 🚀 替换为 IcoFont 图标 -->
+            <i class="icofont-rocket title-icon"></i>
             Featured Projects
           </h2>
           <div v-if="loading" class="loading">
@@ -103,7 +106,7 @@
               </div>
               
               <div class="project-content">
-                <!-- 👇 修改点：项目标题现在是可点击的链接 -->
+                <!-- 项目标题现在是可点击的链接 -->
                 <router-link :to="`/projects/${project.id}`" class="project-title-link">
                   <h3>{{ project.title }}</h3>
                 </router-link>
@@ -142,7 +145,8 @@
         <!-- Blog -->
         <section class="blog-section">
           <h2 class="section-title">
-            <span class="title-icon">📝</span>
+            <!-- 👇 修改点：将 emoji 📝 替换为 IcoFont 图标 -->
+            <i class="icofont-ui-file title-icon"></i>
             Recent Blog Posts
           </h2>
           <div class="blog-list">
@@ -151,7 +155,7 @@
                 <span class="blog-date">{{ post.date }}</span>
                 <span class="blog-reading-time">5 min read</span>
               </div>
-              <!-- 👇 修改点：博客标题现在是可点击的链接 -->
+              <!-- 博客标题现在是可点击的链接 -->
               <router-link :to="`/blog/${post.id}`" class="blog-title-link">
                 <h3>{{ post.title }}</h3>
               </router-link>
@@ -168,14 +172,16 @@
 
         <section class="updates-section">
           <h2 class="section-title">
-            <span class="title-icon">🔔</span>
+            <!-- 👇 修改点：将 emoji 🔔 替换为 IcoFont 图标 -->
+            <i class="icofont-notification title-icon"></i>
             Latest Updates
           </h2>
           <div class="updates-list">
             <div class="update-item" v-for="update in updates" :key="update.id">
               <div class="update-date">{{ update.date }}</div>
               <div class="update-content">
-                <h3>{{ update.title }}</h3>
+                <!-- 👇 修改点：使用动态绑定的 IcoFont 图标 -->
+                <h3><i :class="update.icon" class="update-icon"></i> {{ update.title }}</h3>
                 <p>{{ update.description }}</p>
                 <a v-if="update.link" :href="update.link" class="update-link">Learn more →</a>
               </div>
@@ -193,25 +199,29 @@ import { ref, onMounted } from 'vue'
 export default {
   name: 'Home',
   setup() {
+    // 👇 修改点：在 updates 数据中增加 icon 属性，并移除 title 中的 emoji
     const updates = ref([
       {
         id: 1,
         date: '2025-11-10',
-        title: '🎉 New Portfolio Launched',
+        icon: 'icofont-gift', // 使用礼物图标代表庆祝
+        title: 'New Portfolio Launched',
         description: 'Just launched my new personal portfolio website built with Vue 3 and Vite!',
         link: null
       },
       {
         id: 2,
         date: '2025-11-08',
-        title: '📝 Published New Blog Post',
+        icon: 'icofont-ui-file', // 使用文档图标代表博客
+        title: 'Published New Blog Post',
         description: 'Wrote about my experience training LLM to detect species.',
         link: '/blog/ai-forest-ranger-hangzhou'
       },
       {
         id: 3,
         date: '2025-04-23',
-        title: '🐌 Completed Eco Protect Project',
+        icon: 'icofont-leaf', // 使用叶子图标代表生态项目
+        title: 'Completed Eco Protect Project',
         description: 'Finished a AI powered Eco Protect application with GUI',
         link: '/projects/3'
       }
@@ -436,8 +446,10 @@ export default {
   transform: translateY(-2px);
 }
 
+/* 👇 修改点：调整 .btn-icon 样式以适配字体图标 */
 .btn-icon {
-  font-size: 1.1rem;
+  font-size: 1.1rem; /* 字体图标，使用 font-size 控制大小 */
+  vertical-align: middle; /* 确保与文字垂直居中 */
 }
 
 .btn-icon img {
@@ -555,6 +567,13 @@ section {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* 👇 修改点：调整 .title-icon 样式以适配字体图标 */
+.title-icon {
+  font-size: 1.5rem; /* 字体图标，使用 font-size 控制大小 */
+  vertical-align: middle; /* 确保与文字垂直居中 */
+  margin-right: 0.5rem; /* 增加一点间距 */
+}
+
 .section-title {
   display: flex;
   align-items: center;
@@ -562,10 +581,6 @@ section {
   margin-bottom: 2rem;
   font-size: 1.5rem;
   color: #aaa;
-}
-
-.title-icon {
-  font-size: 1.5rem;
 }
 
 /* 加载状态 */
@@ -683,7 +698,7 @@ section {
   flex-direction: column;
 }
 
-/* 👇 新增/修改的样式：项目标题链接 */
+/* 项目标题链接样式 */
 .project-content .project-title-link {
   text-decoration: none;
   display: block;
@@ -793,7 +808,7 @@ section {
   font-size: 0.9rem;
 }
 
-/* 👇 新增/修改的样式：博客标题链接 */
+/* 博客标题链接样式 */
 .blog-post .blog-title-link {
   text-decoration: none;
   display: block;
@@ -872,6 +887,14 @@ section {
 
 .update-link:hover {
   text-decoration: underline;
+}
+
+/* 👇 新增样式：为 .update-icon 添加样式 */
+.update-icon {
+  font-size: 1rem;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  color: #aaa; /* 给图标一个默认颜色 */
 }
 
 /* 区域底部 */
