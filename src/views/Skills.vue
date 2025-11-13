@@ -67,16 +67,23 @@ export default {
   name: 'Skills',
   data() {
     return {
-      skills: [
-        { name: ' Python3', level: 85 },
-        { name: 'LLM Training', level: 80 },
-        { name: 'HTML5 & CSS3', level: 90 },
-        { name: 'Vue.js', level: 75 }
-      ]
+      skills: [],
+      education: []
+    }
+  },
+  async created() {
+    try {
+      const response = await fetch('/data/skills.json');
+      const data = await response.json();
+      this.skills = data.skillset;
+      this.education = data.education;
+    } catch (error) {
+      console.error("Error loading skills data:", error);
     }
   }
 }
 </script>
+
 
 <style scoped>
 .skills {

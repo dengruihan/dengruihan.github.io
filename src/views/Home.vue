@@ -49,19 +49,18 @@
           
           
           <!-- 额外内容，使左侧可滚动 -->
+          <!-- 在Home.vue的侧边栏部分 -->
           <div class="additional-content">
             <h3>Quick Facts</h3>
             <ul>
-              <li>3+ years of coding experience</li>
-              <li>Passionate about clean code</li>
-              <li>Open source contributor</li>
+              <li v-for="fact in quickFacts" :key="fact">{{ fact }}</li>
             </ul>
             
             <h3>Current Focus</h3>
-            <p>Currently exploring advanced Vue.js patterns, TypeScript integration, and performance optimization techniques.</p>
+            <p>{{ currentFocus }}</p>
             
             <h3>Hobbies</h3>
-            <p>When I'm not coding, I enjoy photography, hiking, and reading tech blogs.</p>
+            <p>{{ hobbies }}</p>
           </div>
         </div>
       </aside>
@@ -181,13 +180,16 @@ export default {
 
     const featuredProjects = ref([])
     const recentPosts = ref([])
+    const quickFacts = ref([])
+    const currentFocus = ref("")
+    const hobbies = ref("")
 
     // 加载项目数据
     const loadProjects = async () => {
       try {
         const response = await fetch(`${import.meta.env.BASE_URL}data/projects.json`)
         const projects = await response.json()
-        featuredProjects.value = projects.slice(0, 3) // 只显示前3个项目
+        featuredProjects.value = projects.slice(0, 3)
       } catch (error) {
         console.error("Failed to load projects:", error)
       }
@@ -198,25 +200,43 @@ export default {
       try {
         const response = await fetch(`${import.meta.env.BASE_URL}data/blog.json`)
         const posts = await response.json()
-        recentPosts.value = posts.slice(0, 3) // 只显示前3篇文章
+        recentPosts.value = posts.slice(0, 3)
       } catch (error) {
         console.error("Failed to load blog posts:", error)
+      }
+    }
+
+    // 加载About数据
+    const loadAboutData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.BASE_URL}data/about.json`)
+        const data = await response.json()
+        quickFacts.value = data.quickFacts
+        currentFocus.value = data.currentFocus
+        hobbies.value = data.hobbies
+      } catch (error) {
+        console.error("Failed to load about data:", error)
       }
     }
 
     onMounted(() => {
       loadProjects()
       loadPosts()
+      loadAboutData()
     })
 
     return {
       updates,
       featuredProjects,
-      recentPosts
+      recentPosts,
+      quickFacts,
+      currentFocus,
+      hobbies
     }
   }
 }
 </script>
+
 
 <style scoped>
 /* 整体布局 */

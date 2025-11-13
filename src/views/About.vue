@@ -150,24 +150,14 @@ export default {
   name: 'About',
   data() {
     return {
-      goals: [
-        {
-          title: "Build Innovative Solutions",
-          description: "Create web applications that make a positive impact on users' lives"
-        },
-        {
-          title: "Contribute to Open Source",
-          description: "Give back to the community by sharing knowledge and code"
-        },
-        {
-          title: "Master Modern Technologies",
-          description: "Continuously learn and stay updated with the latest tech trends"
-        },
-        {
-          title: "Collaborate Globally",
-          description: "Work with diverse teams and learn from different perspectives"
-        }
-      ],
+      story: {
+        leadText: "",
+        paragraphs: []
+      },
+      goals: [],
+      quickFacts: [],
+      currentFocus: "",
+      hobbies: "",
       interests: [
         { name: "Web Development", icon: "💻", size: 24, color: "#667eea", rotation: -5 },
         { name: "UI/UX Design", icon: "🎨", size: 20, color: "#f56565", rotation: 3 },
@@ -183,9 +173,23 @@ export default {
         { label: "Caffeine", value: "∞" }
       ]
     }
+  },
+  async created() {
+    try {
+      const response = await fetch('/data/about.json');
+      const data = await response.json();
+      this.story = data.story;
+      this.goals = data.goals;
+      this.quickFacts = data.quickFacts;
+      this.currentFocus = data.currentFocus;
+      this.hobbies = data.hobbies;
+    } catch (error) {
+      console.error("Error loading about data:", error);
+    }
   }
 }
 </script>
+
 
 <style scoped>
 /* Hero Section */
