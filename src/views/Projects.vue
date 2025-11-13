@@ -4,6 +4,10 @@
     <div class="projects-header">
       <h1>My Projects</h1>
       <p class="subtitle">Explore my latest work and creative solutions</p>
+      <div v-if="currentInterest" class="filter-info">
+        <span>Showing projects for: <strong>{{ currentInterest }}</strong></span>
+        <button @click="clearFilter" class="clear-filter-btn">Clear Filter</button>
+      </div>
     </div>
     
     <div v-if="loading" class="loading">
@@ -81,15 +85,20 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 export default {
   name: 'Projects',
   setup() {
+    const route = useRoute()
+    const router = useRouter()
     const projects = ref([])
+    const filteredProjects = ref([])
     const loading = ref(true)
     const error = ref(null)
     const hoveredProject = ref(null)
+    const currentInterest = ref(route.query.interest || '')
 
     const loadProjects = async () => {
       loading.value = true
@@ -100,7 +109,9 @@ export default {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
-        projects.value = await response.json()
+        const allProjects = await response.json()
+        projects.value = allProjects
+        filterProjects()
       } catch (err) {
         console.error("Failed to load projects:", err)
         error.value = err.message
@@ -109,15 +120,37 @@ export default {
       }
     }
 
+    const filterProjects = () => {
+      if (!currentInterest.value) {
+        filteredProjects.value = projects.value
+      } else {
+        filteredProjects.value = projects.value.filter(project => 
+          project.interests && project.interests.includes(currentInterest.value)
+        )
+      }
+    }
+
+    const clearFilter = () => {
+      currentInterest.value = ''
+      router.push({ path: '/projects' })
+    }
+
+    watch(() => route.query.interest, (newInterest) => {
+      currentInterest.value = newInterest || ''
+      filterProjects()
+    })
+
     onMounted(() => {
       loadProjects()
     })
 
     return { 
-      projects, 
+      projects: filteredProjects, 
       loading, 
       error, 
       hoveredProject,
+      currentInterest,
+      clearFilter,
       loadProjects 
     }
   }
@@ -154,6 +187,32 @@ export default {
   font-size: 1.1rem;
 }
 
+.filter-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 0.8rem 1.5rem;
+  background: rgba(128, 128, 128, 0.1);
+  border-radius: 20px;
+  color: #aaa;
+}
+
+.clear-filter-btn {
+  padding: 0.4rem 1rem;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.clear-filter-btn:hover {
+  background: #666;
+}
+
 .loading {
   display: flex;
   flex-direction: column;
@@ -186,7 +245,6 @@ export default {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
 
 .error, .no-projects {
   text-align: center;

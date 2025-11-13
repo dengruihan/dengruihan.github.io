@@ -90,12 +90,13 @@
                 <div 
                   v-for="interest in interests" 
                   :key="interest.name"
-                  class="interest-tag"
+                  class="interest-tag clickable"
                   :style="{ 
                     fontSize: interest.size + 'px', 
                     color: interest.color,
                     transform: `rotate(${interest.rotation}deg)` 
                   }"
+                  @click="navigateToProjects(interest.name)"
                 >
                   <span class="interest-icon">{{ interest.icon }}</span>
                   {{ interest.name }}
@@ -159,19 +160,27 @@ export default {
       currentFocus: "",
       hobbies: "",
       interests: [
-        { name: "Web Development", icon: "💻", size: 24, color: "#667eea", rotation: -5 },
-        { name: "UI/UX Design", icon: "🎨", size: 20, color: "#f56565", rotation: 3 },
-        { name: "Machine Learning", icon: "🤖", size: 18, color: "#48bb78", rotation: -2 },
-        { name: "Cloud Computing", icon: "☁️", size: 19, color: "#38b2ac", rotation: -3 },
-        { name: "DevOps", icon: "⚙️", size: 21, color: "#4299e1", rotation: -4 },
-        { name: "Blockchain", icon: "🔗", size: 16, color: "#f6ad55", rotation: 1 }
+        { name: "Machine Learning", icon: "🤖", size: 24, color: "#667eea", rotation: -5 },
+        { name: "Computer Vision", icon: "👁️", size: 22, color: "#f56565", rotation: 3 },
+        { name: "Web Development", icon: "💻", size: 20, color: "#48bb78", rotation: -2 },
+        { name: "UI/UX Design", icon: "🎨", size: 18, color: "#38b2ac", rotation: -3 },
+        { name: "Cloud Computing", icon: "☁️", size: 19, color: "#4299e1", rotation: -4 },
+        { name: "DevOps", icon: "⚙️", size: 16, color: "#f6ad55", rotation: 1 }
       ],
       stats: [
-        { label: "Projects Completed", value: "2+" },
-        { label: "Technologies", value: "6+" },
-        { label: "Happy Clients", value: "10+" },
+        { label: "Projects Completed", value: "3+" },
+        { label: "Technologies", value: "10+" },
+        { label: "Happy Clients", value: "100+" },
         { label: "Caffeine", value: "∞" }
       ]
+    }
+  },
+  methods: {
+    navigateToProjects(interestName) {
+      this.$router.push({ 
+        path: '/projects', 
+        query: { interest: interestName } 
+      })
     }
   },
   async created() {
@@ -189,7 +198,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 /* Hero Section */
@@ -497,10 +505,15 @@ export default {
   color: #bbb;
 }
 
-.interest-tag:hover {
+.interest-tag.clickable {
+  cursor: pointer;
+}
+
+.interest-tag.clickable:hover {
   transform: translateY(-3px) scale(1.05);
   border-color: #555;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(128, 128, 128, 0.2);
 }
 
 .interest-icon {

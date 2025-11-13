@@ -12,6 +12,11 @@
       "Drone Imaging",
       "Multimodal AI"
     ],
+    "interests": [
+      "Machine Learning",
+      "Computer Vision",
+      "Cloud Computing"
+    ],
     "details": "A comprehensive species monitoring system that utilizes the GLM-Edge-V-2B multimodal large language model to automatically detect Golden Apple Snail egg clusters from drone-captured images with over 90% accuracy. The system supports ecological monitoring staff in Hangzhou's scenic reserves by enabling rapid egg density assessments, improving conservation planning. Features include real-time image analysis, batch processing capabilities, and a user-friendly web interface for both technical and non-technical users."
   },
   {
@@ -27,6 +32,10 @@
       "Image Processing",
       "Computer Vision"
     ],
+    "interests": [
+      "Computer Vision",
+      "Machine Learning"
+    ],
     "details": "An efficient color-based detection algorithm that identifies Golden Apple Snail eggs using HSV color range analysis. The system processes 5,000 images in just 2 seconds with approximately 75% accuracy. Features include adaptive color range selection for different lighting conditions, optimized pixel size thresholds, and mask calculation modules for precise egg counting. Ideal for rapid assessments in simple natural environments with minimal computational requirements."
   },
   {
@@ -41,6 +50,10 @@
       "Mobile Responsive",
       "Educational Content",
       "Community Outreach"
+    ],
+    "interests": [
+      "Web Development",
+      "UI/UX Design"
     ],
     "details": "A comprehensive web platform that combines species detection technology with public education and community engagement. Features include user-friendly image upload interface, batch processing capabilities, educational content about invasive species, mobile-responsive design for field use, and cartoon-style illustrations to raise awareness. The platform has successfully engaged over 100 visitors during school open days and serves as a bridge between scientific research and public participation in ecological protection."
   }
