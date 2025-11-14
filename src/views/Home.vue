@@ -29,7 +29,7 @@
           <!-- 联系方式按钮 -->
           <div class="contact-buttons">
             <a href="mailto:Raymond.dengruihan@yungu.org" class="contact-btn primary">
-              <img src="../icons/email.svg" alt="Email" class="btn-icon-svg" />
+              <img src="./icons/email.svg" alt="Email" class="btn-icon-svg" />
               Email Me
             </a>
             <a 
@@ -38,7 +38,7 @@
               rel="noopener noreferrer"
               class="contact-btn secondary"
             >
-              <img src="../icons/github.svg" alt="GitHub" class="btn-icon-svg" />
+              <img src="./icons/github.svg" alt="GitHub" class="btn-icon-svg" />
               GitHub
             </a>
           </div>
@@ -64,7 +64,7 @@
         <!-- 个人项目 -->
         <section class="projects-section">
           <h2 class="section-title">
-            <img src="../icons/project.svg" alt="Featured Projects" class="title-icon-svg" />
+            <img src="./icons/project.svg" alt="Featured Projects" class="title-icon-svg" />
             Featured Projects
           </h2>
           <div v-if="loading" class="loading">
@@ -138,7 +138,7 @@
         <!-- Blog -->
         <section class="blog-section">
           <h2 class="section-title">
-            <img src="../icons/blog.svg" alt="Recent Blog Posts" class="title-icon-svg" />
+            <img src="./icons/blog.svg" alt="Recent Blog Posts" class="title-icon-svg" />
             Recent Blog Posts
           </h2>
           <div class="blog-list">
@@ -164,7 +164,7 @@
 
         <section class="updates-section">
           <h2 class="section-title">
-            <img src="../icons/bell.svg" alt="Latest Updates" class="title-icon-svg" />
+            <img src="./icons/bell.svg" alt="Latest Updates" class="title-icon-svg" />
             Latest Updates
           </h2>
           <div class="updates-list">

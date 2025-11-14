@@ -5,7 +5,7 @@
     
     <section class="skill-section">
       <h2>
-        <img src="../icons/book.svg" alt="My Skillset" class="section-icon-svg" />
+        <img src="./icons/book.svg" alt="My Skillset" class="section-icon-svg" />
         My Skillset
       </h2>
       <div class="skills-grid">
@@ -20,7 +20,7 @@
 
     <section class="resume-section">
       <h2>
-        <img src="../icons/target.svg" alt="Education & Achievements" class="section-icon-svg" />
+        <img src="./icons/target.svg" alt="Education & Achievements" class="section-icon-svg" />
         Education & Achievements
       </h2>
       
