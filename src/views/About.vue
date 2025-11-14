@@ -23,7 +23,7 @@
               <p class="profile-title">Full Stack Developer</p>
               <div class="profile-badges">
                 <span class="badge">
-                  <img src="/icons/rocket.svg" alt="AI Expert" class="badge-icon" />
+                  <img src="/icons/expert.svg" alt="AI Expert" class="badge-icon" />
                   AI Expert
                 </span>
                 <span class="badge">
@@ -31,7 +31,7 @@
                   Creative Thinker
                 </span>
                 <span class="badge">
-                  <img src="/icons/laptop.svg" alt="Web Dev" class="badge-icon" />
+                  <img src="/icons/web.svg" alt="Web Dev" class="badge-icon" />
                   Web Dev
                 </span>
               </div>
@@ -96,7 +96,7 @@
           <div class="content-card interests-card half-width">
             <div class="card-header">
               <div class="card-icon">
-                <img src="/icons/palette.svg" alt="Interests & Passions" class="icon-svg" />
+                <img src="/icons/paint.svg" alt="Interests & Passions" class="icon-svg" />
               </div>
               <h2>Interests & Passions</h2>
             </div>
@@ -179,9 +179,9 @@ export default {
       interests: [
         { name: "Machine Learning", icon: "/icons/robot.svg", size: 24, color: "#667eea", rotation: -5 },
         { name: "Computer Vision", icon: "/icons/eye.svg", size: 22, color: "#f56565", rotation: 3 },
-        { name: "Web Development", icon: "/icons/code.svg", size: 20, color: "#48bb78", rotation: -2 },
+        { name: "Web Development", icon: "/icons/web.svg", size: 20, color: "#48bb78", rotation: -2 },
         { name: "UI/UX Design", icon: "/icons/design.svg", size: 18, color: "#38b2ac", rotation: -3 },
-        { name: "Cloud Computing", icon: "/icons/cloud.svg", size: 19, color: "#4299e1", rotation: -4 },
+        { name: "Cloud Computing", icon: "/icons/paint.svg", size: 19, color: "#4299e1", rotation: -4 },
         { name: "DevOps", icon: "/icons/gear.svg", size: 16, color: "#f6ad55", rotation: 1 }
       ],
       stats: [

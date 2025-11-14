@@ -1,357 +1,343 @@
+<!-- src/views/Home.vue -->
 <template>
-  <div class="about">
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="hero-bg">
-        <div class="gradient-overlay"></div>
-        <div class="floating-shapes">
-          <div class="shape shape-1"></div>
-          <div class="shape shape-2"></div>
-          <div class="shape shape-3"></div>
-        </div>
-      </div>
-      
-      <div class="container">
-        <div class="hero-content">
-          <div class="profile-card">
-            <div class="profile-image">
-              <img src="/avatar.jpg" alt="Profile" />
-              <div class="status-indicator"></div>
-            </div>
-            <div class="profile-info">
-              <h1 class="profile-name">Raymond</h1>
-              <p class="profile-title">Full Stack Developer</p>
-              <div class="profile-badges">
-                <span class="badge">
-                  <RocketIcon class="badge-icon" />
-                  AI Expert
-                </span>
-                <span class="badge">
-                  <LightbulbIcon class="badge-icon" />
-                  Creative Thinker
-                </span>
-                <span class="badge">
-                  <LaptopIcon class="badge-icon" />
-                  Web Dev
-                </span>
-              </div>
-            </div>
+  <div class="home">
+    <div class="container">
+      <!-- 左侧个人信息栏 -->
+      <aside class="sidebar">
+        <div class="profile-section">
+          <!-- 头像 -->
+          <div class="avatar-container">
+            <img src="/avatar.jpg" alt="Profile" class="avatar" />
+            <div class="avatar-ring"></div>
+          </div>
+          
+          <!-- 姓名 -->
+          <h1 class="name">RuiHan Deng</h1>
+          
+          <!-- 一句话总结 -->
+          <p class="tagline">Full Stack Developer & Creative Thinker</p>
+          
+          <!-- 简介 -->
+          <div class="bio">
+            <p>
+              Passionate about building creative and contributory product. 
+              Specialize in Python, LLM, and Politics.
+              Always learning, always creating.
+            </p>
+          </div>
+          
+          <!-- 联系方式按钮 -->
+          <div class="contact-buttons">
+            <a href="mailto:Raymond.dengruihan@yungu.org" class="contact-btn primary">
+              <img src="/icons/email.svg" alt="Email" class="btn-icon-svg" />
+              Email Me
+            </a>
+            <a 
+              href="https://github.com/dengruihan" 
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contact-btn secondary"
+            >
+              <img src="/icons/github.svg" alt="GitHub" class="btn-icon-svg" />
+              GitHub
+            </a>
+          </div>
+          
+          <!-- 额外内容，使左侧可滚动 -->
+          <div class="additional-content">
+            <h3>Quick Facts</h3>
+            <ul>
+              <li v-for="fact in quickFacts" :key="fact">{{ fact }}</li>
+            </ul>
+            
+            <h3>Current Focus</h3>
+            <p>{{ currentFocus }}</p>
+            
+            <h3>Hobbies</h3>
+            <p>{{ hobbies }}</p>
           </div>
         </div>
-      </div>
-    </section>
+      </aside>
 
-    <!-- About Content -->
-    <section class="about-content">
-      <div class="container">
-        <div class="content-grid">
-          <!-- Story Card -->
-          <div class="content-card story-card full-width">
-            <div class="card-header">
-              <div class="card-icon">
-                <BookIcon class="icon-svg" />
-              </div>
-              <h2>My Story</h2>
-            </div>
-            <div class="card-body">
-              <p class="lead-text">
-                Passionate developer with a love for creating meaningful digital experiences
-              </p>
-              <p>
-                I'm a student developer who discovered my passion for coding through building 
-                contributory projects and solving real-world problems. What started as curiosity has 
-                become a journey of continuous learning and growth.
-              </p>
-              <p>
-                I believe in writing clean, maintainable code and creating user experiences 
-                that are both beautiful and functional. When I'm not coding, you can find me 
-                exploring new technologies, contributing to open-source projects, or sharing 
-                knowledge with the developer community.
-              </p>
-            </div>
+      <!-- 右侧内容区域 -->
+      <main class="main-content">
+        <!-- 个人项目 -->
+        <section class="projects-section">
+          <h2 class="section-title">
+            <img src="/icons/project.svg" alt="Featured Projects" class="title-icon-svg" />
+            Featured Projects
+          </h2>
+          <div v-if="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading projects...</p>
           </div>
-
-          <!-- Goals Card -->
-          <div class="content-card goals-card full-width">
-            <div class="card-header">
-              <div class="card-icon">
-                <TargetIcon class="icon-svg" />
-              </div>
-              <h2>My Goals</h2>
-            </div>
-            <div class="card-body">
-              <div class="goals-timeline">
-                <div class="timeline-item" v-for="(goal, index) in goals" :key="index">
-                  <div class="timeline-marker"></div>
-                  <div class="timeline-content">
-                    <h3>{{ goal.title }}</h3>
-                    <p>{{ goal.description }}</p>
+          <div v-else class="project-grid">
+            <div 
+              v-for="project in featuredProjects" 
+              :key="project.id" 
+              class="project-card"
+              @mouseenter="hoveredProject = project.id"
+              @mouseleave="hoveredProject = null"
+            >
+              <div class="project-image-container">
+                <img 
+                  :src="project.image" 
+                  :alt="project.title"
+                  :class="{ 'image-hovered': hoveredProject === project.id }"
+                />
+                <div class="project-overlay" v-if="hoveredProject === project.id">
+                  <div class="tech-stack">
+                    <span 
+                      v-for="tech in project.techStack?.slice(0, 3)" 
+                      :key="tech"
+                      class="tech-tag"
+                    >
+                      {{ tech }}
+                    </span>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- Interests Card -->
-          <div class="content-card interests-card half-width">
-            <div class="card-header">
-              <div class="card-icon">
-                <PaletteIcon class="icon-svg" />
+              
+              <div class="project-content">
+                <!-- 👇 修改点：项目标题现在是可点击的链接 -->
+                <router-link :to="`/projects/${project.id}`" class="project-title-link">
+                  <h3>{{ project.title }}</h3>
+                </router-link>
+                <p>{{ project.introduction }}</p>
               </div>
-              <h2>Interests & Passions</h2>
-            </div>
-            <div class="card-body">
-              <div class="interests-cloud">
-                <div 
-                  v-for="interest in interests" 
-                  :key="interest.name"
-                  class="interest-tag clickable"
-                  :style="{ 
-                    fontSize: interest.size + 'px', 
-                    color: interest.color,
-                    transform: `rotate(${interest.rotation}deg)` 
-                  }"
-                  @click="navigateToProjects(interest.name)"
-                >
-                  <component :is="interest.iconComponent" class="interest-icon-svg" />
-                  {{ interest.name }}
+              
+              <div class="card-footer">
+                <div class="project-links">
+                  <router-link 
+                    :to="`/projects/${project.id}`" 
+                    class="view-details-btn"
+                  >
+                    View Details
+                  </router-link>
+                  <a 
+                    v-if="project.githubUrl" 
+                    :href="project.githubUrl" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="github-link"
+                    title="View on GitHub"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                  </a>
                 </div>
               </div>
             </div>
           </div>
+          <div class="section-footer">
+            <router-link to="/projects" class="view-all-btn">View All Projects →</router-link>
+          </div>
+        </section>
 
-          <!-- Stats Card -->
-          <div class="content-card stats-card half-width">
-            <div class="card-header">
-              <div class="card-icon">
-                <ChartIcon class="icon-svg" />
+        <!-- Blog -->
+        <section class="blog-section">
+          <h2 class="section-title">
+            <img src="/icons/blog.svg" alt="Recent Blog Posts" class="title-icon-svg" />
+            Recent Blog Posts
+          </h2>
+          <div class="blog-list">
+            <article v-for="post in recentPosts" :key="post.id" class="blog-post">
+              <div class="blog-meta">
+                <span class="blog-date">{{ post.date }}</span>
+                <span class="blog-reading-time">5 min read</span>
               </div>
-              <h2>Quick Stats</h2>
-            </div>
-            <div class="card-body">
-              <div class="stats-grid">
-                <div class="stat-item" v-for="stat in stats" :key="stat.label">
-                  <div class="stat-number">{{ stat.value }}</div>
-                  <div class="stat-label">{{ stat.label }}</div>
-                </div>
+              <!-- 👇 修改点：博客标题现在是可点击的链接 -->
+              <router-link :to="`/blog/${post.id}`" class="blog-title-link">
+                <h3>{{ post.title }}</h3>
+              </router-link>
+              <p class="blog-excerpt">{{ post.excerpt }}</p>
+              <router-link :to="`/blog/${post.id}`" class="blog-link">
+                Read more →
+              </router-link>
+            </article>
+          </div>
+          <div class="section-footer">
+            <router-link to="/blog" class="view-all-btn">View All Posts →</router-link>
+          </div>
+        </section>
+
+        <section class="updates-section">
+          <h2 class="section-title">
+            <img src="/icons/bell.svg" alt="Latest Updates" class="title-icon-svg" />
+            Latest Updates
+          </h2>
+          <div class="updates-list">
+            <div class="update-item" v-for="update in updates" :key="update.id">
+              <div class="update-date">{{ update.date }}</div>
+              <div class="update-content">
+                <h3>{{ update.title }}</h3>
+                <p>{{ update.description }}</p>
+                <a v-if="update.link" :href="update.link" class="update-link">Learn more →</a>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact-section">
-      <div class="container">
-        <div class="contact-card">
-          <h2>Let's Connect</h2>
-          <p>I'm always open to discussing new opportunities and interesting projects.</p>
-          <div class="contact-links">
-            <a href="mailto:your.email@example.com" class="contact-link">
-              <EmailIcon class="contact-icon-svg" />
-              <span>Raymond.dengruihan@yungu.org</span>
-            </a>
-            <a href="tel:+86 18368725059" class="contact-link">
-              <PhoneIcon class="contact-icon-svg" />
-              <span>🇨🇳+86 18368725059</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
+        </section>
+      </main>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
-
-// SVG图标组件
-const RocketIcon = () => import('@/components/icons/RocketIcon.vue')
-const LightbulbIcon = () => import('@/components/icons/LightbulbIcon.vue')
-const LaptopIcon = () => import('@/components/icons/LaptopIcon.vue')
-const BookIcon = () => import('@/components/icons/BookIcon.vue')
-const TargetIcon = () => import('@/components/icons/TargetIcon.vue')
-const PaletteIcon = () => import('@/components/icons/PaletteIcon.vue')
-const ChartIcon = () => import('@/components/icons/ChartIcon.vue')
-const EmailIcon = () => import('@/components/icons/EmailIcon.vue')
-const PhoneIcon = () => import('@/components/icons/PhoneIcon.vue')
-const RobotIcon = () => import('@/components/icons/RobotIcon.vue')
-const EyeIcon = () => import('@/components/icons/EyeIcon.vue')
-const CodeIcon = () => import('@/components/icons/CodeIcon.vue')
-const DesignIcon = () => import('@/components/icons/DesignIcon.vue')
-const CloudIcon = () => import('@/components/icons/CloudIcon.vue')
-const GearIcon = () => import('@/components/icons/GearIcon.vue')
+import { ref, onMounted } from 'vue'
 
 export default {
-  name: 'About',
-  components: {
-    RocketIcon,
-    LightbulbIcon,
-    LaptopIcon,
-    BookIcon,
-    TargetIcon,
-    PaletteIcon,
-    ChartIcon,
-    EmailIcon,
-    PhoneIcon,
-    RobotIcon,
-    EyeIcon,
-    CodeIcon,
-    DesignIcon,
-    CloudIcon,
-    GearIcon
-  },
-  data() {
-    return {
-      story: {
-        leadText: "",
-        paragraphs: []
+  name: 'Home',
+  setup() {
+    const updates = ref([
+      {
+        id: 1,
+        date: '2025-11-10',
+        title: '🎉 New Portfolio Launched',
+        description: 'Just launched my new personal portfolio website built with Vue 3 and Vite!',
+        link: null
       },
-      goals: [],
-      quickFacts: [],
-      currentFocus: "",
-      hobbies: "",
-      interests: [
-        { name: "Machine Learning", iconComponent: "RobotIcon", size: 24, color: "#667eea", rotation: -5 },
-        { name: "Computer Vision", iconComponent: "EyeIcon", size: 22, color: "#f56565", rotation: 3 },
-        { name: "Web Development", iconComponent: "CodeIcon", size: 20, color: "#48bb78", rotation: -2 },
-        { name: "UI/UX Design", iconComponent: "DesignIcon", size: 18, color: "#38b2ac", rotation: -3 },
-        { name: "Cloud Computing", iconComponent: "CloudIcon", size: 19, color: "#4299e1", rotation: -4 },
-        { name: "DevOps", iconComponent: "GearIcon", size: 16, color: "#f6ad55", rotation: 1 }
-      ],
-      stats: [
-        { label: "Projects Completed", value: "3+" },
-        { label: "Technologies", value: "10+" },
-        { label: "Happy Clients", value: "100+" },
-        { label: "Caffeine", value: "∞" }
-      ]
+      {
+        id: 2,
+        date: '2025-11-08',
+        title: '📝 Published New Blog Post',
+        description: 'Wrote about my experience training LLM to detect species.',
+        link: '/blog/ai-forest-ranger-hangzhou'
+      },
+      {
+        id: 3,
+        date: '2025-04-23',
+        title: '🐌 Completed Eco Protect Project',
+        description: 'Finished a AI powered Eco Protect application with GUI',
+        link: '/projects/3'
+      }
+    ])
+
+    const featuredProjects = ref([])
+    const recentPosts = ref([])
+    const quickFacts = ref([])
+    const currentFocus = ref("")
+    const hobbies = ref("")
+    const loading = ref(true)
+    const hoveredProject = ref(null)
+
+    // 加载项目数据
+    const loadProjects = async () => {
+      loading.value = true
+      try {
+        const response = await fetch(`${import.meta.env.BASE_URL}data/projects.json`)
+        const projects = await response.json()
+        featuredProjects.value = projects.slice(0, 3)
+      } catch (error) {
+        console.error("Failed to load projects:", error)
+      } finally {
+        loading.value = false
+      }
     }
-  },
-  methods: {
-    navigateToProjects(interestName) {
-      this.$router.push({ 
-        path: '/projects', 
-        query: { interest: interestName } 
-      })
+
+    // 加载博客数据
+    const loadPosts = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.BASE_URL}data/blog.json`)
+        const posts = await response.json()
+        recentPosts.value = posts.slice(0, 3)
+      } catch (error) {
+        console.error("Failed to load blog posts:", error)
+      }
     }
-  },
-  async created() {
-    try {
-      const response = await fetch('/data/about.json');
-      const data = await response.json();
-      this.story = data.story;
-      this.goals = data.goals;
-      this.quickFacts = data.quickFacts;
-      this.currentFocus = data.currentFocus;
-      this.hobbies = data.hobbies;
-    } catch (error) {
-      console.error("Error loading about data:", error);
+
+    // 加载About数据
+    const loadAboutData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.BASE_URL}data/about.json`)
+        const data = await response.json()
+        quickFacts.value = data.quickFacts
+        currentFocus.value = data.currentFocus
+        hobbies.value = data.hobbies
+      } catch (error) {
+        console.error("Failed to load about data:", error)
+      }
+    }
+
+    onMounted(() => {
+      loadProjects()
+      loadPosts()
+      loadAboutData()
+    })
+
+    return {
+      updates,
+      featuredProjects,
+      recentPosts,
+      quickFacts,
+      currentFocus,
+      hobbies,
+      loading,
+      hoveredProject
     }
   }
 }
 </script>
 
 <style scoped>
-/* Hero Section */
-.hero-section {
-  position: relative;
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* 整体布局 */
+.home {
+  height: calc(100vh - var(--navbar-height));
   overflow: hidden;
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
 }
 
-.hero-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-}
-
-.gradient-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to right, #444, #666);
-  opacity: 0.1;
-}
-
-.floating-shapes {
-  position: absolute;
-  width: 100%;
+.container {
   height: 100%;
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 0;
+  max-width: 100%;
 }
 
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  background: linear-gradient(to right, #444, #666);
-  opacity: 0.1;
-  animation: float-shape 6s ease-in-out infinite;
+/* 左侧边栏 - 可滚动 */
+.sidebar {
+  height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.shape-1 {
-  width: 200px;
-  height: 200px;
-  top: 10%;
-  left: 10%;
-  animation-delay: 0s;
+/* 自定义滚动条样式 */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
 }
 
-.shape-2 {
-  width: 150px;
-  height: 150px;
-  top: 70%;
-  right: 10%;
-  animation-delay: 2s;
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.shape-3 {
-  width: 100px;
-  height: 100px;
-  bottom: 20%;
-  left: 20%;
-  animation-delay: 4s;
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
 }
 
-@keyframes float-shape {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-30px) rotate(180deg); }
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.profile-card {
+.profile-section {
   background: rgba(40, 40, 40, 0.9);
   backdrop-filter: blur(10px);
-  border-radius: 24px;
-  padding: 3rem;
+  padding: 2.5rem;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  min-height: 100%;
 }
 
-.profile-image {
+/* 头像 */
+.avatar-container {
   position: relative;
   display: inline-block;
   margin-bottom: 2rem;
 }
 
-.profile-image img {
+.avatar {
   width: 150px;
   height: 150px;
   border-radius: 50%;
@@ -360,26 +346,25 @@ export default {
   box-shadow: 0 0 30px rgba(128, 128, 128, 0.5);
 }
 
-.status-indicator {
+.avatar-ring {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 30px;
-  height: 30px;
-  background: #666;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border: 2px solid #777;
   border-radius: 50%;
-  border: 4px solid #2d2d2d;
-  animation: pulse 2s infinite;
+  animation: rotate 20s linear infinite;
 }
 
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(128, 128, 128, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(128, 128, 128, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(128, 128, 128, 0); }
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.profile-name {
-  font-size: 2.5rem;
+/* 个人信息 */
+.name {
+  font-size: 2rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
   background: linear-gradient(to right, #fff, #aaa);
@@ -388,333 +373,572 @@ export default {
   background-clip: text;
 }
 
-.profile-title {
-  font-size: 1.5rem;
+.tagline {
+  font-size: 1.1rem;
   color: #aaa;
   margin-bottom: 1.5rem;
+  font-weight: 500;
 }
 
-.profile-badges {
+.bio {
+  margin-bottom: 2rem;
+}
+
+.bio p {
+  color: #bbb;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* 联系按钮 */
+.contact-buttons {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 1rem;
-  flex-wrap: wrap;
+  margin-bottom: 2rem;
 }
 
-.badge {
+.contact-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(128, 128, 128, 0.2);
-  color: #aaa;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  justify-content: center;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  text-decoration: none;
   font-weight: 500;
+  transition: all 0.3s ease;
+  gap: 0.5rem;
+}
+
+.contact-btn.primary {
+  background: linear-gradient(to right, #444, #666);
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.contact-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.contact-btn.secondary {
+  background: rgba(128, 128, 128, 0.1);
+  color: #aaa;
   border: 1px solid rgba(128, 128, 128, 0.3);
 }
 
-.badge-icon {
-  width: 16px;
-  height: 16px;
-  color: currentColor;
+.contact-btn.secondary:hover {
+  background: rgba(128, 128, 128, 0.2);
+  transform: translateY(-2px);
 }
 
-/* About Content */
-.about-content {
-  padding: 4rem 2rem;
-  background: #2d2d2d;
+.btn-icon-svg {
+  width: 18px;
+  height: 18px;
+  filter: invert(1);
 }
 
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+/* 社交链接 */
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.social-link {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(128, 128, 128, 0.1);
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.social-link:hover {
+  background: #555;
+  transform: translateY(-3px);
+}
+
+.social-link span {
+  font-size: 1.2rem;
+}
+
+/* 额外内容区域 */
+.additional-content {
+  text-align: left;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.additional-content h3 {
+  color: #aaa;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.additional-content h3:first-child {
+  margin-top: 0;
+}
+
+.additional-content ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.additional-content li {
+  color: #bbb;
+  margin-bottom: 0.5rem;
+  padding-left: 1.2rem;
+  position: relative;
+}
+
+.additional-content li::before {
+  content: "•";
+  color: #666;
+  position: absolute;
+  left: 0;
+}
+
+.additional-content p {
+  color: #bbb;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* 右侧主内容 - 可滚动 */
+.main-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
-.full-width {
-  grid-column: 1 / -1;
+/* 自定义滚动条样式 */
+.main-content::-webkit-scrollbar {
+  width: 6px;
 }
 
-.half-width {
-  grid-column: span 1;
+.main-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.content-card {
-  background: #1a1a1a;
+.main-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 通用区域样式 */
+section {
+  background: rgba(40, 40, 40, 0.7);
+  backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
 }
 
-.content-card::before {
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  color: #aaa;
+}
+
+.title-icon-svg {
+  width: 24px;
+  height: 24px;
+  filter: invert(1);
+}
+
+/* 加载状态 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.loading-spinner::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(to right, #444, #666);
+  bottom: 0;
+  border-radius: 50%;
+  border: 3px solid #333333;
+  border-top-color: #ffffff;
+  animation: spin 1s linear infinite;
 }
 
-.content-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.card-header {
+/* 项目网格 */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.project-card {
+  background: #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
   display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid #333333;
 }
 
-.card-icon {
-  margin-right: 1rem;
-  width: 50px;
-  height: 50px;
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+}
+
+.project-image-container {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.project-card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  filter: grayscale(100%);
+}
+
+.project-card img.image-hovered {
+  transform: scale(1.05);
+  filter: grayscale(80%);
+}
+
+.project-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(128, 128, 128, 0.2);
-  border-radius: 12px;
+  transition: opacity 0.3s ease;
 }
 
-.icon-svg {
-  width: 24px;
-  height: 24px;
-  color: currentColor;
+.tech-stack {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.card-header h2 {
-  color: #aaa;
-  font-size: 1.5rem;
-  margin: 0;
-}
-
-.lead-text {
-  font-size: 1.2rem;
-  color: #bbb;
-  margin-bottom: 1.5rem;
+.tech-tag {
+  background: rgba(128, 128, 128, 0.8);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
   font-weight: 500;
 }
 
-.card-body p {
-  color: #bbb;
-  line-height: 1.8;
-  margin-bottom: 1rem;
-}
-
-/* Goals Timeline */
-.goals-timeline {
-  position: relative;
-  padding-left: 2rem;
-}
-
-.goals-timeline::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: #555;
-}
-
-.timeline-item {
-  position: relative;
-  margin-bottom: 2rem;
-}
-
-.timeline-marker {
-  position: absolute;
-  left: -2.5rem;
-  top: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #555;
-  border: 3px solid #1a1a1a;
-}
-
-.timeline-content h3 {
-  color: #aaa;
-  margin-bottom: 0.5rem;
-}
-
-.timeline-content p {
-  color: #bbb;
-  margin: 0;
-}
-
-/* Interests Cloud */
-.interests-cloud {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  padding: 2rem 0;
-}
-
-.interest-tag {
-  display: flex;
-  align-items: center;
-  padding: 0.8rem 1.2rem;
-  background: rgba(128, 128, 128, 0.1);
-  border-radius: 20px;
-  transition: all 0.3s ease;
-  cursor: default;
-  border: 1px solid transparent;
-  color: #bbb;
-}
-
-.interest-tag.clickable {
-  cursor: pointer;
-}
-
-.interest-tag.clickable:hover {
-  transform: translateY(-3px) scale(1.05);
-  border-color: #555;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  background: rgba(128, 128, 128, 0.2);
-}
-
-.interest-icon-svg {
-  margin-right: 0.5rem;
-  width: 18px;
-  height: 18px;
-  color: currentColor;
-}
-
-/* Stats Grid */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-}
-
-.stat-item {
-  text-align: center;
+.project-content {
   padding: 1.5rem;
-  background: rgba(128, 128, 128, 0.1);
-  border-radius: 16px;
-  transition: all 0.3s ease;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.stat-item:hover {
-  transform: translateY(-3px);
-  background: rgba(128, 128, 128, 0.2);
+/* 👇 新增/修改的样式：项目标题链接 */
+.project-content .project-title-link {
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.75rem;
 }
 
-.stat-number {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #aaa;
-  margin-bottom: 0.5rem;
+.project-content .project-title-link h3 {
+  margin-bottom: 0;
+  color: #ffffff;
+  font-size: 1.3rem;
+  transition: color 0.2s ease;
 }
 
-.stat-label {
-  color: #bbb;
-  font-size: 0.9rem;
+.project-content .project-title-link:hover h3 {
+  color: #a0a0a0;
 }
 
-/* Contact Section */
-.contact-section {
-  padding: 4rem 2rem;
-  background: #1a1a1a;
+.project-content p {
+  color: #c0c0c0;
+  line-height: 1.6;
+  margin-bottom: 0;
+  flex: 1;
 }
 
-.contact-card {
-  max-width: 800px;
-  margin: 0 auto;
+.card-footer {
+  padding: 1.5rem;
+  padding-top: 0;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.project-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.view-details-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #404040 0%, #606060 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  flex: 1;
   text-align: center;
-  background: #2d2d2d;
-  padding: 3rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #555555;
 }
 
-.contact-card h2 {
-  color: #aaa;
-  margin-bottom: 1rem;
+.view-details-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(128, 128, 128, 0.3);
+  background: linear-gradient(135deg, #505050 0%, #707070 100%);
+  text-decoration: none;
 }
 
-.contact-card p {
-  color: #bbb;
+.github-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #2a2a2a;
+  color: #a0a0a0;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  flex-shrink: 0;
+  border: 1px solid #444444;
+}
+
+.github-link:hover {
+  background: #3a3a3a;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* Blog区域 */
+.blog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.contact-links {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.contact-link {
-  display: flex;
-  align-items: center;
-  color: #bbb;
-  text-decoration: none;
-  padding: 1rem 1.5rem;
-  background: #1a1a1a;
+.blog-post {
+  padding: 1.5rem;
+  background: rgba(128, 128, 128, 0.05);
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
-.contact-link:hover {
-  transform: translateY(-3px);
+.blog-post:hover {
+  background: rgba(128, 128, 128, 0.1);
+  transform: translateX(5px);
+}
+
+.blog-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.blog-date, .blog-reading-time {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* 👇 新增/修改的样式：博客标题链接 */
+.blog-post .blog-title-link {
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.blog-post .blog-title-link h3 {
+  margin-bottom: 0;
+  color: #fff;
+  transition: color 0.2s ease;
+}
+
+.blog-post .blog-title-link:hover h3 {
+  color: #a0a0a0;
+}
+
+.blog-excerpt {
+  color: #bbb;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.blog-link {
+  color: #aaa;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.blog-link:hover {
+  text-decoration: underline;
+}
+
+/* 动态区域 */
+.updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.update-item {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(128, 128, 128, 0.05);
+  border-radius: 12px;
+  border-left: 3px solid #555;
+  transition: all 0.3s ease;
+}
+
+.update-item:hover {
+  background: rgba(128, 128, 128, 0.1);
+  transform: translateX(5px);
+}
+
+.update-date {
+  color: #888;
+  font-size: 0.9rem;
+  min-width: 100px;
+}
+
+.update-content h3 {
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.update-content p {
+  color: #bbb;
+  margin-bottom: 0.5rem;
+}
+
+.update-link {
+  color: #aaa;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.update-link:hover {
+  text-decoration: underline;
+}
+
+/* 区域底部 */
+.section-footer {
+  text-align: center;
+  padding-top: 1rem;
+}
+
+.view-all-btn {
+  color: #aaa;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border: 1px solid #555;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.view-all-btn:hover {
   background: #555;
   color: white;
 }
 
-.contact-icon-svg {
-  margin-right: 0.8rem;
-  width: 20px;
-  height: 20px;
-  color: currentColor;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .hero-content {
-    padding: 1rem;
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
   }
   
-  .profile-card {
+  .sidebar {
+    height: auto;
+    max-height: 40vh;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .main-content {
+    height: 60vh;
+  }
+  
+  .project-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .home {
+    height: calc(100vh - var(--navbar-height));
+  }
+  
+  .profile-section {
     padding: 2rem 1.5rem;
   }
   
-  .profile-name {
-    font-size: 2rem;
+  .name {
+    font-size: 1.5rem;
   }
   
-  .content-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  .content-card {
+  section {
     padding: 1.5rem;
   }
   
-  .stats-grid {
+  .project-grid {
     grid-template-columns: 1fr;
   }
   
-  .contact-links {
+  .update-item {
     flex-direction: column;
-    align-items: center;
+    gap: 1rem;
   }
   
-  .contact-link {
-    width: 100%;
-    max-width: 300px;
-    justify-content: center;
+  .update-date {
+    min-width: auto;
   }
 }
 </style>
