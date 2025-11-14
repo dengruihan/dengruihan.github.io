@@ -27,11 +27,11 @@
                   AI Expert
                 </span>
                 <span class="badge">
-                  <img src="/icons/lightbulb.svg" alt="Creative Thinker" class="badge-icon" />
+                  <img src="../icons/lightbulb.svg" alt="Creative Thinker" class="badge-icon" />
                   Creative Thinker
                 </span>
                 <span class="badge">
-                  <img src="/icons/web.svg" alt="Web Dev" class="badge-icon" />
+                  <img src="../icons/web.svg" alt="Web Dev" class="badge-icon" />
                   Web Dev
                 </span>
               </div>
@@ -49,7 +49,7 @@
           <div class="content-card story-card full-width">
             <div class="card-header">
               <div class="card-icon">
-                <img src="/icons/book.svg" alt="My Story" class="icon-svg" />
+                <img src="../icons/book.svg" alt="My Story" class="icon-svg" />
               </div>
               <h2>My Story</h2>
             </div>
@@ -75,7 +75,7 @@
           <div class="content-card goals-card full-width">
             <div class="card-header">
               <div class="card-icon">
-                <img src="/icons/target.svg" alt="My Goals" class="icon-svg" />
+                <img src="../icons/target.svg" alt="My Goals" class="icon-svg" />
               </div>
               <h2>My Goals</h2>
             </div>
@@ -96,7 +96,7 @@
           <div class="content-card interests-card half-width">
             <div class="card-header">
               <div class="card-icon">
-                <img src="/icons/paint.svg" alt="Interests & Passions" class="icon-svg" />
+                <img src="../icons/paint.svg" alt="Interests & Passions" class="icon-svg" />
               </div>
               <h2>Interests & Passions</h2>
             </div>
@@ -124,7 +124,7 @@
           <div class="content-card stats-card half-width">
             <div class="card-header">
               <div class="card-icon">
-                <img src="/icons/chart.svg" alt="Quick Stats" class="icon-svg" />
+                <img src="../icons/chart.svg" alt="Quick Stats" class="icon-svg" />
               </div>
               <h2>Quick Stats</h2>
             </div>
@@ -149,11 +149,11 @@
           <p>I'm always open to discussing new opportunities and interesting projects.</p>
           <div class="contact-links">
             <a href="mailto:your.email@example.com" class="contact-link">
-              <img src="/icons/email.svg" alt="Email" class="contact-icon-svg" />
+              <img src="../icons/email.svg" alt="Email" class="contact-icon-svg" />
               <span>Raymond.dengruihan@yungu.org</span>
             </a>
             <a href="tel:+86 18368725059" class="contact-link">
-              <img src="/icons/phone.svg" alt="Phone" class="contact-icon-svg" />
+              <img src="../icons/phone.svg" alt="Phone" class="contact-icon-svg" />
               <span>🇨🇳+86 18368725059</span>
             </a>
           </div>
@@ -177,12 +177,12 @@ export default {
       currentFocus: "",
       hobbies: "",
       interests: [
-        { name: "Machine Learning", icon: "/icons/robot.svg", size: 24, color: "#667eea", rotation: -5 },
-        { name: "Computer Vision", icon: "/icons/eye.svg", size: 22, color: "#f56565", rotation: 3 },
-        { name: "Web Development", icon: "/icons/web.svg", size: 20, color: "#48bb78", rotation: -2 },
-        { name: "UI/UX Design", icon: "/icons/design.svg", size: 18, color: "#38b2ac", rotation: -3 },
-        { name: "Cloud Computing", icon: "/icons/cloud.svg", size: 19, color: "#4299e1", rotation: -4 },
-        { name: "DevOps", icon: "/icons/gear.svg", size: 16, color: "#f6ad55", rotation: 1 }
+        { name: "Machine Learning", icon: "../icons/robot.svg", size: 24, color: "#667eea", rotation: -5 },
+        { name: "Computer Vision", icon: "../icons/eye.svg", size: 22, color: "#f56565", rotation: 3 },
+        { name: "Web Development", icon: "../icons/web.svg", size: 20, color: "#48bb78", rotation: -2 },
+        { name: "UI/UX Design", icon: "../icons/design.svg", size: 18, color: "#38b2ac", rotation: -3 },
+        { name: "Cloud Computing", icon: "../icons/cloud.svg", size: 19, color: "#4299e1", rotation: -4 },
+        { name: "DevOps", icon: "../icons/gear.svg", size: 16, color: "#f6ad55", rotation: 1 }
       ],
       stats: [
         { label: "Projects Completed", value: "3+" },
