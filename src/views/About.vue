@@ -177,12 +177,12 @@ export default {
       currentFocus: "",
       hobbies: "",
       interests: [
-        { name: "Machine Learning", icon: "./icons/robot.svg", size: 24, color: "#667eea", rotation: -5 },
-        { name: "Computer Vision", icon: "./icons/eye.svg", size: 22, color: "#f56565", rotation: 3 },
-        { name: "Web Development", icon: "./icons/web.svg", size: 20, color: "#48bb78", rotation: -2 },
-        { name: "UI/UX Design", icon: "./icons/paint.svg", size: 18, color: "#38b2ac", rotation: -3 },
-        { name: "Cloud Computing", icon: "./icons/project.svg", size: 19, color: "#4299e1", rotation: -4 },
-        { name: "DevOps", icon: "./icons/gear.svg", size: 16, color: "#f6ad55", rotation: 1 }
+        { name: "Machine Learning", icon: "/icons/robot.svg", size: 24, color: "#667eea", rotation: -5 },
+        { name: "Computer Vision", icon: "/icons/eye.svg", size: 22, color: "#f56565", rotation: 3 },
+        { name: "Web Development", icon: "/icons/web.svg", size: 20, color: "#48bb78", rotation: -2 },
+        { name: "UI/UX Design", icon: "/icons/paint.svg", size: 18, color: "#38b2ac", rotation: -3 },
+        { name: "Cloud Computing", icon: "/icons/project.svg", size: 19, color: "#4299e1", rotation: -4 },
+        { name: "DevOps", icon: "/icons/gear.svg", size: 16, color: "#f6ad55", rotation: 1 }
       ],
       stats: [
         { label: "Projects Completed", value: "3+" },
