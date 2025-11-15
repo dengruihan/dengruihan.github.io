@@ -189,20 +189,7 @@ import { ref, onMounted } from 'vue'
 export default {
   name: 'Home',
   setup() {
-    const loadAboutData = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.BASE_URL}data/about.json`)
-        const data = await response.json()
-        quickFacts.value = data.quickFacts
-        currentFocus.value = data.currentFocus
-        hobbies.value = data.hobbies
-        // 新增：加载updates数据
-        updates.value = data.updates
-      } catch (error) {
-        console.error("Failed to load about data:", error)
-      }
-    }
-
+    const updates = ref([])
     const featuredProjects = ref([])
     const recentPosts = ref([])
     const quickFacts = ref([])
@@ -244,6 +231,8 @@ export default {
         quickFacts.value = data.quickFacts
         currentFocus.value = data.currentFocus
         hobbies.value = data.hobbies
+        // 加载updates数据
+        updates.value = data.updates
       } catch (error) {
         console.error("Failed to load about data:", error)
       }
