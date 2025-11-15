@@ -167,3 +167,9 @@ prompt24
 prompt25
     我把这个网页部署到github上后project页面显示Failed to load projects. Please try again later.
 
+prompt26
+    请让latest update中的信息也可以在这个about.json中修改
+
+prompt27
+    error during build:
+    [vite:vue] [vue/compiler-sfc] Identifier 'loadAboutData' has already been declared. (55:10)
