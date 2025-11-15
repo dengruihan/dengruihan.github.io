@@ -30,5 +30,28 @@
     "Open source contributor"
   ],
   "currentFocus": "Currently exploring advanced Vue.js patterns, TypeScript integration, and performance optimization techniques.",
-  "hobbies": "When I'm not coding, I enjoy photography, hiking, and reading tech blogs."
+  "hobbies": "When I'm not coding, I enjoy photography, hiking, and reading tech blogs.",
+  "updates": [
+    {
+      "id": 1,
+      "date": "2025-11-10",
+      "title": "🎉 New Portfolio Launched",
+      "description": "Just launched my new personal portfolio website built with Vue 3 and Vite!",
+      "link": null
+    },
+    {
+      "id": 2,
+      "date": "2025-11-08",
+      "title": "📝 Published New Blog Post",
+      "description": "Wrote about my experience training LLM to detect species.",
+      "link": "/blog/ai-forest-ranger-hangzhou"
+    },
+    {
+      "id": 3,
+      "date": "2025-04-23",
+      "title": "🐌 Completed Eco Protect Project",
+      "description": "Finished a AI powered Eco Protect application with GUI",
+      "link": "/projects/3"
+    }
+  ]
 }

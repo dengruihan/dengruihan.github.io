@@ -189,29 +189,19 @@ import { ref, onMounted } from 'vue'
 export default {
   name: 'Home',
   setup() {
-    const updates = ref([
-      {
-        id: 1,
-        date: '2025-11-10',
-        title: '🎉 New Portfolio Launched',
-        description: 'Just launched my new personal portfolio website built with Vue 3 and Vite!',
-        link: null
-      },
-      {
-        id: 2,
-        date: '2025-11-08',
-        title: '📝 Published New Blog Post',
-        description: 'Wrote about my experience training LLM to detect species.',
-        link: '/blog/ai-forest-ranger-hangzhou'
-      },
-      {
-        id: 3,
-        date: '2025-04-23',
-        title: '🐌 Completed Eco Protect Project',
-        description: 'Finished a AI powered Eco Protect application with GUI',
-        link: '/projects/3'
+    const loadAboutData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.BASE_URL}data/about.json`)
+        const data = await response.json()
+        quickFacts.value = data.quickFacts
+        currentFocus.value = data.currentFocus
+        hobbies.value = data.hobbies
+        // 新增：加载updates数据
+        updates.value = data.updates
+      } catch (error) {
+        console.error("Failed to load about data:", error)
       }
-    ])
+    }
 
     const featuredProjects = ref([])
     const recentPosts = ref([])
