@@ -69,12 +69,16 @@ const userBehaviors = [
       await page.goto(`${BASE_URL}/projects`)
       await page.waitForLoadState('networkidle')
       
-      const projectLinks = await page.locator('a[href^="/projects/"]').all()
-      for (const link of projectLinks.slice(0, 2)) {
-        await link.click()
-        await page.waitForLoadState('networkidle')
-        await page.goBack()
-        await page.waitForLoadState('networkidle')
+      try {
+        const projectLinks = await page.locator('a[href^="/projects/"]').all()
+        for (let i = 0; i < Math.min(2, projectLinks.length); i++) {
+          await projectLinks[i].click()
+          await page.waitForLoadState('networkidle')
+          await page.goBack()
+          await page.waitForLoadState('networkidle')
+        }
+      } catch (error) {
+        console.log('访客E: 项目链接较少，只浏览了项目列表页')
       }
     }
   },
@@ -84,12 +88,16 @@ const userBehaviors = [
       await page.goto(`${BASE_URL}/blog`)
       await page.waitForLoadState('networkidle')
       
-      const blogLinks = await page.locator('a[href^="/blog/"]').all()
-      for (const link of blogLinks) {
-        await link.click()
-        await page.waitForLoadState('networkidle')
-        await page.goBack()
-        await page.waitForLoadState('networkidle')
+      try {
+        const blogLinks = await page.locator('a[href^="/blog/"]').all()
+        for (let i = 0; i < blogLinks.length; i++) {
+          await blogLinks[i].click()
+          await page.waitForLoadState('networkidle')
+          await page.goBack()
+          await page.waitForLoadState('networkidle')
+        }
+      } catch (error) {
+        console.log('访客F: 博客链接较少，只浏览了博客列表页')
       }
     }
   },
@@ -146,13 +154,17 @@ const userBehaviors = [
       await page.goto(`${BASE_URL}/projects`)
       await page.waitForLoadState('networkidle')
       
-      const projectLinks = await page.locator('a[href^="/projects/"]').all()
-      for (const link of projectLinks) {
-        await link.click()
-        await page.waitForLoadState('networkidle')
-        await page.waitForTimeout(1000)
-        await page.goBack()
-        await page.waitForLoadState('networkidle')
+      try {
+        const projectLinks = await page.locator('a[href^="/projects/"]').all()
+        for (let i = 0; i < projectLinks.length; i++) {
+          await projectLinks[i].click()
+          await page.waitForLoadState('networkidle')
+          await page.waitForTimeout(1000)
+          await page.goBack()
+          await page.waitForLoadState('networkidle')
+        }
+      } catch (error) {
+        console.log('访客J: 项目链接较少，只浏览了项目列表页')
       }
     }
   }
