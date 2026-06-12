@@ -86,9 +86,10 @@ a:hover {
   top: 0;
   width: var(--river-width);
   height: 100vh;
-  z-index: 50;
+  z-index: 90;
   pointer-events: none;
   color: var(--reed);
+  isolation: isolate;
 }
 
 .river-svg {
@@ -99,8 +100,7 @@ a:hover {
 }
 
 .river-path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+  paint-order: stroke;
 }
 
 /* Navigation */
@@ -576,11 +576,6 @@ a:hover {
   z-index: 2;
 }
 
-.section-projects .projects-pin {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-}
-
 .projects-pin {
   position: relative;
   overflow: hidden;
@@ -985,8 +980,8 @@ a:hover {
     transform: translateX(-50%) scaleY(1) !important;
   }
 
-  .river-path {
-    stroke-dashoffset: 0 !important;
+  #river-clip-rect {
+    height: 2000 !important;
   }
 
   .projects-track {

@@ -6,7 +6,8 @@ gsap.registerPlugin(ScrollTrigger)
 
 let lenis = null
 let riverPath = null
-let riverLength = 0
+let riverClipRect = null
+const RIVER_VIEW_HEIGHT = 2000
 
 function setupLenisScrollTrigger(instance) {
   ScrollTrigger.scrollerProxy(document.documentElement, {
@@ -67,16 +68,16 @@ export function initAnimations() {
 
 function setupRiverThread() {
   riverPath = document.querySelector('.river-path')
-  if (!riverPath) return
+  riverClipRect = document.querySelector('#river-clip-rect')
+  if (!riverPath || !riverClipRect) return
 
-  riverLength = riverPath.getTotalLength()
-  riverPath.style.strokeDasharray = riverLength
-  riverPath.style.strokeDashoffset = riverLength
+  riverClipRect.setAttribute('height', '0')
 }
 
 function updateRiverProgress(progress) {
-  if (!riverPath) return
-  riverPath.style.strokeDashoffset = riverLength * (1 - progress)
+  if (!riverPath || !riverClipRect) return
+  const clamped = Math.max(0, Math.min(1, progress))
+  riverClipRect.setAttribute('height', String(RIVER_VIEW_HEIGHT * clamped))
 }
 
 function initHero() {
