@@ -260,6 +260,7 @@ function openBlogOverlay(id) {
   document.getElementById('blog-overlay-body').innerHTML = stripHtmlToParagraphs(post.content)
 
   overlay.hidden = false
+  overlay.scrollTop = 0
   document.body.style.overflow = 'hidden'
   location.hash = `blog/${id}`
 
