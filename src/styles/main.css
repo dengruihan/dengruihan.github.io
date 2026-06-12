@@ -576,6 +576,11 @@ a:hover {
   z-index: 2;
 }
 
+.section-projects .projects-pin {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
 .projects-pin {
   position: relative;
   overflow: hidden;
@@ -585,13 +590,16 @@ a:hover {
   display: flex;
   width: max-content;
   will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
 .project-panel {
   flex: 0 0 100vw;
   width: 100vw;
-  max-width: 100%;
-  padding-right: clamp(1rem, 4vw, 3rem);
+  box-sizing: border-box;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+  padding-left: calc(var(--river-width) + clamp(1rem, 3vw, 2rem));
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-xl);

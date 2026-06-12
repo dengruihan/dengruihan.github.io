@@ -8,14 +8,36 @@ let lenis = null
 let riverPath = null
 let riverLength = 0
 
+function setupLenisScrollTrigger(instance) {
+  ScrollTrigger.scrollerProxy(document.documentElement, {
+    scrollTop(value) {
+      if (arguments.length) {
+        instance.scrollTo(value, { immediate: true })
+      }
+      return instance.scroll
+    },
+    getBoundingClientRect() {
+      return {
+        top: 0,
+        left: 0,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }
+    },
+  })
+
+  ScrollTrigger.addEventListener('refresh', () => instance.resize())
+}
+
 export function initAnimations() {
   lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    lerp: 0.08,
     smoothWheel: true,
+    wheelMultiplier: 0.9,
   })
 
   setupRiverThread()
+  setupLenisScrollTrigger(lenis)
 
   lenis.on('scroll', (instance) => {
     ScrollTrigger.update()
@@ -225,45 +247,63 @@ function initProjects() {
   const mm = gsap.matchMedia()
 
   mm.add('(min-width: 769px)', () => {
-    const getScrollDistance = () => track.scrollWidth - window.innerWidth
+    let scrollDistance = 0
+
+    const measure = () => {
+      gsap.set(track, { x: 0 })
+      scrollDistance = Math.max(0, track.scrollWidth - pin.offsetWidth)
+    }
+
+    measure()
+    ScrollTrigger.addEventListener('refreshInit', measure)
+
+    gsap.set(track, { x: 0, force3D: true })
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: pin,
         start: 'top top',
-        end: () => `+=${getScrollDistance()}`,
-        pin,
-        scrub: 1,
+        end: () => `+=${scrollDistance}`,
+        pin: true,
+        pinType: 'transform',
+        scrub: true,
         anticipatePin: 1,
-        fastScrollEnd: true,
         pinSpacing: true,
         invalidateOnRefresh: true,
       },
     })
 
-    tl.to(track, {
-      x: () => -getScrollDistance(),
-      ease: 'none',
-      force3D: true,
-    })
+    tl.to(
+      track,
+      {
+        x: () => -scrollDistance,
+        ease: 'none',
+        force3D: true,
+      },
+      0
+    )
 
     panels.forEach((panel) => {
       const img = panel.querySelector('.project-image-wrap img')
       const stats = panel.querySelectorAll('.stat-value')
 
       if (img) {
-        gsap.to(img, {
-          scale: 1.1,
-          ease: 'none',
-          force3D: true,
-          scrollTrigger: {
-            trigger: panel,
-            containerAnimation: tl,
-            start: 'left center',
-            end: 'right center',
-            scrub: true,
-          },
-        })
+        gsap.fromTo(
+          img,
+          { scale: 1 },
+          {
+            scale: 1.08,
+            ease: 'none',
+            force3D: true,
+            scrollTrigger: {
+              trigger: panel,
+              containerAnimation: tl,
+              start: 'left 75%',
+              end: 'right 25%',
+              scrub: true,
+            },
+          }
+        )
       }
 
       stats.forEach((stat) => {
@@ -274,13 +314,13 @@ function initProjects() {
 
         gsap.to(obj, {
           val: target,
-          duration: 0.8,
-          ease: 'power2.out',
+          ease: 'none',
           scrollTrigger: {
             trigger: panel,
             containerAnimation: tl,
             start: 'left 80%',
-            toggleActions: 'play none none reverse',
+            end: 'left 55%',
+            scrub: true,
           },
           onUpdate: () => {
             stat.textContent =
@@ -297,17 +337,21 @@ function initProjects() {
           opacity: 1,
           y: 0,
           stagger: 0.05,
+          ease: 'none',
           scrollTrigger: {
             trigger: panel,
             containerAnimation: tl,
-            start: 'left 70%',
-            toggleActions: 'play none none reverse',
+            start: 'left 75%',
+            end: 'left 50%',
+            scrub: true,
           },
         }
       )
     })
 
     return () => {
+      ScrollTrigger.removeEventListener('refreshInit', measure)
+      tl.scrollTrigger?.kill()
       tl.kill()
     }
   })
