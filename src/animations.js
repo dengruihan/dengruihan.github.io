@@ -313,20 +313,23 @@ function initProjects() {
         const decimals = parseInt(stat.dataset.decimals || '0', 10)
         const obj = { val: 0 }
 
+        const updateStatText = () => {
+          stat.textContent =
+            (decimals > 0 ? obj.val.toFixed(decimals) : Math.round(obj.val)) + suffix
+        }
+
         gsap.to(obj, {
           val: target,
           ease: 'none',
           scrollTrigger: {
             trigger: panel,
             containerAnimation: tl,
-            start: 'left 80%',
+            start: 'left 90%',
             end: 'left 55%',
             scrub: true,
+            onUpdate: updateStatText,
           },
-          onUpdate: () => {
-            stat.textContent =
-              (decimals > 0 ? obj.val.toFixed(decimals) : Math.round(obj.val)) + suffix
-          },
+          onUpdate: updateStatText,
         })
       })
 

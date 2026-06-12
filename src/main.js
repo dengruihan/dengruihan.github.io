@@ -355,6 +355,13 @@ async function init() {
     document.querySelectorAll('.skill-value').forEach((el) => {
       el.textContent = el.dataset.target
     })
+    document.querySelectorAll('.stat-value').forEach((el) => {
+      const value = parseFloat(el.dataset.value)
+      const suffix = el.dataset.suffix || ''
+      const decimals = parseInt(el.dataset.decimals || '0', 10)
+      el.textContent =
+        (decimals > 0 ? value.toFixed(decimals) : Math.round(value)) + suffix
+    })
   }
 
   handleInitialHash()
