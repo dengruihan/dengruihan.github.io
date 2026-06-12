@@ -30,6 +30,38 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body.cursor-era-0 {
+  cursor: url('/cursors/win95.svg') 2 2, auto;
+}
+
+body.cursor-era-1 {
+  cursor: url('/cursors/win98.svg') 2 2, auto;
+}
+
+body.cursor-era-2 {
+  cursor: url('/cursors/winxp.svg') 2 2, auto;
+}
+
+body.cursor-era-3 {
+  cursor: url('/cursors/win7.svg') 2 2, auto;
+}
+
+body.cursor-era-4 {
+  cursor: url('/cursors/win10.svg') 2 2, auto;
+}
+
+body.cursor-era-5 {
+  cursor: url('/cursors/win11.svg') 2 2, auto;
+}
+
+a,
+button,
+.btn,
+.blog-card,
+.blog-overlay-close {
+  cursor: pointer;
+}
+
 img {
   max-width: 100%;
   display: block;
@@ -238,54 +270,6 @@ a:hover {
   display: flex;
   align-items: center;
   overflow: hidden;
-}
-
-.hero-scene {
-  position: absolute;
-  inset: -10%;
-  z-index: 0;
-}
-
-.hero-layer {
-  position: absolute;
-  inset: 0;
-  will-change: transform;
-}
-
-.hero-layer--sky {
-  background: linear-gradient(180deg, #1a2e24 0%, var(--ink) 60%);
-}
-
-.hero-layer--reeds-back {
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 40px,
-      rgba(111, 143, 124, 0.08) 40px,
-      rgba(111, 143, 124, 0.08) 42px
-    ),
-    linear-gradient(0deg, transparent 30%, rgba(111, 143, 124, 0.15) 100%);
-  transform-origin: bottom center;
-}
-
-.hero-layer--water {
-  bottom: 0;
-  top: auto;
-  height: 45%;
-  background: linear-gradient(180deg, transparent, rgba(20, 41, 31, 0.9) 40%, var(--water) 100%);
-}
-
-.hero-layer--reeds-front {
-  bottom: 0;
-  top: auto;
-  height: 35%;
-  background:
-    radial-gradient(ellipse 8px 60px at 10% 100%, rgba(111, 143, 124, 0.4) 0%, transparent 70%),
-    radial-gradient(ellipse 6px 50px at 25% 100%, rgba(111, 143, 124, 0.3) 0%, transparent 70%),
-    radial-gradient(ellipse 10px 70px at 45% 100%, rgba(111, 143, 124, 0.35) 0%, transparent 70%),
-    radial-gradient(ellipse 7px 55px at 65% 100%, rgba(111, 143, 124, 0.3) 0%, transparent 70%),
-    radial-gradient(ellipse 9px 65px at 85% 100%, rgba(111, 143, 124, 0.4) 0%, transparent 70%);
 }
 
 .hero-content {

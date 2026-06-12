@@ -5,6 +5,9 @@ import Lenis from 'lenis'
 gsap.registerPlugin(ScrollTrigger)
 
 let lenis = null
+let riverPath = null
+let riverLength = 0
+let currentCursorEra = -1
 
 export function initAnimations() {
   lenis = new Lenis({
@@ -13,14 +16,21 @@ export function initAnimations() {
     smoothWheel: true,
   })
 
-  lenis.on('scroll', ScrollTrigger.update)
+  setupRiverThread()
+  document.body.classList.add('cursor-era-0')
+  currentCursorEra = 0
+
+  lenis.on('scroll', (instance) => {
+    ScrollTrigger.update()
+    updateRiverProgress(instance.progress)
+    updateCursorEra(instance.progress)
+  })
 
   gsap.ticker.add((time) => {
     lenis.raf(time * 1000)
   })
   gsap.ticker.lagSmoothing(0)
 
-  initRiverThread()
   initHero()
   initAbout()
   initSkills()
@@ -31,42 +41,42 @@ export function initAnimations() {
 
   requestAnimationFrame(() => {
     ScrollTrigger.refresh()
+    if (lenis) {
+      updateRiverProgress(lenis.progress)
+      updateCursorEra(lenis.progress)
+    }
   })
 }
 
-function initRiverThread() {
-  const path = document.querySelector('.river-path')
-  if (!path) return
+function setupRiverThread() {
+  riverPath = document.querySelector('.river-path')
+  if (!riverPath) return
 
-  const length = path.getTotalLength()
-  path.style.strokeDasharray = length
-  path.style.strokeDashoffset = length
+  riverLength = riverPath.getTotalLength()
+  riverPath.style.strokeDasharray = riverLength
+  riverPath.style.strokeDashoffset = riverLength
+}
 
-  gsap.to(path, {
-    strokeDashoffset: 0,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: document.body,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: true,
-    },
-  })
+function updateRiverProgress(progress) {
+  if (!riverPath) return
+  riverPath.style.strokeDashoffset = riverLength * (1 - progress)
+}
+
+function updateCursorEra(progress) {
+  const era = Math.min(5, Math.floor(progress * 6))
+  if (era === currentCursorEra) return
+
+  document.body.classList.remove(`cursor-era-${currentCursorEra}`)
+  currentCursorEra = era
+  document.body.classList.add(`cursor-era-${era}`)
 }
 
 function initHero() {
-  const hero = document.querySelector('.section-hero')
   const words = document.querySelectorAll('.hero-word')
   const tagline = document.querySelector('.hero-tagline')
   const bio = document.querySelector('.hero-bio')
   const actions = document.querySelector('.hero-actions')
   const cue = document.querySelector('.scroll-cue')
-  const layers = {
-    sky: document.querySelector('.hero-layer--sky'),
-    reedsBack: document.querySelector('.hero-layer--reeds-back'),
-    water: document.querySelector('.hero-layer--water'),
-    reedsFront: document.querySelector('.hero-layer--reeds-front'),
-  }
 
   gsap.set(words, { opacity: 0, y: 40 })
   gsap.set([tagline, bio, actions, cue], { opacity: 0, y: 20 })
@@ -78,30 +88,6 @@ function initHero() {
     .to(bio, { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
     .to(actions, { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
     .to(cue, { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
-
-  const mm = gsap.matchMedia()
-
-  mm.add('(min-width: 769px)', () => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: hero,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1,
-      },
-    })
-
-    tl.to(
-      layers.sky,
-      { scale: 1.15, y: '-8%', ease: 'none' },
-      0
-    )
-      .to(layers.reedsBack, { scale: 1.2, y: '-15%', ease: 'none' }, 0)
-      .to(layers.water, { scale: 1.25, y: '-5%', ease: 'none' }, 0)
-      .to(layers.reedsFront, { scale: 1.3, y: '-20%', ease: 'none' }, 0)
-
-    return () => tl.kill()
-  })
 }
 
 function initAbout() {
