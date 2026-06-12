@@ -30,28 +30,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-body.cursor-era-0 {
+body {
   cursor: url('/cursors/win95.svg') 2 2, auto;
-}
-
-body.cursor-era-1 {
-  cursor: url('/cursors/win98.svg') 2 2, auto;
-}
-
-body.cursor-era-2 {
-  cursor: url('/cursors/winxp.svg') 2 2, auto;
-}
-
-body.cursor-era-3 {
-  cursor: url('/cursors/win7.svg') 2 2, auto;
-}
-
-body.cursor-era-4 {
-  cursor: url('/cursors/win10.svg') 2 2, auto;
-}
-
-body.cursor-era-5 {
-  cursor: url('/cursors/win11.svg') 2 2, auto;
 }
 
 a,
@@ -121,7 +101,6 @@ a:hover {
 .river-path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  vector-effect: non-scaling-stroke;
 }
 
 /* Navigation */

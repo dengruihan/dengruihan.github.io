@@ -7,7 +7,6 @@ gsap.registerPlugin(ScrollTrigger)
 let lenis = null
 let riverPath = null
 let riverLength = 0
-let currentCursorEra = -1
 
 export function initAnimations() {
   lenis = new Lenis({
@@ -17,13 +16,10 @@ export function initAnimations() {
   })
 
   setupRiverThread()
-  document.body.classList.add('cursor-era-0')
-  currentCursorEra = 0
 
   lenis.on('scroll', (instance) => {
     ScrollTrigger.update()
     updateRiverProgress(instance.progress)
-    updateCursorEra(instance.progress)
   })
 
   gsap.ticker.add((time) => {
@@ -43,7 +39,6 @@ export function initAnimations() {
     ScrollTrigger.refresh()
     if (lenis) {
       updateRiverProgress(lenis.progress)
-      updateCursorEra(lenis.progress)
     }
   })
 }
@@ -60,15 +55,6 @@ function setupRiverThread() {
 function updateRiverProgress(progress) {
   if (!riverPath) return
   riverPath.style.strokeDashoffset = riverLength * (1 - progress)
-}
-
-function updateCursorEra(progress) {
-  const era = Math.min(5, Math.floor(progress * 6))
-  if (era === currentCursorEra) return
-
-  document.body.classList.remove(`cursor-era-${currentCursorEra}`)
-  currentCursorEra = era
-  document.body.classList.add(`cursor-era-${era}`)
 }
 
 function initHero() {
