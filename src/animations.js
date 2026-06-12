@@ -28,15 +28,9 @@ export function initAnimations() {
   initProjects()
   initBlog()
   initUpdates()
-  initRiverNodes()
-  positionRiverNodes()
-
-  window.addEventListener('resize', positionRiverNodes)
-  ScrollTrigger.addEventListener('refresh', positionRiverNodes)
 
   requestAnimationFrame(() => {
     ScrollTrigger.refresh()
-    positionRiverNodes()
   })
 }
 
@@ -60,45 +54,8 @@ function initRiverThread() {
   })
 }
 
-function positionRiverNodes() {
-  const sections = document.querySelectorAll('[data-section]')
-  const nodes = document.querySelectorAll('.river-node')
-  const riverHeight = document.documentElement.scrollHeight
-
-  sections.forEach((section) => {
-    const name = section.dataset.section
-    const node = document.querySelector(`.river-node[data-section="${name}"]`)
-    if (!node) return
-    const rect = section.getBoundingClientRect()
-    const scrollY = window.scrollY || document.documentElement.scrollTop
-    const sectionTop = rect.top + scrollY
-    const pct = (sectionTop / riverHeight) * 100
-    node.style.top = `${Math.min(Math.max(pct, 2), 98)}%`
-  })
-}
-
-function initRiverNodes() {
-  const sections = document.querySelectorAll('section[data-section]')
-  sections.forEach((section) => {
-    const name = section.dataset.section
-    const node = document.querySelector(`.river-node[data-section="${name}"]`)
-    if (!node) return
-
-    ScrollTrigger.create({
-      trigger: section,
-      start: 'center center',
-      end: 'center center',
-      onEnter: () => node.classList.add('is-active'),
-      onLeave: () => node.classList.remove('is-active'),
-      onEnterBack: () => node.classList.add('is-active'),
-      onLeaveBack: () => node.classList.remove('is-active'),
-    })
-  })
-}
-
 function initHero() {
   const hero = document.querySelector('.section-hero')
-  const pin = document.querySelector('.hero-pin')
   const words = document.querySelectorAll('.hero-word')
   const tagline = document.querySelector('.hero-tagline')
   const bio = document.querySelector('.hero-bio')
@@ -129,8 +86,7 @@ function initHero() {
       scrollTrigger: {
         trigger: hero,
         start: 'top top',
-        end: '+=150%',
-        pin: pin,
+        end: 'bottom top',
         scrub: 1,
       },
     })
@@ -143,8 +99,6 @@ function initHero() {
       .to(layers.reedsBack, { scale: 1.2, y: '-15%', ease: 'none' }, 0)
       .to(layers.water, { scale: 1.25, y: '-5%', ease: 'none' }, 0)
       .to(layers.reedsFront, { scale: 1.3, y: '-20%', ease: 'none' }, 0)
-      .to([tagline, bio, actions, cue], { opacity: 0, y: -30, ease: 'none' }, 0)
-      .to(words, { scale: 0.95, ease: 'none' }, 0)
 
     return () => tl.kill()
   })
@@ -291,10 +245,10 @@ function initJourney() {
 }
 
 function initProjects() {
-  const section = document.querySelector('.section-projects')
+  const pin = document.querySelector('.projects-pin')
   const track = document.querySelector('.projects-track')
   const panels = document.querySelectorAll('.project-panel')
-  if (!track || panels.length === 0) return
+  if (!pin || !track || panels.length === 0) return
 
   const mm = gsap.matchMedia()
 
@@ -303,12 +257,14 @@ function initProjects() {
 
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: section,
+        trigger: pin,
         start: 'top top',
         end: () => `+=${getScrollDistance()}`,
-        pin: '.projects-pin',
+        pin,
         scrub: 1,
         anticipatePin: 1,
+        fastScrollEnd: true,
+        pinSpacing: true,
         invalidateOnRefresh: true,
       },
     })
@@ -316,6 +272,7 @@ function initProjects() {
     tl.to(track, {
       x: () => -getScrollDistance(),
       ease: 'none',
+      force3D: true,
     })
 
     panels.forEach((panel) => {
@@ -326,6 +283,7 @@ function initProjects() {
         gsap.to(img, {
           scale: 1.1,
           ease: 'none',
+          force3D: true,
           scrollTrigger: {
             trigger: panel,
             containerAnimation: tl,
@@ -344,13 +302,13 @@ function initProjects() {
 
         gsap.to(obj, {
           val: target,
-          ease: 'none',
+          duration: 0.8,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: panel,
             containerAnimation: tl,
             start: 'left 80%',
-            end: 'left 40%',
-            scrub: 1,
+            toggleActions: 'play none none reverse',
           },
           onUpdate: () => {
             stat.textContent =

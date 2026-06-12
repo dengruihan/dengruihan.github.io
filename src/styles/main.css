@@ -92,32 +92,6 @@ a:hover {
   vector-effect: non-scaling-stroke;
 }
 
-.river-nodes {
-  position: absolute;
-  inset: 0;
-}
-
-.river-node {
-  position: absolute;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  transform: translate(-50%, -50%) scale(0.6);
-  border-radius: 50%;
-  background: var(--water);
-  border: 2px solid var(--reed);
-  opacity: 0.5;
-  transition: transform 0.4s var(--ease-out), opacity 0.4s, box-shadow 0.4s, background 0.4s;
-}
-
-.river-node.is-active {
-  transform: translate(-50%, -50%) scale(1);
-  background: var(--egg);
-  border-color: var(--egg);
-  opacity: 1;
-  box-shadow: 0 0 16px rgba(242, 120, 159, 0.6);
-}
-
 /* Navigation */
 .site-nav {
   position: fixed;
@@ -712,6 +686,8 @@ a:hover {
 .stat-value {
   font-family: var(--font-mono);
   font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-variant-numeric: tabular-nums;
+  min-width: 5ch;
   color: var(--signal);
   line-height: 1;
 }

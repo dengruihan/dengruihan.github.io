@@ -170,7 +170,7 @@ function renderProjectPanel(project) {
   return `
   <article class="project-panel" data-project-id="${project.id}">
     <div class="project-image-wrap">
-      <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" loading="lazy" />
+      <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" loading="eager" decoding="async" />
     </div>
     <div class="project-content">
       <h3>${escapeHtml(project.title)}</h3>
