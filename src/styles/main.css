@@ -769,6 +769,35 @@ a:hover {
   display: inline-block;
 }
 
+/* Friend links */
+.section-links {
+  padding-block: var(--section-pad);
+}
+
+.section-lead {
+  font-size: var(--text-sm);
+  color: var(--reed);
+  margin-top: var(--space-xs);
+  max-width: 36rem;
+}
+
+.friend-links-stage {
+  display: flex;
+  justify-content: center;
+  min-height: 28rem;
+  margin-top: var(--space-lg);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .friend-links-stage {
+    min-height: 22rem;
+    justify-content: flex-start;
+    padding-inline: var(--space-sm);
+  }
+}
+
 /* Blog overlay */
 .blog-overlay {
   position: fixed;

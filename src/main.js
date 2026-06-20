@@ -365,6 +365,8 @@ async function init() {
   }
 
   handleInitialHash()
+
+  import('./friend-links/mount.tsx')
 }
 
 init().catch(console.error)

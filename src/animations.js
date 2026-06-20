@@ -56,6 +56,7 @@ export function initAnimations() {
   initJourney()
   initProjects()
   initBlog()
+  initFriendLinks()
   initUpdates()
 
   requestAnimationFrame(() => {
@@ -372,6 +373,25 @@ function initBlog() {
     ease: 'power3.out',
     scrollTrigger: {
       trigger: '.blog-grid',
+      start: 'top 80%',
+    },
+  })
+}
+
+function initFriendLinks() {
+  const section = document.querySelector('.section-links')
+  if (!section) return
+
+  const header = section.querySelector('.section-header')
+  if (!header) return
+
+  gsap.from(header, {
+    opacity: 0,
+    y: 24,
+    duration: 0.6,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: section,
       start: 'top 80%',
     },
   })
