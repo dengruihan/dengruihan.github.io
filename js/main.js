@@ -1,8 +1,4 @@
-import './styles/tokens.css'
-import './styles/main.css'
-import { initAnimations } from './animations.js'
-
-const BASE = import.meta.env.BASE_URL
+const DATA_BASE = 'data/'
 
 const PROJECT_STATS = {
   1: [
@@ -22,13 +18,14 @@ const PROJECT_STATS = {
 let blogPosts = []
 
 async function loadData() {
-  const [about, skills, projects, blog] = await Promise.all([
-    fetch(`${BASE}data/about.json`).then((r) => r.json()),
-    fetch(`${BASE}data/skills.json`).then((r) => r.json()),
-    fetch(`${BASE}data/projects.json`).then((r) => r.json()),
-    fetch(`${BASE}data/blog.json`).then((r) => r.json()),
+  const [about, skills, projects, blog, links] = await Promise.all([
+    fetch(`${DATA_BASE}about.json`).then((r) => r.json()),
+    fetch(`${DATA_BASE}skills.json`).then((r) => r.json()),
+    fetch(`${DATA_BASE}projects.json`).then((r) => r.json()),
+    fetch(`${DATA_BASE}blog.json`).then((r) => r.json()),
+    fetch(`${DATA_BASE}links.json`).then((r) => r.json()),
   ])
-  return { about, skills, projects, blog }
+  return { about, skills, projects, blog, links }
 }
 
 function escapeHtml(str) {
@@ -37,11 +34,10 @@ function escapeHtml(str) {
   return div.innerHTML
 }
 
-function wrapWords(text, className = 'hero-word') {
-  return text
-    .split(/\s+/)
-    .map((w) => `<span class="${className}">${escapeHtml(w)}</span>`)
-    .join(' ')
+function formatStatValue(stat) {
+  const decimals = stat.decimals ?? 0
+  const value = decimals > 0 ? stat.value.toFixed(decimals) : Math.round(stat.value)
+  return `${value}${stat.suffix}`
 }
 
 function wrapLines(text) {
@@ -52,6 +48,13 @@ function wrapLines(text) {
         `<span class="story-line"><span class="story-line-inner">${escapeHtml(s)}</span></span>`
     )
     .join(' ')
+}
+
+function linkIconSvg(role) {
+  if (role === '老师') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>`
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>`
 }
 
 function renderAbout(about) {
@@ -112,7 +115,7 @@ function renderSkills(skills) {
       (s) => `
     <div class="skill-item" data-level="${s.level}">
       <span class="skill-name">${escapeHtml(s.name)}</span>
-      <span class="skill-value" data-target="${s.level}">0</span>
+      <span class="skill-value">${s.level}</span>
       <div class="skill-bar-track">
         <div class="skill-bar-fill" style="--skill-level: ${s.level}%"></div>
       </div>
@@ -157,7 +160,7 @@ function renderProjectPanel(project) {
     .map(
       (s) => `
     <div class="project-stat">
-      <span class="stat-value" data-value="${s.value}" data-suffix="${s.suffix}" data-decimals="${s.decimals ?? 0}">0${s.suffix}</span>
+      <span class="stat-value">${formatStatValue(s)}</span>
       <span class="stat-label">${escapeHtml(s.label)}</span>
     </div>`
     )
@@ -189,7 +192,7 @@ function renderProjectCardMobile(project) {
   const statsHtml = stats
     .map(
       (s) =>
-        `<span class="tech-tag">${s.value}${s.suffix} ${escapeHtml(s.label)}</span>`
+        `<span class="tech-tag">${formatStatValue(s)} ${escapeHtml(s.label)}</span>`
     )
     .join('')
 
@@ -214,6 +217,30 @@ function renderProjects(projects) {
   stackEl.innerHTML = projects.map(renderProjectCardMobile).join('')
 
   document.querySelectorAll('.project-image-wrap img, .project-card-mobile img').forEach(imageFallback)
+  setupProjectsScroll()
+}
+
+function setupProjectsScroll() {
+  const zone = document.getElementById('projects-scroll-zone')
+  const track = document.getElementById('projects-track')
+  const pin = zone?.querySelector('.projects-pin')
+  if (!zone || !track || !pin) return
+
+  const apply = () => {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      zone.style.removeProperty('--projects-scroll-h')
+      zone.style.removeProperty('--projects-translate')
+      return
+    }
+
+    track.style.transform = 'translate3d(0, 0, 0)'
+    const scrollDistance = Math.max(0, track.scrollWidth - pin.offsetWidth)
+    zone.style.setProperty('--projects-scroll-h', `${scrollDistance + window.innerHeight}px`)
+    zone.style.setProperty('--projects-translate', `${scrollDistance}px`)
+  }
+
+  apply()
+  window.addEventListener('resize', apply)
 }
 
 function renderBlog(blog) {
@@ -230,6 +257,36 @@ function renderBlog(blog) {
     </button>`
     )
     .join('')
+}
+
+function renderFriendLinks(linksData) {
+  const root = document.getElementById('friend-links-root')
+  if (!root || !linksData.links?.length) return
+
+  const cards = linksData.links
+    .map(
+      (link) => `
+    <a
+      class="friend-link-card"
+      href="${escapeHtml(link.url)}"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="${escapeHtml(link.name)} — ${escapeHtml(link.description)}"
+    >
+      <div>
+        <span class="friend-link-icon">${linkIconSvg(link.role)}</span>
+        <span class="friend-link-title">${escapeHtml(link.name)}</span>
+      </div>
+      <p class="friend-link-desc">${escapeHtml(link.description)}</p>
+      <p class="friend-link-role">${escapeHtml(link.role)}</p>
+    </a>`
+    )
+    .join('')
+
+  root.innerHTML = `
+    <div class="friend-links-wrap">
+      <div class="friend-links-stack">${cards}</div>
+    </div>`
 }
 
 function stripHtmlToParagraphs(html) {
@@ -330,6 +387,22 @@ function restoreGitHubPagesRedirect() {
   }
 }
 
+function setupTimelineActiveState() {
+  const items = document.querySelectorAll('.timeline-item')
+  if (!items.length || !('IntersectionObserver' in window)) return
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle('is-active', entry.isIntersecting)
+      })
+    },
+    { root: null, rootMargin: '-40% 0px -40% 0px', threshold: 0 }
+  )
+
+  items.forEach((item) => observer.observe(item))
+}
+
 async function init() {
   restoreGitHubPagesRedirect()
   document.getElementById('year').textContent = new Date().getFullYear()
@@ -340,33 +413,15 @@ async function init() {
   renderTimeline(data.skills.education)
   renderProjects(data.projects)
   renderBlog(data.blog)
+  renderFriendLinks(data.links)
   setupBlogOverlay()
+  setupTimelineActiveState()
 
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (!reducedMotion) {
-    initAnimations()
-  } else {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.documentElement.classList.add('reduced-motion')
-    document.querySelectorAll('.skill-bar-fill').forEach((bar) => {
-      const item = bar.closest('.skill-item')
-      const level = item?.dataset.level || 100
-      bar.style.width = `${level}%`
-    })
-    document.querySelectorAll('.skill-value').forEach((el) => {
-      el.textContent = el.dataset.target
-    })
-    document.querySelectorAll('.stat-value').forEach((el) => {
-      const value = parseFloat(el.dataset.value)
-      const suffix = el.dataset.suffix || ''
-      const decimals = parseInt(el.dataset.decimals || '0', 10)
-      el.textContent =
-        (decimals > 0 ? value.toFixed(decimals) : Math.round(value)) + suffix
-    })
   }
 
   handleInitialHash()
-
-  import('./friend-links/mount.tsx')
 }
 
 init().catch(console.error)

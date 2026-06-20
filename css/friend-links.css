@@ -1,0 +1,200 @@
+.section-links {
+  padding-block: var(--section-pad);
+}
+
+.section-lead {
+  font-size: var(--text-sm);
+  color: var(--reed);
+  margin-top: var(--space-xs);
+  max-width: 36rem;
+}
+
+.friend-links-stage {
+  display: flex;
+  justify-content: center;
+  min-height: 28rem;
+  margin-top: var(--space-lg);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.friend-links-wrap {
+  display: flex;
+  min-height: 22rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.friend-links-stack {
+  display: grid;
+  grid-template-areas: 'stack';
+  place-items: center;
+  width: 100%;
+  max-width: 48rem;
+}
+
+.friend-link-card {
+  position: relative;
+  grid-area: stack;
+  display: flex;
+  height: 9rem;
+  width: 22rem;
+  max-width: calc(100vw - 3rem);
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: var(--radius-md);
+  border: 2px solid rgba(111, 143, 124, 0.35);
+  background: rgba(20, 41, 31, 0.7);
+  backdrop-filter: blur(6px);
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: inherit;
+  transform: skewY(-8deg);
+  transition:
+    transform 0.7s var(--ease-out),
+    border-color 0.35s var(--ease-out),
+    background 0.35s var(--ease-out),
+    filter 0.7s var(--ease-out);
+  filter: grayscale(100%);
+}
+
+.friend-link-card::before {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  outline: 1px solid rgba(111, 143, 124, 0.35);
+  background: rgba(13, 26, 20, 0.5);
+  content: '';
+  transition: opacity 0.7s var(--ease-out);
+  pointer-events: none;
+}
+
+.friend-link-card::after {
+  position: absolute;
+  top: -5%;
+  right: -0.25rem;
+  height: 110%;
+  width: 20rem;
+  background: linear-gradient(to left, var(--ink), transparent);
+  content: '';
+  pointer-events: none;
+}
+
+.friend-link-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(20, 41, 31, 0.9);
+  filter: grayscale(0%);
+}
+
+.friend-link-card:hover::before {
+  opacity: 0;
+}
+
+.friend-link-card > * {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.friend-link-icon {
+  display: inline-flex;
+  border-radius: 999px;
+  background: var(--water);
+  padding: 0.25rem;
+  color: var(--egg);
+}
+
+.friend-link-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.friend-link-title {
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--egg);
+}
+
+.friend-link-desc {
+  font-size: var(--text-lg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.friend-link-role {
+  font-size: var(--text-sm);
+  color: var(--reed);
+}
+
+.friend-link-card:nth-child(1) {
+  transform: skewY(-8deg) translateY(0);
+}
+
+.friend-link-card:nth-child(1):hover {
+  transform: skewY(-8deg) translateY(-2.5rem);
+}
+
+.friend-link-card:nth-child(2) {
+  transform: skewY(-8deg) translateX(3rem) translateY(2.5rem);
+}
+
+.friend-link-card:nth-child(2):hover {
+  transform: skewY(-8deg) translateX(3rem) translateY(-0.25rem);
+}
+
+.friend-link-card:nth-child(3) {
+  transform: skewY(-8deg) translateX(6rem) translateY(5rem);
+}
+
+.friend-link-card:nth-child(3):hover {
+  transform: skewY(-8deg) translateX(6rem) translateY(-0.25rem);
+}
+
+.friend-link-card:nth-child(4) {
+  transform: skewY(-8deg) translateX(9rem) translateY(4.5rem);
+}
+
+.friend-link-card:nth-child(4):hover {
+  transform: skewY(-8deg) translateX(9rem) translateY(2.5rem);
+}
+
+@media (max-width: 768px) {
+  .friend-links-stage {
+    min-height: 22rem;
+    justify-content: flex-start;
+    padding-inline: var(--space-sm);
+  }
+
+  .friend-link-card:nth-child(1):hover {
+    transform: skewY(-8deg) translateY(-0.5rem);
+  }
+
+  .friend-link-card:nth-child(2) {
+    transform: skewY(-8deg) translateY(1rem);
+  }
+
+  .friend-link-card:nth-child(2):hover {
+    transform: skewY(-8deg) translateY(-0.25rem);
+  }
+
+  .friend-link-card:nth-child(3) {
+    transform: skewY(-8deg) translateY(2rem);
+  }
+
+  .friend-link-card:nth-child(3):hover {
+    transform: skewY(-8deg) translateY(-0.25rem);
+  }
+
+  .friend-link-card:nth-child(4) {
+    transform: skewY(-8deg) translateY(3rem);
+  }
+
+  .friend-link-card:nth-child(4):hover {
+    transform: skewY(-8deg) translateY(1.5rem);
+  }
+}

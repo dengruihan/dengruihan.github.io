@@ -1,50 +1,50 @@
 # RuiHan Deng — Personal Website
 
-A scroll-driven one-page portfolio built with Vite, GSAP ScrollTrigger, and Lenis smooth scrolling. Content is sourced from the [previous Vue portfolio](https://github.com/dengruihan/dengruihan.github.io).
+A scroll-driven one-page portfolio built with static HTML, CSS, and vanilla JavaScript. Content is sourced from the [previous Vue portfolio](https://github.com/dengruihan/dengruihan.github.io).
 
 ## Sections
 
-- **Hero** — pinned wetland descent with parallax layers
+- **Hero** — wetland-themed introduction
 - **About** — story, goals, quick facts
-- **Skills** — scroll-scrubbed capability bars
+- **Skills** — capability bars with scroll-driven fill
 - **Journey** — education and awards timeline
-- **Projects** — horizontal scroll gallery (desktop) with stat counters
+- **Projects** — horizontal scroll gallery (desktop) with project stats
 - **Blog** — dispatch cards with full-screen overlay reader
+- **Links** — friend link card stack
 - **Updates & Contact** — latest transmissions and footer
 
-## Development
+## Local preview
+
+Serve the repository root with any static file server:
 
 ```sh
-npm install
-npm run dev
+python3 -m http.server 8080
+# or
+npx serve .
 ```
 
-## Build
-
-```sh
-npm run build
-npm run preview
-```
+Open `http://localhost:8080` in your browser.
 
 ## Deploy
 
 Push to `main` to trigger the GitHub Actions workflow (`.github/workflows/deploy.yml`). Enable GitHub Pages with **GitHub Actions** as the source in repository settings.
 
-For a project site (e.g. `username.github.io/repo-name`), set `GITHUB_PAGES_BASE` to `/repo-name/` in the deploy workflow.
+No build step is required — the site ships as plain HTML, CSS, JS, and JSON.
 
 ## Data
 
-Content lives in `public/data/`:
+Content lives in `data/`:
 
 - `about.json`
 - `skills.json`
 - `projects.json`
 - `blog.json`
+- `links.json`
 
 Update these files to change site content without touching layout code.
 
 ## Accessibility
 
-- Respects `prefers-reduced-motion` (disables Lenis, pins, and scrubs)
+- Respects `prefers-reduced-motion` (disables scroll-driven animations)
 - Skip link, semantic landmarks, visible focus states
-- Mobile fallback: vertical project cards instead of horizontal pin
+- Mobile fallback: vertical project cards instead of horizontal gallery

@@ -10,15 +10,6 @@ html {
   scroll-behavior: smooth;
 }
 
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
 body {
   font-family: var(--font-body);
   font-size: var(--text-base);
@@ -28,10 +19,7 @@ body {
   background: var(--ink);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-}
-
-body {
-  cursor: url('/cursors/win95.svg') 2 2, auto;
+  cursor: url('../assets/cursors/win95.svg') 2 2, auto;
 }
 
 a,
@@ -353,8 +341,6 @@ a:hover {
   color: var(--reed);
   padding: var(--space-xs) 0;
   border-bottom: 1px solid rgba(111, 143, 124, 0.2);
-  opacity: 0;
-  transform: translateY(8px);
 }
 
 .fact-item::before {
@@ -374,7 +360,6 @@ a:hover {
 
 .story-line-inner {
   display: block;
-  transform: translateY(100%);
 }
 
 .about-meta {
@@ -411,8 +396,6 @@ a:hover {
   border: 1px solid rgba(111, 143, 124, 0.2);
   border-radius: var(--radius-md);
   padding: var(--space-md);
-  opacity: 0;
-  transform: translateY(24px);
 }
 
 .goal-card h3 {
@@ -466,7 +449,7 @@ a:hover {
 
 .skill-bar-fill {
   height: 100%;
-  width: 0%;
+  width: var(--skill-level, 100%);
   background: linear-gradient(90deg, var(--egg), var(--signal));
   border-radius: 3px;
   transform-origin: left center;
@@ -485,7 +468,7 @@ a:hover {
   bottom: 0;
   width: 2px;
   background: var(--water);
-  transform: translateX(-50%) scaleY(0);
+  transform: translateX(-50%) scaleY(1);
   transform-origin: top center;
 }
 
@@ -501,7 +484,6 @@ a:hover {
   grid-template-columns: 1fr auto 1fr;
   gap: var(--space-md);
   align-items: start;
-  opacity: 0;
 }
 
 .timeline-item:nth-child(odd) .timeline-card {
@@ -574,6 +556,11 @@ a:hover {
 .section-header--sticky {
   position: relative;
   z-index: 2;
+  flex-shrink: 0;
+}
+
+.projects-scroll-zone {
+  position: relative;
 }
 
 .projects-pin {
@@ -615,7 +602,6 @@ a:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  will-change: transform;
 }
 
 .project-image-wrap img.is-fallback {
@@ -687,7 +673,6 @@ a:hover {
   gap: var(--space-sm);
 }
 
-/* Mobile project stack (hidden on desktop) */
 .projects-stack {
   display: none;
 }
@@ -727,8 +712,6 @@ a:hover {
   width: 100%;
   color: inherit;
   font: inherit;
-  opacity: 0;
-  transform: translateY(24px);
   transition: border-color var(--transition), transform var(--transition);
 }
 
@@ -767,35 +750,6 @@ a:hover {
   color: var(--egg);
   margin-top: var(--space-sm);
   display: inline-block;
-}
-
-/* Friend links */
-.section-links {
-  padding-block: var(--section-pad);
-}
-
-.section-lead {
-  font-size: var(--text-sm);
-  color: var(--reed);
-  margin-top: var(--space-xs);
-  max-width: 36rem;
-}
-
-.friend-links-stage {
-  display: flex;
-  justify-content: center;
-  min-height: 28rem;
-  margin-top: var(--space-lg);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-@media (max-width: 768px) {
-  .friend-links-stage {
-    min-height: 22rem;
-    justify-content: flex-start;
-    padding-inline: var(--space-sm);
-  }
 }
 
 /* Blog overlay */
@@ -890,8 +844,6 @@ a:hover {
   background: var(--water);
   border-radius: var(--radius-md);
   border-left: 3px solid var(--egg);
-  opacity: 0;
-  transform: translateX(-16px);
 }
 
 .update-date {
@@ -954,26 +906,6 @@ a:hover {
   opacity: 0.5;
 }
 
-/* Reveal utility for CSS scroll-driven animations */
-@supports (animation-timeline: view()) {
-  .css-reveal {
-    animation: css-fade-up linear both;
-    animation-timeline: view();
-    animation-range: entry 0% cover 30%;
-  }
-
-  @keyframes css-fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(24px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -983,6 +915,7 @@ a:hover {
   *,
   *::before,
   *::after {
+    animation: none !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -1010,7 +943,7 @@ a:hover {
   }
 
   #river-clip-rect {
-    height: 2000 !important;
+    height: 2000px !important;
   }
 
   .projects-track {
@@ -1024,6 +957,15 @@ a:hover {
     flex: none !important;
     min-height: auto;
     padding-bottom: var(--space-xl);
+  }
+
+  .projects-scroll-zone {
+    height: auto !important;
+  }
+
+  .projects-pin {
+    position: relative !important;
+    height: auto !important;
   }
 }
 
@@ -1059,7 +1001,7 @@ a:hover {
 
   .timeline-line {
     left: 7px;
-    transform: translateX(0) scaleY(0);
+    transform: translateX(0) scaleY(1);
   }
 }
 
@@ -1080,7 +1022,7 @@ a:hover {
     display: none;
   }
 
-  .projects-pin {
+  .projects-scroll-zone {
     display: none;
   }
 

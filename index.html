@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
@@ -15,6 +15,10 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/friend-links.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -92,7 +96,7 @@
           <div class="about-grid">
             <div class="about-profile">
               <img
-                src="/avatar.jpg"
+                src="assets/avatar.jpg"
                 alt="Portrait of RuiHan Deng"
                 class="about-avatar"
                 width="280"
@@ -148,12 +152,14 @@
       <!-- Projects -->
       <section id="projects" class="section section-projects" data-section="projects" aria-labelledby="projects-heading">
         <div class="section-inner section-inner--wide">
-          <div class="projects-pin">
-            <header class="section-header section-header--sticky">
-              <p class="eyebrow">SURVEY 04 / PROJECTS</p>
-              <h2 id="projects-heading" class="section-title">Deployments</h2>
-            </header>
-            <div class="projects-track" id="projects-track"></div>
+          <div class="projects-scroll-zone" id="projects-scroll-zone">
+            <div class="projects-pin">
+              <header class="section-header section-header--sticky">
+                <p class="eyebrow">SURVEY 04 / PROJECTS</p>
+                <h2 id="projects-heading" class="section-title">Deployments</h2>
+              </header>
+              <div class="projects-track" id="projects-track"></div>
+            </div>
           </div>
           <div class="projects-stack" id="projects-stack" aria-label="Projects list"></div>
         </div>
@@ -203,7 +209,7 @@
     </main>
 
     <!-- Blog overlay -->
-    <div class="blog-overlay" id="blog-overlay" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="blog-overlay-title" hidden>
+    <div class="blog-overlay" id="blog-overlay" role="dialog" aria-modal="true" aria-labelledby="blog-overlay-title" hidden>
       <div class="blog-overlay-progress" id="blog-overlay-progress" aria-hidden="true"></div>
       <button class="blog-overlay-close" id="blog-overlay-close" type="button" aria-label="Close article">×</button>
       <article class="blog-overlay-content">
@@ -215,6 +221,6 @@
       </article>
     </div>
 
-    <script type="module" src="/src/main.js"></script>
+    <script src="js/main.js" defer></script>
   </body>
 </html>
