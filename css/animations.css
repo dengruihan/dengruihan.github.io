@@ -8,6 +8,7 @@
   --anim-reveal-range-sm: cover 50%;
   --anim-timeline-range: entry -25% cover 28%;
   --anim-timeline-line-range: entry -35% cover 40%;
+  --anim-projects-range: cover 13% cover 100%;
   --projects-scroll-factor: 1.65;
 }
 
@@ -233,7 +234,7 @@
     .projects-track {
       animation: projects-translate linear both;
       animation-timeline: --projects-scroll;
-      animation-range: cover 0% cover 100%;
+      animation-range: var(--anim-projects-range);
     }
   }
 }
