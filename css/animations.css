@@ -6,8 +6,8 @@
   --anim-reveal-range: cover 58%;
   --anim-reveal-range-lg: cover 65%;
   --anim-reveal-range-sm: cover 50%;
-  --anim-timeline-range: cover 75%;
-  --anim-timeline-line-range: cover 95%;
+  --anim-timeline-range: entry -25% cover 28%;
+  --anim-timeline-line-range: entry -35% cover 40%;
   --projects-scroll-factor: 1.65;
 }
 
@@ -186,19 +186,19 @@
   .section-journey .timeline-line {
     animation: scroll-line-grow linear both;
     animation-timeline: view();
-    animation-range: entry 0% var(--anim-timeline-line-range);
+    animation-range: var(--anim-timeline-line-range);
   }
 
   .timeline-item:nth-child(odd) {
     animation: scroll-slide-left linear both;
     animation-timeline: view();
-    animation-range: entry 0% var(--anim-timeline-range);
+    animation-range: var(--anim-timeline-range);
   }
 
   .timeline-item:nth-child(even) {
     animation: scroll-slide-right linear both;
     animation-timeline: view();
-    animation-range: entry 0% var(--anim-timeline-range);
+    animation-range: var(--anim-timeline-range);
   }
 
   #river-clip-rect {
