@@ -40,16 +40,6 @@ function formatStatValue(stat) {
   return `${value}${stat.suffix}`
 }
 
-function wrapLines(text) {
-  const sentences = text.split(/(?<=[.!?])\s+/)
-  return sentences
-    .map(
-      (s) =>
-        `<span class="story-line"><span class="story-line-inner">${escapeHtml(s)}</span></span>`
-    )
-    .join(' ')
-}
-
 function linkIconSvg(role) {
   if (role === '老师') {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>`
@@ -62,7 +52,7 @@ function renderAbout(about) {
 
   const paragraphsEl = document.getElementById('about-paragraphs')
   paragraphsEl.innerHTML = about.story.paragraphs
-    .map((p) => `<p class="story-paragraph">${wrapLines(p)}</p>`)
+    .map((p) => `<p class="story-paragraph">${escapeHtml(p)}</p>`)
     .join('')
 
   document.getElementById('current-focus').textContent = about.currentFocus
@@ -112,12 +102,12 @@ function renderSkills(skills) {
   const listEl = document.getElementById('skills-list')
   listEl.innerHTML = skills.skillset
     .map(
-      (s) => `
+      (s, i) => `
     <div class="skill-item" data-level="${s.level}">
       <span class="skill-name">${escapeHtml(s.name)}</span>
       <span class="skill-value">${s.level}</span>
       <div class="skill-bar-track">
-        <div class="skill-bar-fill" style="--skill-level: ${s.level}%"></div>
+        <div class="skill-bar-fill" style="--skill-level: ${s.level}%; --skill-delay: ${i * 0.12}s"></div>
       </div>
     </div>`
     )
@@ -235,7 +225,10 @@ function setupProjectsScroll() {
 
     track.style.transform = 'translate3d(0, 0, 0)'
     const scrollDistance = Math.max(0, track.scrollWidth - pin.offsetWidth)
-    zone.style.setProperty('--projects-scroll-h', `${scrollDistance + window.innerHeight}px`)
+    const scrollFactor =
+      parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--projects-scroll-factor')) || 1.65
+    const extraScroll = scrollDistance * scrollFactor
+    zone.style.setProperty('--projects-scroll-h', `${extraScroll + window.innerHeight}px`)
     zone.style.setProperty('--projects-translate', `${scrollDistance}px`)
   }
 
@@ -403,6 +396,27 @@ function setupTimelineActiveState() {
   items.forEach((item) => observer.observe(item))
 }
 
+function setupSkillBars() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+  const items = document.querySelectorAll('.skill-item')
+  if (!items.length || !('IntersectionObserver' in window)) return
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+          observer.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.25 }
+  )
+
+  items.forEach((item) => observer.observe(item))
+}
+
 async function init() {
   restoreGitHubPagesRedirect()
   document.getElementById('year').textContent = new Date().getFullYear()
@@ -416,6 +430,7 @@ async function init() {
   renderFriendLinks(data.links)
   setupBlogOverlay()
   setupTimelineActiveState()
+  setupSkillBars()
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.documentElement.classList.add('reduced-motion')

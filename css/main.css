@@ -353,15 +353,6 @@ a:hover {
   color: var(--reed);
 }
 
-.story-line {
-  display: block;
-  overflow: hidden;
-}
-
-.story-line-inner {
-  display: block;
-}
-
 .about-meta {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -449,10 +440,14 @@ a:hover {
 
 .skill-bar-fill {
   height: 100%;
-  width: var(--skill-level, 100%);
+  width: 0;
   background: linear-gradient(90deg, var(--egg), var(--signal));
   border-radius: 3px;
   transform-origin: left center;
+}
+
+.skill-item.is-visible .skill-bar-fill {
+  width: var(--skill-level, 100%);
 }
 
 /* Journey */
@@ -926,7 +921,6 @@ a:hover {
   }
 
   .hero-word,
-  .story-line-inner,
   .fact-item,
   .goal-card,
   .timeline-item,
