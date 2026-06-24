@@ -220,13 +220,19 @@ function setupProjectsScroll() {
     if (window.matchMedia('(max-width: 768px)').matches) {
       zone.style.removeProperty('--projects-scroll-h')
       zone.style.removeProperty('--projects-translate')
+      track.style.removeProperty('transform')
       return
     }
 
-    track.style.transform = 'translate3d(0, 0, 0)'
-    const scrollDistance = Math.max(0, track.scrollWidth - pin.offsetWidth)
+    track.style.removeProperty('transform')
+
+    const panels = track.querySelectorAll('.project-panel')
+    const panelWidth = panels[0]?.offsetWidth || window.innerWidth
+    const translateFactor =
+      parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--projects-translate-factor')) || 1.12
+    const scrollDistance = Math.max(0, (panels.length - 1) * panelWidth * translateFactor)
     const scrollFactor =
-      parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--projects-scroll-factor')) || 1.65
+      parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--projects-scroll-factor')) || 2.9
     const extraScroll = scrollDistance * scrollFactor
     zone.style.setProperty('--projects-scroll-h', `${extraScroll + window.innerHeight}px`)
     zone.style.setProperty('--projects-translate', `${scrollDistance}px`)
@@ -234,6 +240,10 @@ function setupProjectsScroll() {
 
   apply()
   window.addEventListener('resize', apply)
+  window.addEventListener('load', apply)
+  track.querySelectorAll('img').forEach((img) => {
+    if (!img.complete) img.addEventListener('load', apply, { once: true })
+  })
 }
 
 function renderBlog(blog) {

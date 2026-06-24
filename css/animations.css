@@ -9,8 +9,9 @@
   --anim-timeline-range: entry -25% cover 28%;
   --anim-timeline-line-range: entry -35% cover 40%;
   --anim-projects-settle-range: entry -15% cover 13%;
-  --anim-projects-range: cover 13% cover 100%;
-  --projects-scroll-factor: 1.65;
+  --anim-projects-range: cover 13% exit 20%;
+  --projects-scroll-factor: 2.9;
+  --projects-translate-factor: 1.12;
 }
 
 /* Hero load animation */
@@ -156,8 +157,8 @@
     0% {
       transform: translate3d(0, 0, 0);
     }
-    14% {
-      transform: translate3d(calc(-0.14 * var(--projects-translate, 0px)), 0, 0);
+    8% {
+      transform: translate3d(calc(-0.1 * var(--projects-translate, 0px)), 0, 0);
     }
     100% {
       transform: translate3d(calc(-1 * var(--projects-translate, 0px)), 0, 0);
