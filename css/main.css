@@ -926,7 +926,8 @@ a:hover {
   .timeline-item,
   .blog-card,
   .update-item,
-  .skill-bar-fill {
+  .skill-bar-fill,
+  .projects-scroll-zone {
     opacity: 1 !important;
     transform: none !important;
     width: var(--skill-level, 100%) !important;
