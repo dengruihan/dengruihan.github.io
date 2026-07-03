@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Cursor / local tooling
+.cursor/
+.vite/
+skills-lock.json
