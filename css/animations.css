@@ -8,7 +8,8 @@
   --anim-reveal-range-sm: cover 50%;
   --anim-timeline-range: entry -25% cover 28%;
   --anim-timeline-line-range: entry -35% cover 40%;
-  --anim-projects-range: cover 0% exit 20%;
+  --anim-projects-settle-range: entry -15% cover 13%;
+  --anim-projects-range: cover 13% exit 20%;
   --projects-scroll-factor: 2.9;
   --projects-translate-factor: 1.12;
 }
@@ -128,11 +129,36 @@
     }
   }
 
+  @keyframes projects-zone-settle {
+    0% {
+      transform: translateY(5rem);
+    }
+    15% {
+      transform: translateY(3.75rem);
+    }
+    35% {
+      transform: translateY(2.5rem);
+    }
+    55% {
+      transform: translateY(1.35rem);
+    }
+    75% {
+      transform: translateY(0.55rem);
+    }
+    90% {
+      transform: translateY(0.2rem);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
   @keyframes projects-translate {
-    from {
+    0%,
+    12% {
       transform: translate3d(0, 0, 0);
     }
-    to {
+    100% {
       transform: translate3d(calc(-1 * var(--projects-translate, 0px)), 0, 0);
     }
   }
@@ -220,6 +246,9 @@
       view-timeline-name: --projects-scroll;
       view-timeline-axis: block;
       height: var(--projects-scroll-h, 300vh);
+      animation: projects-zone-settle linear both;
+      animation-timeline: --projects-scroll;
+      animation-range: var(--anim-projects-settle-range);
     }
 
     .projects-pin {
