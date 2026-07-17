@@ -447,6 +447,87 @@ async function init() {
   }
 
   handleInitialHash()
+  setupDeploymentsScrollDebug()
 }
+
+// #region agent log
+function setupDeploymentsScrollDebug() {
+  if (window.matchMedia('(max-width: 768px)').matches) return
+
+  const journey = document.querySelector('.section-journey')
+  const zone = document.getElementById('projects-scroll-zone')
+  const pin = zone?.querySelector('.projects-pin')
+  const track = document.getElementById('projects-track')
+  if (!journey || !zone || !pin || !track) return
+
+  const log = (message, data, hypothesisId) => {
+    fetch('http://127.0.0.1:7823/ingest/acf14b11-a76c-4c2c-b40a-6f845241df48', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '88905b' },
+      body: JSON.stringify({
+        sessionId: '88905b',
+        runId: 'post-fix',
+        hypothesisId,
+        location: 'main.js:setupDeploymentsScrollDebug',
+        message,
+        data,
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {})
+  }
+
+  const root = getComputedStyle(document.documentElement)
+  const pinStyle = getComputedStyle(pin)
+  const journeyStyle = getComputedStyle(journey)
+
+  log('init animation support', {
+    supportsViewTimeline: CSS.supports('animation-timeline: view()'),
+    reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    settleRange: root.getPropertyValue('--anim-projects-settle-range').trim(),
+    projectsRange: root.getPropertyValue('--anim-projects-range').trim(),
+    journeyTimeline: journeyStyle.viewTimelineName,
+    pinAnimation: pinStyle.animationName,
+    pinTimeline: pinStyle.animationTimeline,
+    pinAnimationRange: pinStyle.animationRange,
+    projectsTranslate: getComputedStyle(zone).getPropertyValue('--projects-translate').trim(),
+    projectsScrollH: getComputedStyle(zone).getPropertyValue('--projects-scroll-h').trim(),
+  }, 'A,D')
+
+  let lastLog = 0
+  const sample = (phase) => {
+    const now = Date.now()
+    if (now - lastLog < 120) return
+    lastLog = now
+
+    const journeyRect = journey.getBoundingClientRect()
+    const zoneRect = zone.getBoundingClientRect()
+    const pinRect = pin.getBoundingClientRect()
+    const pinComputed = getComputedStyle(pin)
+    const pinMatrix = new DOMMatrixReadOnly(pinComputed.transform)
+    const trackMatrix = new DOMMatrixReadOnly(getComputedStyle(track).transform)
+    const pinAnim = pin.getAnimations()[0]
+
+    log('scroll sample', {
+      phase,
+      scrollY: Math.round(window.scrollY),
+      journeyTop: Math.round(journeyRect.top),
+      journeyBottom: Math.round(journeyRect.bottom),
+      zoneTop: Math.round(zoneRect.top),
+      pinTop: Math.round(pinRect.top),
+      pinTranslateY: Math.round(pinMatrix.m42),
+      trackTranslateX: Math.round(trackMatrix.m41),
+      pinTransform: pinComputed.transform,
+      pinAnimationName: pinComputed.animationName,
+      pinAnimProgress: pinAnim?.currentTime ?? null,
+      isPinSticky: pinRect.top <= 1 && pinRect.top >= -1,
+      inJourneyTail: journeyRect.bottom > 0 && journeyRect.bottom < window.innerHeight,
+      inDeployments: zoneRect.top <= 0 && zoneRect.bottom > window.innerHeight,
+    }, phase === 'init-scroll' ? 'B,E' : 'B,C,E')
+  }
+
+  window.addEventListener('scroll', () => sample('scroll'), { passive: true })
+  sample('init-scroll')
+}
+// #endregion
 
 init().catch(console.error)

@@ -8,10 +8,11 @@
   --anim-reveal-range-sm: cover 50%;
   --anim-timeline-range: entry -25% cover 28%;
   --anim-timeline-line-range: entry -35% cover 40%;
-  --anim-projects-settle-range: entry -15% cover 13%;
-  --anim-projects-range: cover 13% exit 20%;
+  --anim-projects-settle-range: cover 40% exit 100%;
+  --anim-projects-range: cover 0% exit 20%;
   --projects-scroll-factor: 2.9;
   --projects-translate-factor: 1.12;
+  --projects-pin-top: clamp(3.5rem, 9vh, 5.5rem);
 }
 
 /* Hero load animation */
@@ -131,22 +132,22 @@
 
   @keyframes projects-zone-settle {
     0% {
-      transform: translateY(5rem);
+      transform: translateY(3.5rem);
     }
-    15% {
-      transform: translateY(3.75rem);
+    20% {
+      transform: translateY(3rem);
     }
-    35% {
-      transform: translateY(2.5rem);
+    40% {
+      transform: translateY(2.2rem);
     }
-    55% {
-      transform: translateY(1.35rem);
+    60% {
+      transform: translateY(1.3rem);
     }
     75% {
-      transform: translateY(0.55rem);
+      transform: translateY(0.65rem);
     }
-    90% {
-      transform: translateY(0.2rem);
+    88% {
+      transform: translateY(0.25rem);
     }
     100% {
       transform: translateY(0);
@@ -155,7 +156,7 @@
 
   @keyframes projects-translate {
     0%,
-    12% {
+    2% {
       transform: translate3d(0, 0, 0);
     }
     100% {
@@ -241,24 +242,33 @@
     animation-range: entry 0% var(--anim-reveal-range);
   }
 
+  #main {
+    timeline-scope: --journey-scroll;
+  }
+
   @media (min-width: 769px) {
+    .section-journey {
+      view-timeline-name: --journey-scroll;
+      view-timeline-axis: block;
+    }
+
     .projects-scroll-zone {
       view-timeline-name: --projects-scroll;
       view-timeline-axis: block;
       height: var(--projects-scroll-h, 300vh);
-      animation: projects-zone-settle linear both;
-      animation-timeline: --projects-scroll;
-      animation-range: var(--anim-projects-settle-range);
     }
 
     .projects-pin {
       position: sticky;
-      top: 0;
-      height: 100vh;
+      top: var(--projects-pin-top);
+      height: calc(100vh - var(--projects-pin-top));
       overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      animation: projects-zone-settle ease-out both;
+      animation-timeline: --journey-scroll;
+      animation-range: var(--anim-projects-settle-range);
     }
 
     .projects-track {
