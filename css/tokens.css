@@ -1,9 +1,13 @@
 :root {
-  --ink: #0d1a14;
-  --mist: #edf2ea;
+  /* Wetland at night — refined survey palette */
+  --ink: #0a1410;
+  --abyss: #060d0a;
+  --mist: #eef4ec;
   --egg: #f2789f;
-  --reed: #6f8f7c;
-  --water: #14291f;
+  --reed: #94b3a1;
+  --reed-dim: #5c7668;
+  --water: #122419;
+  --water-2: #1a3024;
   --signal: #e8c547;
 
   --font-display: 'Instrument Serif', Georgia, serif;
@@ -21,8 +25,8 @@
   --text-sm: clamp(0.85rem, 0.8rem + 0.25vw, 0.95rem);
   --text-base: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
   --text-lg: clamp(1.25rem, 1.1rem + 0.6vw, 1.75rem);
-  --text-xl: clamp(2rem, 1.5rem + 2vw, 3.5rem);
-  --text-hero: clamp(3rem, 2rem + 5vw, 6.5rem);
+  --text-xl: clamp(2.25rem, 1.6rem + 2.4vw, 3.75rem);
+  --text-hero: clamp(3.25rem, 2rem + 8vw, 8rem);
 
   --radius-sm: 4px;
   --radius-md: 12px;
@@ -31,8 +35,9 @@
   --nav-height: 0px;
   --river-width: 48px;
   --content-max: 72rem;
-  --section-pad: clamp(4rem, 8vw, 8rem);
+  --section-pad: clamp(5rem, 10vw, 9rem);
 
+  --hairline: 1px solid rgba(92, 118, 104, 0.35);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --transition: 0.35s var(--ease-out);
 }
