@@ -12,7 +12,7 @@
 .friend-links-stage {
   display: flex;
   justify-content: center;
-  min-height: 28rem;
+  min-height: 31rem;
   margin-top: var(--space-lg);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -20,7 +20,7 @@
 
 .friend-links-wrap {
   display: flex;
-  min-height: 22rem;
+  min-height: 26rem;
   width: 100%;
   align-items: center;
   justify-content: center;
@@ -83,6 +83,7 @@
 }
 
 .friend-link-card:hover {
+  z-index: 5;
   border-color: rgba(255, 255, 255, 0.2);
   background: rgba(20, 41, 31, 0.9);
   filter: grayscale(0%);
@@ -136,65 +137,65 @@
 }
 
 .friend-link-card:nth-child(1):hover {
-  transform: skewY(-8deg) translateY(-2.5rem);
+  transform: skewY(-8deg) translateY(-2.75rem);
 }
 
 .friend-link-card:nth-child(2) {
-  transform: skewY(-8deg) translateX(3rem) translateY(2.5rem);
+  transform: skewY(-8deg) translateX(3rem) translateY(3.5rem);
 }
 
 .friend-link-card:nth-child(2):hover {
-  transform: skewY(-8deg) translateX(3rem) translateY(-0.25rem);
+  transform: skewY(-8deg) translateX(3rem) translateY(0.75rem);
 }
 
 .friend-link-card:nth-child(3) {
-  transform: skewY(-8deg) translateX(6rem) translateY(5rem);
+  transform: skewY(-8deg) translateX(6rem) translateY(7rem);
 }
 
 .friend-link-card:nth-child(3):hover {
-  transform: skewY(-8deg) translateX(6rem) translateY(-0.25rem);
+  transform: skewY(-8deg) translateX(6rem) translateY(4.25rem);
 }
 
 .friend-link-card:nth-child(4) {
-  transform: skewY(-8deg) translateX(9rem) translateY(4.5rem);
+  transform: skewY(-8deg) translateX(9rem) translateY(10.5rem);
 }
 
 .friend-link-card:nth-child(4):hover {
-  transform: skewY(-8deg) translateX(9rem) translateY(2.5rem);
+  transform: skewY(-8deg) translateX(9rem) translateY(7.75rem);
 }
 
 @media (max-width: 768px) {
   .friend-links-stage {
-    min-height: 22rem;
+    min-height: 27rem;
     justify-content: flex-start;
     padding-inline: var(--space-sm);
   }
 
   .friend-link-card:nth-child(1):hover {
-    transform: skewY(-8deg) translateY(-0.5rem);
+    transform: skewY(-8deg) translateY(-2.25rem);
   }
 
   .friend-link-card:nth-child(2) {
-    transform: skewY(-8deg) translateY(1rem);
+    transform: skewY(-8deg) translateY(2.5rem);
   }
 
   .friend-link-card:nth-child(2):hover {
-    transform: skewY(-8deg) translateY(-0.25rem);
+    transform: skewY(-8deg) translateY(0.25rem);
   }
 
   .friend-link-card:nth-child(3) {
-    transform: skewY(-8deg) translateY(2rem);
+    transform: skewY(-8deg) translateY(5rem);
   }
 
   .friend-link-card:nth-child(3):hover {
-    transform: skewY(-8deg) translateY(-0.25rem);
+    transform: skewY(-8deg) translateY(2.75rem);
   }
 
   .friend-link-card:nth-child(4) {
-    transform: skewY(-8deg) translateY(3rem);
+    transform: skewY(-8deg) translateY(7.5rem);
   }
 
   .friend-link-card:nth-child(4):hover {
-    transform: skewY(-8deg) translateY(1.5rem);
+    transform: skewY(-8deg) translateY(5.25rem);
   }
 }
