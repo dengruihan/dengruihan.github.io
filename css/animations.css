@@ -20,11 +20,17 @@
   from {
     opacity: 0;
     transform: translateY(2.5rem);
+    filter: blur(10px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+    filter: blur(0);
   }
+}
+
+.section-hero .eyebrow {
+  animation: hero-load var(--anim-hero-duration-sm) var(--ease-out) 0.15s both;
 }
 
 .hero-word {
@@ -240,6 +246,29 @@
     animation: scroll-fade-up linear both;
     animation-timeline: view();
     animation-range: entry 0% var(--anim-reveal-range);
+  }
+
+  /* Eyebrow transect line draws itself as the section enters */
+  @keyframes eyebrow-line-draw {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .section-header:not(.section-header--sticky) .eyebrow {
+    animation: scroll-fade-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% var(--anim-reveal-range-sm);
+  }
+
+  .section-header:not(.section-header--sticky) .eyebrow::after {
+    animation: eyebrow-line-draw linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 35%;
+    transform-origin: left center;
   }
 
   #main {

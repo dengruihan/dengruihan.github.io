@@ -150,7 +150,7 @@ function renderProjectPanel(project) {
     .map(
       (s) => `
     <div class="project-stat">
-      <span class="stat-value">${formatStatValue(s)}</span>
+      <span class="stat-value" data-count="${s.value}" data-decimals="${s.decimals ?? 0}" data-suffix="${escapeHtml(s.suffix)}">${formatStatValue(s)}</span>
       <span class="stat-label">${escapeHtml(s.label)}</span>
     </div>`
     )
@@ -164,6 +164,7 @@ function renderProjectPanel(project) {
   <article class="project-panel" data-project-id="${project.id}">
     <div class="project-image-wrap">
       <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" loading="eager" decoding="async" />
+      <span class="project-feed-tag" aria-hidden="true">FEED ${String(project.id).padStart(2, '0')}</span>
     </div>
     <div class="project-content">
       <h3>${escapeHtml(project.title)}</h3>
@@ -417,6 +418,12 @@ function setupSkillBars() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible')
+          const valueEl = entry.target.querySelector('.skill-value')
+          const level = parseFloat(entry.target.dataset.level)
+          if (valueEl && !Number.isNaN(level)) {
+            const delay = parseFloat(entry.target.dataset.stagger || 0)
+            setTimeout(() => animateCount(valueEl, level, 0, '', 1100), delay)
+          }
           observer.unobserve(entry.target)
         }
       })
@@ -424,7 +431,93 @@ function setupSkillBars() {
     { threshold: 0.25 }
   )
 
-  items.forEach((item) => observer.observe(item))
+  items.forEach((item, i) => {
+    item.dataset.stagger = i * 120
+    observer.observe(item)
+  })
+}
+
+/* Eased numeric count-up used by skill values and project stats */
+function animateCount(el, target, decimals, suffix, duration = 1200) {
+  const start = performance.now()
+  const tick = (now) => {
+    const p = Math.min((now - start) / duration, 1)
+    const eased = 1 - Math.pow(1 - p, 3)
+    const v = target * eased
+    el.textContent = `${decimals > 0 ? v.toFixed(decimals) : Math.round(v)}${suffix}`
+    if (p < 1) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
+
+function setupStatCountUp() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+  const values = document.querySelectorAll('.stat-value[data-count]')
+  if (!values.length || !('IntersectionObserver' in window)) return
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target
+          animateCount(
+            el,
+            parseFloat(el.dataset.count),
+            parseInt(el.dataset.decimals, 10) || 0,
+            el.dataset.suffix || ''
+          )
+          observer.unobserve(el)
+        }
+      })
+    },
+    { threshold: 0.6 }
+  )
+
+  values.forEach((el) => observer.observe(el))
+}
+
+/* Section titles decode from machine-static as they enter */
+function setupTitleScramble() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+  const titles = document.querySelectorAll('.section-title')
+  if (!titles.length || !('IntersectionObserver' in window)) return
+
+  const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789+/·'
+  const scramble = (el) => {
+    const original = el.dataset.original || el.textContent
+    el.dataset.original = original
+    const duration = 900
+    const start = performance.now()
+    const tick = (now) => {
+      const p = Math.min((now - start) / duration, 1)
+      const resolved = Math.floor(p * original.length)
+      let out = ''
+      for (let i = 0; i < original.length; i++) {
+        const c = original[i]
+        out += i < resolved || c === ' ' ? c : CHARS[(Math.random() * CHARS.length) | 0]
+      }
+      el.textContent = out
+      if (p < 1) requestAnimationFrame(tick)
+      else el.textContent = original
+    }
+    requestAnimationFrame(tick)
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          scramble(entry.target)
+          observer.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.4 }
+  )
+
+  titles.forEach((el) => observer.observe(el))
 }
 
 async function init() {
@@ -441,93 +534,14 @@ async function init() {
   setupBlogOverlay()
   setupTimelineActiveState()
   setupSkillBars()
+  setupStatCountUp()
+  setupTitleScramble()
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.documentElement.classList.add('reduced-motion')
   }
 
   handleInitialHash()
-  setupDeploymentsScrollDebug()
 }
-
-// #region agent log
-function setupDeploymentsScrollDebug() {
-  if (window.matchMedia('(max-width: 768px)').matches) return
-
-  const journey = document.querySelector('.section-journey')
-  const zone = document.getElementById('projects-scroll-zone')
-  const pin = zone?.querySelector('.projects-pin')
-  const track = document.getElementById('projects-track')
-  if (!journey || !zone || !pin || !track) return
-
-  const log = (message, data, hypothesisId) => {
-    fetch('http://127.0.0.1:7823/ingest/acf14b11-a76c-4c2c-b40a-6f845241df48', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '88905b' },
-      body: JSON.stringify({
-        sessionId: '88905b',
-        runId: 'post-fix',
-        hypothesisId,
-        location: 'main.js:setupDeploymentsScrollDebug',
-        message,
-        data,
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {})
-  }
-
-  const root = getComputedStyle(document.documentElement)
-  const pinStyle = getComputedStyle(pin)
-  const journeyStyle = getComputedStyle(journey)
-
-  log('init animation support', {
-    supportsViewTimeline: CSS.supports('animation-timeline: view()'),
-    reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    settleRange: root.getPropertyValue('--anim-projects-settle-range').trim(),
-    projectsRange: root.getPropertyValue('--anim-projects-range').trim(),
-    journeyTimeline: journeyStyle.viewTimelineName,
-    pinAnimation: pinStyle.animationName,
-    pinTimeline: pinStyle.animationTimeline,
-    pinAnimationRange: pinStyle.animationRange,
-    projectsTranslate: getComputedStyle(zone).getPropertyValue('--projects-translate').trim(),
-    projectsScrollH: getComputedStyle(zone).getPropertyValue('--projects-scroll-h').trim(),
-  }, 'A,D')
-
-  let lastLog = 0
-  const sample = (phase) => {
-    const now = Date.now()
-    if (now - lastLog < 120) return
-    lastLog = now
-
-    const journeyRect = journey.getBoundingClientRect()
-    const zoneRect = zone.getBoundingClientRect()
-    const pinRect = pin.getBoundingClientRect()
-    const pinComputed = getComputedStyle(pin)
-    const pinMatrix = new DOMMatrixReadOnly(pinComputed.transform)
-    const trackMatrix = new DOMMatrixReadOnly(getComputedStyle(track).transform)
-    const pinAnim = pin.getAnimations()[0]
-
-    log('scroll sample', {
-      phase,
-      scrollY: Math.round(window.scrollY),
-      journeyTop: Math.round(journeyRect.top),
-      journeyBottom: Math.round(journeyRect.bottom),
-      zoneTop: Math.round(zoneRect.top),
-      pinTop: Math.round(pinRect.top),
-      pinTranslateY: Math.round(pinMatrix.m42),
-      trackTranslateX: Math.round(trackMatrix.m41),
-      pinTransform: pinComputed.transform,
-      pinAnimationName: pinComputed.animationName,
-      pinAnimProgress: pinAnim?.currentTime ?? null,
-      isPinSticky: pinRect.top <= 1 && pinRect.top >= -1,
-      inJourneyTail: journeyRect.bottom > 0 && journeyRect.bottom < window.innerHeight,
-      inDeployments: zoneRect.top <= 0 && zoneRect.bottom > window.innerHeight,
-    }, phase === 'init-scroll' ? 'B,E' : 'B,C,E')
-  }
-
-  window.addEventListener('scroll', () => sample('scroll'), { passive: true })
-  sample('init-scroll')
-}
-// #endregion
 
 init().catch(console.error)
