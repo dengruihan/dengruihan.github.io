@@ -218,6 +218,8 @@ function setupProjectsScroll() {
   if (!zone || !track || !pin) return
 
   const apply = () => {
+    // In 3D scene mode the scene engine owns the scroll-zone height.
+    if (document.documentElement.classList.contains('scene-3d')) return
     if (window.matchMedia('(max-width: 768px)').matches) {
       zone.style.removeProperty('--projects-scroll-h')
       zone.style.removeProperty('--projects-translate')
@@ -542,6 +544,10 @@ async function init() {
   }
 
   handleInitialHash()
+
+  // Signal the 3D scene layer that all sections are rendered and measurable.
+  window.__siteRendered = true
+  window.dispatchEvent(new Event('site:rendered'))
 }
 
 init().catch(console.error)
