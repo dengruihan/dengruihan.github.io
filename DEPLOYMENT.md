@@ -117,6 +117,14 @@ Host overseas-vps
 http://raymond.agilear.org {
     encode gzip zstd
     root * /var/www/personal
+
+    # 不对外提供隐藏文件（.git、.gitignore 等），保留 .well-known 备用
+    @dotfiles {
+        path /.*
+        not path /.well-known*
+    }
+    respond @dotfiles 404
+
     file_server
     try_files {path} /index.html
     header {
@@ -134,6 +142,7 @@ http://:80 {
 - **`admin off`**：关闭 admin API endpoint，避免占额外内存端口，也更安全。
 - **`http://raymond.agilear.org`**：基于 Host 头路由，仅 80 端口。
 - **`try_files {path} /index.html`**：SPA 式回退，未知路径返回 index.html 而非 404。
+- **`@dotfiles` → 404**：站点根目录已纳入 git 管理，必须拦截 `/.git*` 等隐藏文件，否则仓库可被整站拖下。2026-07-18 实测拦截前 `/.git/config` 返回 200。
 - **`http://:80`**：兜底 80，给健康检查/未带 Host 头的请求一个响应，避免 CF 探测时拿到 connection reset。
 
 ### 3.3 服务管理
@@ -222,9 +231,10 @@ Caddy `file_server` 实时读盘，无需 reload / restart。
 scp -i ~/.ssh/id_ed25519_alicloud -o IdentitiesOnly=yes \
     /path/to/Caddyfile root@45.154.215.0:/etc/caddy/Caddyfile
 
-# 远程验证 + reload
+# 远程验证 + 生效
+# 注意：因全局配置了 admin off，caddy reload（走 admin API）会失败，必须用 restart
 ssh -i ~/.ssh/id_ed25519_alicloud -o IdentitiesOnly=yes root@45.154.215.0 \
-    'caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile && systemctl reload caddy'
+    'caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile && systemctl restart caddy'
 ```
 
 ### 6.3 端到端验证（从 mac 走 CF）
