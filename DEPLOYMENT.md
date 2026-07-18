@@ -86,11 +86,14 @@ Host overseas-vps
 │   ├── avatar.jpg
 │   ├── favicon.svg
 │   ├── icons.svg
-│   └── cursors/win95.svg
+│   ├── cursors/win95.svg
+│   └── vendor/
+│       └── three.module.js   # Three.js r169 minified，本地 vendor（无构建步骤）
 ├── css/
 │   ├── animations.css
 │   ├── friend-links.css
 │   ├── main.css
+│   ├── scene.css             # 3D 场景层与覆盖卡片样式
 │   └── tokens.css
 ├── data/
 │   ├── about.json
@@ -99,8 +102,19 @@ Host overseas-vps
 │   ├── projects.json
 │   └── skills.json
 └── js/
-    └── main.js
+    ├── main.js               # 数据渲染管线（2D 基线，始终可用）
+    └── scene/                # 3D 场景层（渐进增强，原生 ESM + import map）
+        ├── main.js           # 入口：能力检测（WebGL/reduced-motion/移动端 lite）
+        ├── engine.js         # renderer、阻尼滚动驱动、章节度量、主循环
+        ├── formations.js     # 8 套方块阵型生成器（服务器/层阵/波浪/卡组/墙阵/图谱…）
+        ├── morph.js          # 单 InstancedMesh 阵型插值
+        ├── story.js          # 分镜编排：相机关键帧、章节动画、覆盖卡锚点
+        ├── server-model.js   # Hero 细节服务器（程序化建模，爆炸时淡出）
+        ├── overlays.js       # 3D→屏幕投影，HTML 卡片同步
+        └── palette.js        # 设计令牌颜色的 WebGL 镜像
 ```
+
+**3D 场景说明**（2026-07-18 新增）：桌面端默认启用滚动驱动的 WebGL 叙事层；移动端自动切换精简模式（更少粒子）；`prefers-reduced-motion` 用户与 WebGL 初始化失败时回退经典 2D 页面。调试：URL 加 `?scene-debug` 显示章节进度与 FPS；`window.__scene` 可读取章节/度量/锚点状态。
 
 属主：`caddy:caddy`，目录 755 / 文件 644。
 
