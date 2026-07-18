@@ -280,7 +280,29 @@ curl -sI -H "Host: raymond.agilear.org" http://45.154.215.0/ -o /dev/null \
 
 ---
 
-## 7. 待清理清单
+## 7. GitHub 公开备份（dengruihan.github.io）
+
+站点在 GitHub 有一份**公开镜像**：`github.com/dengruihan/dengruihan.github.io`（同时是 GitHub Pages 站点）。
+
+**⚠️ 该仓库是 public，绝不可把本文件（DEPLOYMENT.md）推上去** —— 里面有 IP、端口、SSH 等全部基础设施细节。推送一律用「覆盖层」方式而不是直接推服务器本地仓库：
+
+```bash
+# 1. 克隆公开仓库（只读无需认证）
+git clone git@github.com:dengruihan/dengruihan.github.io.git /tmp/ghcheck
+
+# 2. 把服务器站点文件覆盖进去（排除敏感与本地文件）
+rsync -a --exclude='.git' --exclude='DEPLOYMENT.md' --exclude='.zcode' --exclude='.gitignore' \
+    /var/www/personal/ /tmp/ghcheck/
+
+# 3. 提交并推送
+cd /tmp/ghcheck && git add -A && git commit -m "..." && git push origin main
+```
+
+- **服务器本地仓库**（/var/www/personal/.git）与 GitHub 仓库是**两套独立历史**：本地仓库含 DEPLOYMENT.md 用于私有版本控制；GitHub 仓库是干净的公开镜像。已配置 `origin` remote 仅供 fetch 对比，**不要直接 push**。
+- **推送认证**：专用 SSH 密钥 `~/.ssh/id_ed25519_github`（已登记在 GitHub 账号 SSH keys，Title "Tud Server"），`~/.ssh/config` 已为 github.com 指定此密钥。
+- 首次推送记录：2026-07-18，`a7fd652..d5334e6`（3D 场景层）。
+
+## 8. 待清理清单
 
 阿里云那台 47.98.161.252 上的残留物（不再影响 raymond 访问，但占磁盘 + 含泄露过的私钥）：
 
