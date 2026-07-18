@@ -27,3 +27,6 @@ dist-ssr
 .cursor/
 .vite/
 skills-lock.json
+
+# Agent tooling state
+.zcode/
