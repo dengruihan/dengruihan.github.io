@@ -1,0 +1,60 @@
+[
+  {
+    "id": 1,
+    "title": "GLM-Edge-V-2B Species Monitoring System",
+    "introduction": "An AI-powered egg cluster detection system for invasive Golden Apple Snail using multimodal large language model",
+    "image": "https://img01.71360.com/file/read/www2/M00/2A/81/wKj2K2L8sd2ASuLwAAFZi5VLq-E559.jpg",
+    "githubUrl": "https://github.com/dengruihan/GLM-Edge-V-2B--Monitoring_Species",
+    "techStack": [
+      "GLM-Edge-V-2B",
+      "Python",
+      "Computer Vision",
+      "Drone Imaging",
+      "Multimodal AI"
+    ],
+    "interests": [
+      "Machine Learning",
+      "Computer Vision",
+      "Cloud Computing"
+    ],
+    "details": "To address the ecological threat of the invasive golden apple snail and the lack of an automated, efficient method to survey its distribution across water bodies, we pioneered a system leveraging a multimodal large language model for rapid image recognition. Our project focused on fine-tuning the open-source GLM-Edge-V-2B model using a curated dataset of golden apple snail egg images, combining our own drone-captured photos with a public dataset of 5,000 images. The key technologies involved were the application of a Multimodal Large Language Model and the use of the LoRA fine-tuning method for efficient adaptation. A primary challenge was preventing the monotonicity of the dataset from causing model overfitting, thereby ensuring its generalization to unfamiliar environments; this was addressed through careful data curation and model optimization. Ultimately, this fine-tuned module achieved a remarkable 91% accuracy in our tests, significantly surpassing the 83.8% accuracy of previous-generation YOLO algorithms. As a fully open-source contribution, this work is published on GitHub under the repository ‘GLM-Edge-V-2B–Monitoring_Species’ in alignment with open-source principles, making our contribution to the open-source community and environmental protection efforts."
+  },
+  {
+    "id": 2,
+    "title": "Color-Based Detection Algorithm",
+    "introduction": "A lightweight computer vision approach for rapid Golden Apple Snail egg identification",
+    "image": "https://ts1.tc.mm.bing.net/th/id/R-C.e7961a7961019bcd508e1fc1b20d8bad?rik=Z5tKPSVEaQBnrA&riu=http%3a%2f%2fexp-picture.cdn.bcebos.com%2f2e223d85e036e2918261c557b2723d03baea5b21.jpg%3fx-bce-process%3dimage%252Fcrop%252Cx_0%252Cy_0%252Cw_747%252Ch_434%252Fformat%252Cf_auto%252Fquality%252Cq_80&ehk=%2bzrEJuu5AX66yj83uAhbqxfxBd%2bC78t9FyDDI5e45ys%3d&risl=&pid=ImgRaw&r=0",
+    "githubUrl": "https://github.com/dengruihan/GLM-Edge-V-2B--Monitoring_Species",
+    "techStack": [
+      "OpenCV",
+      "Python",
+      "HSV Color Space",
+      "Image Processing",
+      "Computer Vision"
+    ],
+    "interests": [
+      "Computer Vision",
+      "Machine Learning"
+    ],
+    "details": "To address the ecological threat of the invasive golden apple snail and the lack of an automated method for surveying its distribution, we developed a parallel detection system leveraging OpenCV for rapid image processing. This approach centered on creating a color selection program where users could identify snail egg clusters on representative photos, enabling the system to calculate their specific HSV (Hue, Saturation, Value) color ranges. To overcome the significant challenge of varying lighting conditions, we implemented three distinct HSV ranges to handle different exposure levels and further refined counting accuracy by optimizing pixel size and length thresholds within a mask calculation module. This color-based model demonstrated exceptional speed, processing 5,000 images in just 2 seconds on an M1 chip iMac, and achieved a 75.26% rate of perfect count matches against manual statistics, with a low overall error rate of 2.25%. While its accuracy can be affected by similarly colored objects like lotus flowers or extreme lighting, its unparalleled efficiency makes it ideal for rapid assessments in simple environments. As part of our commitment to open-source principles, this color recognition module is included in our project’s GitHub repository under the Apache-2.0 license, offering the community an incredibly fast and accessible tool for preliminary ecological monitoring."
+  },
+  {
+    "id": 3,
+    "title": "Ecological Awareness Platform",
+    "introduction": "Community engagement and educational platform for invasive species awareness",
+    "image": "https://ts3.tc.mm.bing.net/th/id/OIP-C.7H6lvXTzGJ0OjvW-3DzoHQHaFW?cb=ucfimgc2&rs=1&pid=ImgDetMain&o=7&rm=3",
+    "githubUrl": "https://github.com/dengruihan/GLM-Edge-V-2B--Monitoring_Species",
+    "techStack": [
+      "Web Development",
+      "UI/UX Design",
+      "Mobile Responsive",
+      "Educational Content",
+      "Community Outreach"
+    ],
+    "interests": [
+      "Web Development",
+      "UI/UX Design"
+    ],
+    "details": "A comprehensive web platform that combines species detection technology with public education and community engagement. Features include user-friendly image upload interface, batch processing capabilities, educational content about invasive species, mobile-responsive design for field use, and cartoon-style illustrations to raise awareness. The platform has successfully engaged over 100 visitors during school open days and serves as a bridge between scientific research and public participation in ecological protection."
+  }
+]

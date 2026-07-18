@@ -1,0 +1,30 @@
+{
+  "title": "友情链接",
+  "subtitle": "老师与同学的个人站点",
+  "links": [
+    {
+      "name": "Tyler Zhang",
+      "url": "https://tylerzhangyi.github.io",
+      "role": "同学",
+      "description": "Student developer portfolio"
+    },
+    {
+      "name": "Yuezhou Wang",
+      "url": "https://wraje.github.io",
+      "role": "同学",
+      "description": "AI & full-stack developer"
+    },
+    {
+      "name": "Sijia Ma",
+      "url": "https://mathewmsj.github.io/#/",
+      "role": "同学",
+      "description": "AI, robotics & engineering"
+    },
+    {
+      "name": "Lichen Dai",
+      "url": "https://eric.mojalab.cn",
+      "role": "老师",
+      "description": "Educator & builder"
+    }
+  ]
+}
