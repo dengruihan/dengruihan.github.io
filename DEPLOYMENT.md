@@ -312,6 +312,4 @@ curl -sI https://raymond.agilear.org/ -o /dev/null -w "%{http_code} %{remote_ip}
    验证：scene-goto 逐点帧条（actual_t 0.76→1.96），`cam()` 探针数值与理论 az 逐点吻合；t=1.04 卡片完整可读无渐隐，t=1.30 舞台干净正面，t=1.48 右前视角+方块涌现，t=1.78 溶解过半衔接 skills。
    注意：帧条脚本里 `scrollTo` 后 `actual_t` 与目标有偏差是 headless 低帧率 + 滚动阻尼（τ≈180ms，dt clamp 50ms）所致，等待阻尼收敛后读数即可，不是编排问题。
 
-> （已解决 2026-07-19）线上响应头曾出现 `cache-control: max-age=14400`，与 §3.2 Caddyfile 的 `no-cache` 不符。定位为 CF Browser Cache TTL = 4 hours 改写浏览器方向响应头（源站直连验证为 no-cache），已改回 Respect Existing Headers，并写入 §4 配置清单防回退。
-
 **教训（排查"改了没生效"的标准流程）**：先 `diff <(curl 线上文件) <(磁盘文件)` 排除 CF/部署问题，再怀疑浏览器缓存（硬刷新），最后才改逻辑。本次尝试 2 后线上文件其实已是新版，用户端旧行为来自浏览器缓存的旧 ES 模块。
