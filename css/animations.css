@@ -15,7 +15,8 @@
   --projects-pin-top: clamp(3.5rem, 9vh, 5.5rem);
 }
 
-/* Hero load animation */
+/* Hero load animation — gated behind html.is-ready so it plays as the
+   boot loader lifts, not behind it */
 @keyframes hero-load {
   from {
     opacity: 0;
@@ -29,36 +30,32 @@
   }
 }
 
-.hero-word {
+html.is-ready .hero-word {
   animation: hero-load var(--anim-hero-duration) var(--ease-out) both;
 }
 
-.hero-word:nth-child(1) {
+html.is-ready .hero-word:nth-child(1) {
   animation-delay: calc(var(--anim-hero-stagger) * 0.5);
 }
 
-.hero-word:nth-child(2) {
+html.is-ready .hero-word:nth-child(2) {
   animation-delay: calc(var(--anim-hero-stagger) * 1.1);
 }
 
-.hero-portrait {
+html.is-ready .hero-portrait {
   animation: hero-load 1.05s var(--ease-out) calc(var(--anim-hero-stagger) * 0.9) both;
 }
 
-.hero-tagline {
+html.is-ready .hero-tagline {
   animation: hero-load var(--anim-hero-duration-sm) var(--ease-out) calc(var(--anim-hero-stagger) * 1.75) both;
 }
 
-.hero-bio {
+html.is-ready .hero-bio {
   animation: hero-load var(--anim-hero-duration-sm) var(--ease-out) calc(var(--anim-hero-stagger) * 2.25) both;
 }
 
-.hero-actions {
+html.is-ready .hero-actions {
   animation: hero-load var(--anim-hero-duration-sm) var(--ease-out) calc(var(--anim-hero-stagger) * 2.75) both;
-}
-
-.scroll-cue {
-  animation: hero-load var(--anim-hero-duration-sm) var(--ease-out) calc(var(--anim-hero-stagger) * 3.25) both;
 }
 
 /* Scroll-driven animations (progressive enhancement) */

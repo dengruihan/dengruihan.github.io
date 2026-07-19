@@ -29,6 +29,102 @@
     </script>
   </head>
   <body>
+    <script>
+      /* Boot loader — covers the page until fonts, data, the portrait and the
+         3D scene (when available) are ready. Hard-capped so a failed resource
+         can never trap the page. Debug: ?loader-hold freezes the loader. */
+      (function () {
+        var MIN_MS = 750
+        var MAX_MS = 6500
+        var root = document.documentElement
+        root.classList.add('is-loading')
+
+        var loader = document.createElement('div')
+        loader.className = 'site-loader'
+        loader.setAttribute('role', 'status')
+        loader.setAttribute('aria-label', 'Loading')
+        loader.innerHTML =
+          '<div class="loader-mark" aria-hidden="true">RD</div>' +
+          '<div class="loader-bar" aria-hidden="true"><div class="loader-fill"></div></div>' +
+          '<div class="loader-status" aria-hidden="true"><span class="loader-task">BOOTING</span>' +
+          '<span class="loader-pct">0%</span></div>'
+        document.body.insertBefore(loader, document.body.firstChild)
+
+        var fill = loader.querySelector('.loader-fill')
+        var taskEl = loader.querySelector('.loader-task')
+        var pctEl = loader.querySelector('.loader-pct')
+        var hold = new URLSearchParams(location.search).has('loader-hold')
+        var t0 = performance.now()
+        var exited = false
+
+        var tasks = {
+          fonts: { label: 'TYPESET', done: false },
+          data: { label: 'FIELD DATA', done: false },
+          portrait: { label: 'PORTRAIT', done: false },
+          scene: { label: 'SURVEY UNIT', done: false },
+        }
+
+        function refresh(key) {
+          var keys = Object.keys(tasks)
+          var done = keys.filter(function (k) { return tasks[k].done })
+          var pct = Math.round((done.length / keys.length) * 100)
+          fill.style.width = pct + '%'
+          pctEl.textContent = pct + '%'
+          if (key) taskEl.textContent = tasks[key].label
+          if (done.length === keys.length) finish()
+        }
+
+        function complete(key) {
+          if (exited || tasks[key].done) return
+          tasks[key].done = true
+          refresh(key)
+        }
+
+        function finish() {
+          var wait = Math.max(0, MIN_MS - (performance.now() - t0))
+          setTimeout(exit, wait)
+        }
+
+        function exit() {
+          if (exited || hold) return
+          exited = true
+          root.classList.remove('is-loading')
+          root.classList.add('is-ready')
+          loader.classList.add('site-loader--done')
+          setTimeout(function () { loader.remove() }, 700)
+        }
+
+        /* hard cap — never trap the page */
+        setTimeout(function () {
+          Object.keys(tasks).forEach(function (k) { tasks[k].done = true })
+          refresh(null)
+          exit()
+        }, MAX_MS)
+
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(function () { complete('fonts') })
+        } else {
+          complete('fonts')
+        }
+
+        if (window.__siteRendered) complete('data')
+        else window.addEventListener('site:rendered', function () { complete('data') }, { once: true })
+
+        var img = document.querySelector('.hero-portrait')
+        if (!img || (img.complete && img.naturalWidth > 0)) {
+          complete('portrait')
+        } else {
+          img.addEventListener('load', function () { complete('portrait') }, { once: true })
+          img.addEventListener('error', function () { complete('portrait') }, { once: true })
+        }
+
+        document.addEventListener('scene:ready', function () { complete('scene') }, { once: true })
+        document.addEventListener('scene:skipped', function () {
+          tasks.scene.label = 'STATIC MODE'
+          complete('scene')
+        }, { once: true })
+      })()
+    </script>
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-nav" role="banner">
@@ -79,10 +175,6 @@
               <span class="hero-word hero-word--italic">Deng</span>
             </h1>
             <div class="hero-foot">
-              <p class="scroll-cue" aria-hidden="true">
-                <span>Scroll to survey</span>
-                <span class="scroll-cue-arrow">↓</span>
-              </p>
               <span class="hero-location">Hangzhou, China</span>
             </div>
           </div>

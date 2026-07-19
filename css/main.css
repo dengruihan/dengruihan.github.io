@@ -136,6 +136,80 @@ a:hover {
   }
 }
 
+/* Site boot loader — covers the page until everything is ready */
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  background: var(--abyss);
+  transition:
+    opacity 0.55s var(--ease-out),
+    filter 0.55s var(--ease-out);
+}
+
+.site-loader--done {
+  opacity: 0;
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.loader-mark {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--mist);
+  letter-spacing: 0.1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.loader-mark::before {
+  content: '';
+  width: 0.55em;
+  height: 0.55em;
+  background: var(--egg);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(242, 120, 159, 0.8);
+  animation: hud-blink 1.8s steps(1) infinite;
+}
+
+.loader-bar {
+  width: min(15rem, 58vw);
+  height: 1px;
+  background: rgba(92, 118, 104, 0.35);
+  overflow: hidden;
+}
+
+.loader-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--egg);
+  box-shadow: 0 0 8px rgba(242, 120, 159, 0.7);
+  transition: width 0.35s var(--ease-out);
+}
+
+.loader-status {
+  display: flex;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--reed);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* scroll lock while the loader is up */
+html.is-loading,
+html.is-loading body {
+  overflow: hidden;
+}
+
 /* Navigation — telemetry bar */
 .site-nav {
   position: fixed;
@@ -149,7 +223,11 @@ a:hover {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   pointer-events: none;
-  animation: nav-drop 0.8s var(--ease-out) 0.1s both;
+}
+
+/* nav entrance waits for the boot loader to finish */
+html.is-ready .site-nav {
+  animation: nav-drop 0.8s var(--ease-out) both;
 }
 
 .site-nav nav {
@@ -513,16 +591,12 @@ a:hover {
   gap: var(--space-sm);
 }
 
-/* Bottom bar — centered scroll cue, location tag on the right */
+/* Bottom bar — location tag at the lower-left corner */
 .hero-foot {
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
   padding-top: var(--space-sm);
-}
-
-.hero-foot .scroll-cue {
-  margin-inline: auto;
 }
 
 .hero-location {
@@ -532,31 +606,6 @@ a:hover {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   white-space: nowrap;
-}
-
-.scroll-cue {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--reed);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.scroll-cue-arrow {
-  animation: bounce 2s ease-in-out infinite;
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(6px);
-  }
 }
 
 /* Shared card surface — flat instrument panel, sharp corners */
@@ -1449,7 +1498,6 @@ a:hover {
     transition-duration: 0.01ms !important;
   }
 
-  .scroll-cue-arrow,
   .nav-logo::before {
     animation: none;
   }

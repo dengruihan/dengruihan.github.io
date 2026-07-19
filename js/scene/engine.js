@@ -128,6 +128,7 @@ export function startScene({ lite = false, onContextLost } = {}) {
   let debugEl = null
   let frames = 0
   let fpsTime = 0
+  let firstFrameSent = false
 
   if (new URLSearchParams(location.search).has('scene-debug')) {
     debugEl = document.createElement('div')
@@ -158,6 +159,12 @@ export function startScene({ lite = false, onContextLost } = {}) {
     overlays.sync(camera, t)
 
     renderer.render(scene, camera)
+
+    // boot loader waits for this — the scene is visibly on screen now
+    if (!firstFrameSent) {
+      firstFrameSent = true
+      document.dispatchEvent(new CustomEvent('scene:ready'))
+    }
 
     if (debugEl) {
       frames++

@@ -1,13 +1,27 @@
 /* Scene entry — capability gates, then lazy-load the WebGL layer.
    Falls back silently to the classic 2D page whenever anything is missing. */
 (function bootScene() {
+  // tell the boot loader once that no 3D is coming (never more than once)
+  let skipSent = false
+  function skipScene() {
+    if (skipSent) return
+    skipSent = true
+    document.dispatchEvent(new CustomEvent('scene:skipped'))
+  }
+
   // respect reduced-motion: the classic page already handles it
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    skipScene()
+    return
+  }
 
   // WebGL probe
   const probe = document.createElement('canvas')
   const gl = probe.getContext('webgl2') || probe.getContext('webgl')
-  if (!gl) return
+  if (!gl) {
+    skipScene()
+    return
+  }
 
   // lite = small touch device or low-memory; a desktop with a touchscreen
   // (pointer: coarse alone) still gets the full scene
@@ -21,6 +35,7 @@
 
   function fallback2d() {
     document.documentElement.classList.remove('scene-3d', 'scene-lite')
+    skipScene()
   }
 
   async function start() {
