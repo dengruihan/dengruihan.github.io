@@ -41,6 +41,10 @@
   animation-delay: calc(var(--anim-hero-stagger) * 1.1);
 }
 
+.hero-portrait {
+  animation: hero-load 1.05s var(--ease-out) calc(var(--anim-hero-stagger) * 0.9) both;
+}
+
 .hero-tagline {
   animation: hero-load var(--anim-hero-duration-sm) var(--ease-out) calc(var(--anim-hero-stagger) * 1.75) both;
 }

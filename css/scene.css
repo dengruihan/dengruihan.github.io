@@ -184,6 +184,15 @@ html.scene-3d .updates-list {
 
 /* ---------- scene-lite (mobile / low-power) ---------- */
 
+/* intro copy stacks over the server on small screens — dim a card behind it */
+html.scene-lite .hero-intro {
+  background: rgba(10, 20, 16, 0.55);
+  border-radius: 12px;
+  padding: var(--space-md);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
 html.scene-lite .section-journey {
   min-height: 200vh;
 }

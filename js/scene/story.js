@@ -26,7 +26,7 @@ const lerp = (a, b, k) => a + (b - a) * k
 
 /* camera + fog keyframes per chapter */
 const KEYFRAMES = [
-  { pos: [5.6, 1.5, 8.6], look: [0, 0.2, 0], fog: [10, 30] }, // 0 hero
+  { pos: [0, 0.55, 7.6], look: [0, 0.3, 0], fog: [10, 30] }, // 0 hero (server squared up front)
   { pos: [6.8, 3.4, 10.5], look: [0, 0.5, 0], fog: [10, 30] }, // 1 about
   { pos: [10.2, 2.6, 5.4], look: [-1.4, 0.4, 0], fog: [9, 28] }, // 2 skills
   { pos: [8.2, 6.4, -6.2], look: [0, -0.2, 0], fog: [11, 34] }, // 3 journey (back-right-top)
@@ -288,9 +288,10 @@ export class Story {
     const reveal = smooth((t - 1.0) / 0.6)
     field.commit(reveal)
 
-    /* -- server detail model -- */
+    /* -- server detail model -- held square for the hero, tips only as it
+          dissolves into the cube field on scroll -- */
     const serverOpacity = 1 - smooth((t - 1.0) / 0.7)
-    this.server.group.rotation.y = Math.sin(time * 0.12) * 0.3 + holds.scrub[0] * 0.5
+    this.server.group.rotation.y = holds.scrub[0] * 0.5
     this.server.group.position.y = Math.sin(time * 0.5) * 0.05
     this.server.update(time, serverOpacity)
 

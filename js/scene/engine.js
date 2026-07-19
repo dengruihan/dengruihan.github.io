@@ -45,14 +45,14 @@ export function startScene({ lite = false, onContextLost } = {}) {
   const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 120)
 
   /* lights (only the hero server model uses lit materials) */
-  scene.add(new THREE.AmbientLight(COLORS.reed, 0.5))
+  scene.add(new THREE.AmbientLight(COLORS.reed, 0.65))
   const key = new THREE.PointLight(COLORS.egg, 26, 30)
   key.position.set(4, 3, 4)
   scene.add(key)
   const rim = new THREE.PointLight(COLORS.signal, 14, 26)
   rim.position.set(-5, 2, -3)
   scene.add(rim)
-  const fill = new THREE.PointLight(COLORS.mist, 10, 24)
+  const fill = new THREE.PointLight(COLORS.mist, 13, 24)
   fill.position.set(0, 1, 7)
   scene.add(fill)
 

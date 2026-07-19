@@ -86,6 +86,7 @@ Host overseas-vps
 │   ├── avatar.jpg
 │   ├── favicon.svg
 │   ├── icons.svg
+│   ├── portrait.webp         # Hero 人物立绘（AI 抠图，透明背景）
 │   ├── cursors/win95.svg
 │   └── vendor/
 │       └── three.module.js   # Three.js r169 minified，本地 vendor（无构建步骤）
