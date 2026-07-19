@@ -127,15 +127,6 @@
     }
   }
 
-  @keyframes river-grow {
-    from {
-      height: 0;
-    }
-    to {
-      height: 2000px;
-    }
-  }
-
   @keyframes projects-zone-settle {
     0% {
       transform: translateY(3.5rem);
@@ -236,12 +227,6 @@
     animation-range: var(--anim-timeline-range);
   }
 
-  #river-clip-rect {
-    animation: river-grow linear both;
-    animation-timeline: scroll(root block);
-    animation-range: 0% 100%;
-  }
-
   .section-links .section-header {
     animation: scroll-fade-up linear both;
     animation-timeline: view();
@@ -312,11 +297,4 @@
 .skill-bar-fill {
   transition: width 1.1s var(--ease-out);
   transition-delay: var(--skill-delay, 0s);
-}
-
-/* Fallback when scroll-driven animations are unsupported */
-@supports not (animation-timeline: view()) {
-  #river-clip-rect {
-    height: 2000px;
-  }
 }

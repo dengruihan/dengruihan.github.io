@@ -1,6 +1,6 @@
 /* 3D scene layer — only active when <html> carries .scene-3d.
    The canvas sits below all DOM content; HTML overlay cards float above
-   sections but below nav (100), river (90) and the grain layer (2000). */
+   sections but below nav (100) and the grain layer (2000). */
 
 .scene-canvas {
   position: fixed;
@@ -52,10 +52,9 @@ html.scene-3d body::before {
   display: none;
 }
 
-/* hero DOM effects would cover the 3D server — the HUD chrome stays */
+/* hero DOM effects would cover the 3D server */
 html.scene-3d .hero-contours,
-html.scene-3d .hero-glow,
-html.scene-3d .hero-scan {
+html.scene-3d .hero-glow {
   display: none;
 }
 
