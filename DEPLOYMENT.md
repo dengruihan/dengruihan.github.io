@@ -115,7 +115,7 @@ Host overseas-vps
         └── palette.js        # 设计令牌颜色的 WebGL 镜像
 ```
 
-**3D 场景说明**（2026-07-18 新增）：桌面端默认启用滚动驱动的 WebGL 叙事层；移动端自动切换精简模式（更少粒子）；`prefers-reduced-motion` 用户与 WebGL 初始化失败时回退经典 2D 页面。调试：URL 加 `?scene-debug` 显示章节进度与 FPS；`window.__scene` 可读取章节/度量/锚点状态。
+**3D 场景说明**（2026-07-18 新增）：桌面端默认启用滚动驱动的 WebGL 叙事层；移动端自动切换精简模式（更少粒子）；`prefers-reduced-motion` 用户与 WebGL 初始化失败时回退经典 2D 页面。调试：URL 加 `?scene-debug` 显示章节进度与 FPS；`?scene-goto=1.25` 跳转到指定章节浮点位置；`window.__scene` 可读取章节/度量/锚点状态。
 
 属主：`caddy:caddy`，目录 755 / 文件 644。
 

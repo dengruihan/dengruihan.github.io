@@ -218,6 +218,23 @@ export function startScene({ lite = false, onContextLost } = {}) {
   onResize()
   rafId = requestAnimationFrame(frame)
 
+  // debug: ?scene-goto=1.25 parks the scroll driver at a chapter-float
+  // position (pairs with ?scene-debug for the t readout)
+  const gotoT = parseFloat(new URLSearchParams(location.search).get('scene-goto') || '')
+  if (!Number.isNaN(gotoT)) {
+    const jump = () => {
+      const i = Math.min(Math.max(Math.floor(gotoT), 0), CHAPTER_COUNT - 2)
+      const frac = Math.min(Math.max(gotoT - i, 0), 1)
+      const a = metrics[i] ? metrics[i].focus : 0
+      const b = metrics[i + 1] ? metrics[i + 1].focus : a
+      const y = a + (b - a) * frac
+      smoothScroll = y
+      window.scrollTo(0, y)
+    }
+    setTimeout(jump, 250)
+    window.addEventListener('load', () => setTimeout(jump, 350))
+  }
+
   // debug/testing handle
   if (debugEl) {
     window.__scene = {

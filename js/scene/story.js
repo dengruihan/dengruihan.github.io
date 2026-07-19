@@ -27,7 +27,7 @@ const lerp = (a, b, k) => a + (b - a) * k
 /* camera + fog keyframes per chapter */
 const KEYFRAMES = [
   { pos: [0, 0.55, 7.6], look: [0, 0.3, 0], fog: [10, 30] }, // 0 hero (server squared up front)
-  { pos: [6.8, 3.4, 10.5], look: [0, 0.5, 0], fog: [10, 30] }, // 1 about
+  { pos: [-3.8, 3.6, 6.1], look: [0, 0.6, 0], fog: [10, 30] }, // 1 about (orbit start: upper-left)
   { pos: [10.2, 2.6, 5.4], look: [-1.4, 0.4, 0], fog: [9, 28] }, // 2 skills
   { pos: [8.2, 6.4, -6.2], look: [0, -0.2, 0], fog: [11, 34] }, // 3 journey (back-right-top)
   { pos: [0.2, 0.8, 10.2], look: [0.2, 0.4, -2.5], fog: [8, 26] }, // 4 projects
@@ -284,13 +284,14 @@ export class Story {
       }
     }
 
-    /* cubes materialize out of the dissolving detail server */
-    const reveal = smooth((t - 1.0) / 0.6)
+    /* cubes materialize out of the dissolving detail server — stretched
+       so the breakup reads as a gradual dissolve, not a snap */
+    const reveal = smooth((t - 1.1) / 0.65)
     field.commit(reveal)
 
     /* -- server detail model -- held square for the hero, tips only as it
           dissolves into the cube field on scroll -- */
-    const serverOpacity = 1 - smooth((t - 1.0) / 0.7)
+    const serverOpacity = 1 - smooth((t - 1.1) / 0.75)
     this.server.group.rotation.y = holds.scrub[0] * 0.5
     this.server.group.position.y = Math.sin(time * 0.5) * 0.05
     this.server.update(time, serverOpacity)
@@ -418,11 +419,32 @@ export class Story {
       lerp(A.look[2], B.look[2], f)
     )
 
-    /* hero: scroll pushes in toward the front panel */
+    /* hero: a quick dip toward the front panel over the first half-viewport,
+       then the camera immediately pulls back out — no parking at the
+       close-up; the pull-back flows straight into the Field Notes orbit */
     if (t < 1) {
-      const z = easeInOut(holds.scrub[0])
+      const push = easeInOut(holds.scrub[0])
+      const hold = 1 - smooth((t - 0.02) / 0.43)
+      const z = push * hold
       outPos.lerp(new THREE.Vector3(...HERO_NEAR.pos), z)
       outLook.lerp(new THREE.Vector3(...HERO_NEAR.look), z)
+    }
+
+    /* Field Notes: scroll-scrubbed orbit around the server —
+       from upper-left sweeping down to lower-right, gaze locked
+       on the chassis while it dissolves into the cube field */
+    if (t >= 0.8 && t < 1.7) {
+      const p = clamp01((t - 0.8) / 0.6)
+      const w = smooth((t - 0.8) / 0.12) * (1 - smooth((t - 1.4) / 0.25))
+      if (w > 0.001) {
+        const e = easeInOut(p)
+        const az = lerp(-0.7, 0.85, e)
+        outPos.lerp(
+          new THREE.Vector3(Math.sin(az) * 7.2, lerp(3.4, 0.8, e), Math.cos(az) * 7.2),
+          w
+        )
+        outLook.lerp(new THREE.Vector3(0, lerp(0.6, 0.15, p), 0), w)
+      }
     }
 
     /* gentle idle drift (reduced in lite mode) */
