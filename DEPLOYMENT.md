@@ -162,7 +162,10 @@ Caddy `file_server` 实时读盘，改站点文件无需 restart。
 ```
 DNS:      A 记录  raymond → 45.154.215.0  🟠 Proxied  TTL Auto
 SSL/TLS:  Encryption mode = Flexible（必须保持，见下）
+Caching:  Browser Cache TTL = Respect Existing Headers（必须保持，见下）
 ```
+
+**Browser Cache TTL 必须是 Respect Existing Headers**：源站 caddy 发的是 `Cache-Control: no-cache`，部署后普通刷新即生效。若此项被设为具体时长（如 4 hours），CF 会无视源站、把浏览器方向的头改写成硬缓存，窗口期内老访客拿不到新文件（2026-07-19 踩过：`__scene.kf` 新钩子不可用，实为浏览器持 4h 旧模块）。
 
 **源站端口不能让 CF 走 443**：443 被 loom 占用且用 `loom.agilear.org` 签证书。若 SSL 模式为 Full / Full (strict) / Auto，CF 会在 443 跟 loom 握手拿到错误 SNI → 525。必须保持 Flexible。
 
@@ -309,10 +312,6 @@ curl -sI https://raymond.agilear.org/ -o /dev/null -w "%{http_code} %{remote_ip}
    验证：scene-goto 逐点帧条（actual_t 0.76→1.96），`cam()` 探针数值与理论 az 逐点吻合；t=1.04 卡片完整可读无渐隐，t=1.30 舞台干净正面，t=1.48 右前视角+方块涌现，t=1.78 溶解过半衔接 skills。
    注意：帧条脚本里 `scrollTo` 后 `actual_t` 与目标有偏差是 headless 低帧率 + 滚动阻尼（τ≈180ms，dt clamp 50ms）所致，等待阻尼收敛后读数即可，不是编排问题。
 
-> ⚠️ 顺带发现：线上响应头 `cache-control: max-age=14400`（4h 浏览器硬缓存），与本文档 §3.2 Caddyfile 的 `no-cache` 不符——需核对 CF Browser Cache TTL 设置或服务器实际 Caddyfile。在此排查"改了没生效"时，注意 4 小时硬缓存窗口期内普通刷新拿不到新 ES 模块。
+> （已解决 2026-07-19）线上响应头曾出现 `cache-control: max-age=14400`，与 §3.2 Caddyfile 的 `no-cache` 不符。定位为 CF Browser Cache TTL = 4 hours 改写浏览器方向响应头（源站直连验证为 no-cache），已改回 Respect Existing Headers，并写入 §4 配置清单防回退。
 
 **教训（排查"改了没生效"的标准流程）**：先 `diff <(curl 线上文件) <(磁盘文件)` 排除 CF/部署问题，再怀疑浏览器缓存（硬刷新），最后才改逻辑。本次尝试 2 后线上文件其实已是新版，用户端旧行为来自浏览器缓存的旧 ES 模块。
-
-### 历史遗留安全待办
-
-- **Cloudflare Origin CA 证书待吊销**：阿里云时期签给 `raymond.agilear.org` 的 Origin 证书私钥曾在会话中泄露，需在 CF Dashboard → SSL/TLS → Origin Server 吊销该证书。（阿里云机器 47.98.161.252 已弃用，残留物清理与否不再影响本站。）
