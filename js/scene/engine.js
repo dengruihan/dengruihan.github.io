@@ -11,11 +11,6 @@ import { Story } from './story.js'
 const CHAPTER_IDS = ['hero', 'about', 'skills', 'journey', 'projects', 'blog', 'links', 'contact']
 const CHAPTER_COUNT = CHAPTER_IDS.length
 
-const smooth01 = (x) => {
-  const v = Math.min(1, Math.max(0, x))
-  return v * v * (3 - 2 * v)
-}
-
 function collectDom() {
   const journey = [...document.querySelectorAll('#timeline-list .timeline-card')]
   const projects = [...document.querySelectorAll('#projects-track .project-panel')]
@@ -79,7 +74,6 @@ export function startScene({ lite = false, onContextLost } = {}) {
 
   /* ---------- section metrics ---------- */
   const projectsZone = document.getElementById('projects-scroll-zone')
-  const aboutSection = document.getElementById('about')
   let metrics = []
 
   function setProjectsHeight() {
@@ -159,18 +153,6 @@ export function startScene({ lite = false, onContextLost } = {}) {
 
     cubeField.blend(t)
     story.update(t, holds, time)
-
-    /* Field Notes: the 2D content wall covers the 3D stage right when the
-       orbit runs — scrub it aside as the chapter centers (reversible on
-       scroll-up). Two stages so late content keeps more reading time. */
-    if (aboutSection) {
-      const exitA = smooth01((t - 0.78) / 0.24)
-      const exitB = smooth01((t - 0.88) / 0.26)
-      aboutSection.style.setProperty('--about-exit-a', exitA.toFixed(3))
-      aboutSection.style.setProperty('--about-exit-b', exitB.toFixed(3))
-      aboutSection.classList.toggle('about-exited', exitA > 0.7)
-    }
-
     story.cameraAt(t, holds, time, camPos, camLook)
     camera.position.copy(camPos)
     camera.lookAt(camLook)

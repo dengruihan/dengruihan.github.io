@@ -284,14 +284,14 @@ export class Story {
       }
     }
 
-    /* cubes materialize out of the dissolving detail server — stretched
-       so the breakup reads as a gradual dissolve, not a snap */
-    const reveal = smooth((t - 1.1) / 0.65)
+    /* cubes materialize out of the dissolving detail server — starts only
+       after the Field Notes content has had its reading time */
+    const reveal = smooth((t - 1.45) / 0.5)
     field.commit(reveal)
 
     /* -- server detail model -- held square for the hero, tips only as it
           dissolves into the cube field on scroll -- */
-    const serverOpacity = 1 - smooth((t - 1.1) / 0.75)
+    const serverOpacity = 1 - smooth((t - 1.45) / 0.55)
     this.server.group.rotation.y = holds.scrub[0] * 0.5
     this.server.group.position.y = Math.sin(time * 0.5) * 0.05
     this.server.update(time, serverOpacity)
@@ -431,19 +431,22 @@ export class Story {
     }
 
     /* Field Notes: scroll-scrubbed orbit around the server —
-       from upper-left sweeping down to lower-right, gaze locked
-       on the chassis while it dissolves into the cube field */
-    if (t >= 0.8 && t < 1.7) {
-      const p = clamp01((t - 0.8) / 0.6)
-      const w = smooth((t - 0.8) / 0.12) * (1 - smooth((t - 1.4) / 0.25))
+       a gentle right-down drift begins before the chapter fully
+       centers; the main sweep plays on the cleared stage once the
+       content has scrolled past, while the chassis dissolves into
+       the cube field. Back-loaded easing (p²): slow early, strong
+       after the stage clears. */
+    if (t >= 0.6 && t < 2.0) {
+      const p = clamp01((t - 0.6) / 1.15)
+      const w = smooth((t - 0.6) / 0.12) * (1 - smooth((t - 1.75) / 0.2))
       if (w > 0.001) {
-        const e = easeInOut(p)
+        const e = p * p
         const az = lerp(-0.7, 0.85, e)
         outPos.lerp(
           new THREE.Vector3(Math.sin(az) * 7.2, lerp(3.4, 0.8, e), Math.cos(az) * 7.2),
           w
         )
-        outLook.lerp(new THREE.Vector3(0, lerp(0.6, 0.15, p), 0), w)
+        outLook.lerp(new THREE.Vector3(0, lerp(0.6, 0.15, e), 0), w)
       }
     }
 

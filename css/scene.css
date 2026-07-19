@@ -111,23 +111,11 @@ html.scene-3d .updates-list {
   padding: var(--space-md);
 }
 
-/* Field Notes exit: as the chapter centers, the 2D content yields the
-   stage to the orbit camera (vars driven per-frame from engine.js) */
-html.scene-3d .section-about .section-header,
-html.scene-3d .section-about .about-grid {
-  opacity: calc(1 - var(--about-exit-a, 0));
-  transform: translateY(calc(var(--about-exit-a, 0) * -2rem))
-    scale(calc(1 - var(--about-exit-a, 0) * 0.03));
-}
-
-html.scene-3d .section-about .goals-grid {
-  opacity: calc(1 - var(--about-exit-b, 0));
-  transform: translateY(calc(var(--about-exit-b, 0) * -2rem))
-    scale(calc(1 - var(--about-exit-b, 0) * 0.03));
-}
-
-html.scene-3d .section-about.about-exited {
-  pointer-events: none;
+/* Field Notes gets scroll room like the other 3D chapters: the 2D
+   content rides out naturally at the reader's own pace, clearing the
+   stage for the orbit + dissolve afterwards */
+html.scene-3d .section-about {
+  min-height: 200vh;
 }
 
 /* ---------- overlay card appearance ---------- */

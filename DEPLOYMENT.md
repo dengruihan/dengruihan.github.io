@@ -290,7 +290,7 @@ curl -sI https://raymond.agilear.org/ -o /dev/null -w "%{http_code} %{remote_ip}
 
 **Boot loader**（commit `8a93f52`）：内联脚本就绪清单 = fonts.ready + site:rendered + portrait load + scene 首帧（scene:ready/skipped），750ms 最短展示 + 6.5s 硬超时；hero/nav 入场动画改 `html.is-ready` 门控。调试参数 `?loader-hold`。
 
-**Field Notes 环绕运镜 —— 四轮修复记录**：
+**Field Notes 环绕运镜 —— 五轮修复记录**：
 
 需求：About 章节相机随滚动从左上到右下环绕服务器模型，hero 上滑服务器正常飞散。
 
@@ -304,6 +304,10 @@ curl -sI https://raymond.agilear.org/ -o /dev/null -w "%{http_code} %{remote_ip}
    验证：playwright 无缓存 profile 滚轮连滚 + 逐帧截图（t=1.0 左上视角、1.2 右前视角均清晰可见），opacity/class 断言三项全过。`window.__scene` 新增 `cam()` 探针（仅 `?scene-debug`）。
 
 **排查教训（"镜头卡住"类问题分层）**：① diff 线上 vs 磁盘排除部署；② 全新 profile 排除浏览器缓存；③ 探针量相机位置排除相机层；④ 隐藏 DOM 对比排除遮挡层。本次根因在第 ④ 层——**运镜的主体是否可见，和运镜本身是否执行，是两件事**。
+
+5. **尝试 5（滚动房间 + 时序重排，当前线上版）**：新反馈两点——完全进入 Field Notes 前镜头应更早开始右下移动；内容消失太早、卡片没看完就转场。分析：尝试 4 的渐隐退场与"延长阅读时间"存在根本张力（内容停在中央 = 扫掠被遮）。改为给 about 加滚动房间（`html.scene-3d .section-about { min-height: 200vh }`，与 journey/blog/links 同模式）：内容自然滚出、阅读节奏完全交给用户滚动，渐隐退场机制整体移除（engine.js 的 `--about-exit-*` 与对应 CSS 一并删除）。时序：轨道窗口 t∈[0.6,1.75]、权重淡入 [0.6,0.72] 淡出 [1.75,1.95]、缓动改后载 `e=p²`（进入前缓慢右下漂移 → 阅读期近乎静止 → 内容滚走后主扫掠在干净舞台上完成）；溶解推迟到 `reveal=smooth((t-1.45)/0.5)`、`serverOpacity=1-smooth((t-1.45)/0.55)`，阅读期 t∈[1,1.4] 全程无动画。
+   验证：scene-goto 逐点帧条（actual_t 0.76→1.96），`cam()` 探针数值与理论 az 逐点吻合；t=1.04 卡片完整可读无渐隐，t=1.30 舞台干净正面，t=1.48 右前视角+方块涌现，t=1.78 溶解过半衔接 skills。
+   注意：帧条脚本里 `scrollTo` 后 `actual_t` 与目标有偏差是 headless 低帧率 + 滚动阻尼（τ≈180ms，dt clamp 50ms）所致，等待阻尼收敛后读数即可，不是编排问题。
 
 > ⚠️ 顺带发现：线上响应头 `cache-control: max-age=14400`（4h 浏览器硬缓存），与本文档 §3.2 Caddyfile 的 `no-cache` 不符——需核对 CF Browser Cache TTL 设置或服务器实际 Caddyfile。在此排查"改了没生效"时，注意 4 小时硬缓存窗口期内普通刷新拿不到新 ES 模块。
 
