@@ -28,7 +28,7 @@ const lerp = (a, b, k) => a + (b - a) * k
 const KEYFRAMES = [
   { pos: [0, 0.55, 7.6], look: [0, 0.3, 0], fog: [10, 30] }, // 0 hero (server squared up front)
   { pos: [-3.8, 3.6, 6.1], look: [0, 0.6, 0], fog: [10, 30] }, // 1 about (orbit start: upper-left)
-  { pos: [10.2, 2.6, 5.4], look: [-1.4, 0.4, 0], fog: [9, 28] }, // 2 skills
+  { pos: [2.0, 1.9, 11.0], look: [-0.9, 0.45, 0], fog: [9, 28] }, // 2 skills (front-right: layer stack lies diagonal, bands stay separate)
   { pos: [8.2, 6.4, -6.2], look: [0, -0.2, 0], fog: [11, 34] }, // 3 journey (back-right-top)
   { pos: [0.2, 0.8, 10.2], look: [0.2, 0.4, -2.5], fog: [8, 26] }, // 4 projects
   { pos: [0, 1.5, 8.6], look: [0, 0.9, -10.5], fog: [6, 30] }, // 5 blog (deep space)

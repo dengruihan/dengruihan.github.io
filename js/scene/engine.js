@@ -243,6 +243,16 @@ export function startScene({ lite = false, onContextLost } = {}) {
       holds: () => holdsAt(smoothScroll),
       anchors: () => JSON.parse(JSON.stringify(story.anchors)),
       cam: () => [...camera.position.toArray(), ...camLook.toArray()],
+      // live-edit a camera keyframe: __scene.kf(2, [x,y,z], [lx,ly,lz])
+      // call with just an index to read the current values
+      kf: (i, pos, look) => {
+        if (pos) story.keyframes[i].pos = [...pos]
+        if (look) story.keyframes[i].look = [...look]
+        return {
+          pos: [...story.keyframes[i].pos],
+          look: [...story.keyframes[i].look],
+        }
+      },
       lite,
     }
   }
