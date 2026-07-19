@@ -1,7 +1,7 @@
 # RuiHan Deng — Personal Website Deployment Guide
 
 > 当前生效部署：海外 VPS `45.154.215.0` + Cloudflare 橙云 + Flexible 模式
-> 最后更新：2026-07-18
+> 最后更新：2026-07-19
 
 ---
 
@@ -29,35 +29,26 @@
         └────────────────────────────────────────────────────┘
 ```
 
-**用户访问路径**：浏览器 → CF 边缘（HTTPS，受 CF 边缘证书保护）→ 回源走 HTTP 80 明文 → caddy → 静态文件
+**用户访问路径**：浏览器 → CF 边缘（HTTPS）→ 回源走 HTTP 80 明文 → caddy → 静态文件
 
 **关键决策**：
 - 选用 **Cloudflare Flexible** 模式（非 Full / Auto），因为源站 443 被 loom 占用，caddy 只能走 80。Auto / Full 会触发 525。
-- 不使用 Cloudflare Origin 证书（曾用过但因阿里云 ICP 备案劫持 → 改换海外服务器 → 不再需要）。
 - 静态站无敏感数据、无表单、无 cookie，CF→origin 明文段无安全风险。
 
 ---
 
-## 2. 服务器清单
-
-### 2.1 现役：海外 VPS（45.154.215.0）
+## 2. 服务器与 SSH
 
 | 项 | 值 |
 |---|---|
 | 公网 IPv4 | `45.154.215.0`（直接绑 eth0，无 NAT） |
 | 公网 IPv6 | `2604:9cc0:1e::bf84:bd1b` |
 | OS | Ubuntu 24.04.3 LTS (Noble) |
-| Kernel | 6.8.0-79-generic |
-| Disk | 20G vda1，15G 可用 |
 | Caddy 版本 | v2.11.4（官方 apt 仓库） |
 | SSH 用户 | `root` |
 | SSH 鉴权 | 公钥 `~/.ssh/id_ed25519_alicloud`（mac 本机）+ 密码双可用 |
 
-### 2.2 已废弃：阿里云杭州（47.98.161.252）
-
-ICP 备案劫持导致入站 80/443 被「Beaver」WAF 拦截，最终弃用。残留物见第 7 节「待清理清单」。
-
-### 2.3 SSH 别名（建议加入 mac `~/.ssh/config`）
+### SSH 别名（mac `~/.ssh/config`）
 
 ```ssh-config
 Host overseas-vps
@@ -69,11 +60,11 @@ Host overseas-vps
     ServerAliveCountMax 3
 ```
 
-> 注意：`id_ed25519_alicloud` 这把密钥虽然名字带 "alicloud"，**实际上两台服务器都使用它**。本机 `~/.ssh/config` 里若已声明该 Host 段，**必须加 `IdentitiesOnly yes`**，否则 ssh 会按文件尝试多把密钥，连 loom 这台会失败。
+> 注意：`id_ed25519_alicloud` 名字带 "alicloud"，**实际两台服务器都用它**。必须加 `IdentitiesOnly yes`，否则 ssh 会逐个尝试多把密钥导致连接失败。
 
 ---
 
-## 3. 服务器上的文件位置（45.154.215.0）
+## 3. 服务器上的文件位置
 
 ### 3.1 静态站点
 
@@ -81,41 +72,37 @@ Host overseas-vps
 /var/www/personal/
 ├── .gitignore
 ├── 404.html
-├── index.html
+├── index.html            # 含内联 boot loader 脚本（就绪清单见第 10 节）
 ├── assets/
 │   ├── avatar.jpg
 │   ├── favicon.svg
 │   ├── icons.svg
-│   ├── portrait.webp         # Hero 人物立绘（AI 抠图，透明背景）
+│   ├── portrait.webp     # Hero 人物立绘（AI 抠图，透明背景）
 │   ├── cursors/win95.svg
 │   └── vendor/
 │       └── three.module.js   # Three.js r169 minified，本地 vendor（无构建步骤）
 ├── css/
-│   ├── animations.css
+│   ├── animations.css    # hero 入场动画由 html.is-ready 门控
 │   ├── friend-links.css
 │   ├── main.css
-│   ├── scene.css             # 3D 场景层与覆盖卡片样式
+│   ├── scene.css
 │   └── tokens.css
-├── data/
-│   ├── about.json
-│   ├── blog.json
-│   ├── links.json
-│   ├── projects.json
-│   └── skills.json
+├── data/                 # 内容数据（改 json 不改模板）
+│   ├── about.json / blog.json / links.json / projects.json / skills.json
 └── js/
-    ├── main.js               # 数据渲染管线（2D 基线，始终可用）
-    └── scene/                # 3D 场景层（渐进增强，原生 ESM + import map）
-        ├── main.js           # 入口：能力检测（WebGL/reduced-motion/移动端 lite）
-        ├── engine.js         # renderer、阻尼滚动驱动、章节度量、主循环
-        ├── formations.js     # 8 套方块阵型生成器（服务器/层阵/波浪/卡组/墙阵/图谱…）
-        ├── morph.js          # 单 InstancedMesh 阵型插值
-        ├── story.js          # 分镜编排：相机关键帧、章节动画、覆盖卡锚点
-        ├── server-model.js   # Hero 细节服务器（程序化建模，爆炸时淡出）
-        ├── overlays.js       # 3D→屏幕投影，HTML 卡片同步
-        └── palette.js        # 设计令牌颜色的 WebGL 镜像
+    ├── main.js           # 数据渲染管线（2D 基线），完成后发 site:rendered
+    └── scene/            # 3D 场景层（渐进增强，原生 ESM + import map）
+        ├── main.js       # 入口：能力检测，发 scene:ready / scene:skipped
+        ├── engine.js     # renderer、阻尼滚动驱动、章节度量、主循环
+        ├── formations.js # 8 套方块阵型生成器
+        ├── morph.js      # 单 InstancedMesh 阵型插值
+        ├── story.js      # 分镜编排：相机关键帧、章节动画、覆盖卡锚点
+        ├── server-model.js # Hero 细节服务器（程序化建模）
+        ├── overlays.js   # 3D→屏幕投影，HTML 卡片同步
+        └── palette.js    # 设计令牌颜色的 WebGL 镜像
 ```
 
-**3D 场景说明**（2026-07-18 新增）：桌面端默认启用滚动驱动的 WebGL 叙事层；移动端自动切换精简模式（更少粒子）；`prefers-reduced-motion` 用户与 WebGL 初始化失败时回退经典 2D 页面。调试：URL 加 `?scene-debug` 显示章节进度与 FPS；`?scene-goto=1.25` 跳转到指定章节浮点位置；`window.__scene` 可读取章节/度量/锚点状态。
+**页面形态**：桌面端默认 3D 叙事层（hero = 人物立绘 + 摆正的服务器，Field Notes = 环绕运镜）；移动端精简模式；`prefers-reduced-motion` / WebGL 失败回退 2D。调试：`?scene-debug` 显示 t 与 FPS；`?scene-goto=1.25` 跳转章节浮点位置；`?loader-hold` 定格加载页；`window.__scene` 读内部状态。
 
 属主：`caddy:caddy`，目录 755 / 文件 644。
 
@@ -152,80 +139,44 @@ http://:80 {
 }
 ```
 
-要点解释：
-- **`auto_https off`**：禁用 caddy 自动签证书 + 抢 443。本机 443 由 loom 占用，caddy 不得尝试绑定。
-- **`admin off`**：关闭 admin API endpoint，避免占额外内存端口，也更安全。
-- **`http://raymond.agilear.org`**：基于 Host 头路由，仅 80 端口。
-- **`try_files {path} /index.html`**：SPA 式回退，未知路径返回 index.html 而非 404。
-- **`@dotfiles` → 404**：站点根目录已纳入 git 管理，必须拦截 `/.git*` 等隐藏文件，否则仓库可被整站拖下。2026-07-18 实测拦截前 `/.git/config` 返回 200。
-- **`http://:80`**：兜底 80，给健康检查/未带 Host 头的请求一个响应，避免 CF 探测时拿到 connection reset。
+要点：
+- **`auto_https off`**：443 由 loom 占用，caddy 不得尝试绑定。
+- **`admin off`**：关闭 admin API。副作用：`caddy reload` 不可用，改配置必须 `systemctl restart caddy`。
+- **`@dotfiles` → 404**：站点根目录纳入 git 管理，必须拦截 `/.git*`，否则仓库可被整站拖下。
+- **`http://:80`**：兜底，给健康检查/未带 Host 头的请求一个响应。
 
 ### 3.3 服务管理
 
 ```bash
-# 状态 / 启动 / 停止 / 重启 / reload
-systemctl status caddy
-systemctl start caddy
-systemctl stop caddy
-systemctl restart caddy
-systemctl reload caddy
-
-# 实时日志
-journalctl -u caddy -f --no-pager
-
-# 最近日志
-journalctl -u caddy -n 100 --no-pager
+systemctl status caddy      # 状态（已 enabled，开机自启）
+systemctl restart caddy     # 改 Caddyfile 后生效（reload 不可用，见上）
+journalctl -u caddy -f --no-pager   # 实时日志
 ```
 
-Caddy 已 `enabled`，开机自启。
+Caddy `file_server` 实时读盘，改站点文件无需 restart。
 
 ---
 
 ## 4. Cloudflare 配置
 
-### 4.1 DNS
-
 ```
-Type: A
-Name: raymond
-IPv4: 45.154.215.0
-Proxy status: 🟠 Proxied (橙云)
-TTL: Auto
+DNS:      A 记录  raymond → 45.154.215.0  🟠 Proxied  TTL Auto
+SSL/TLS:  Encryption mode = Flexible（必须保持，见下）
 ```
 
-### 4.2 SSL/TLS → Overview → Encryption mode
-
-```
-○ Off
-○ Flexible       ← 当前选中
-○ Full
-○ Full (strict)
-```
-
-### 4.3 重要：源站端口不能让 CF 走 443
-
-源站 443 被 loom 占用且用 `loom.agilear.org` 签证书。若 SSL/TLS 模式为 Full / Full (strict) / Auto，CF 会在 443 跟 loom 握手，loom 用错的 SNI 响答 → 525 SSL handshake failed。所以**必须保持 Flexible**。
-
-如未来想升级 Full，需走第 8 节扩展路径，让 caddy 在其它 HTTPS 端口起 LE 证书，并用 Cloudflare Origin Rules 把回源端口改过去（需 Pro 套餐）。
+**源站端口不能让 CF 走 443**：443 被 loom 占用且用 `loom.agilear.org` 签证书。若 SSL 模式为 Full / Full (strict) / Auto，CF 会在 443 跟 loom 握手拿到错误 SNI → 525。必须保持 Flexible。
 
 ---
 
 ## 5. 本地项目结构
 
-`/Users/raymond/Documents/New_personal_website/`
-
-- 纯静态，无 build step
-- 内容数据放 `data/*.json`，改 json 改内容不需要碰 template
-- Git: 分支 `main`，远端 GitHub
-- gitignore 排除 `node_modules` `dist` `.cursor` `.vite` `skills-lock.json` 等
+`/Users/raymond/Documents/New_personal_website/` — 纯静态，无 build step；内容改 `data/*.json`；git 分支 `main`。
 
 ---
 
 ## 6. 常用运维命令
 
 ### 6.1 推送本地修改到生产
-
-本地仓库根目录执行：
 
 ```bash
 rsync -avz --delete \
@@ -237,17 +188,14 @@ rsync -avz --delete \
   ./ root@45.154.215.0:/var/www/personal/
 ```
 
-Caddy `file_server` 实时读盘，无需 reload / restart。
+⚠️ **注意方向**：这条 rsync 是 mac → 服务器的**全量覆盖**。2026-07 起大量改动是直接在服务器仓库里开发提交的，本地 mac 已落后。跑这条命令前先在服务器上 `git status` 确认无未提交/未同步改动，否则会静默覆盖服务器端的新代码。
 
 ### 6.2 修改 Caddyfile 并生效
 
 ```bash
-# 本地写好 Caddyfile 后
 scp -i ~/.ssh/id_ed25519_alicloud -o IdentitiesOnly=yes \
     /path/to/Caddyfile root@45.154.215.0:/etc/caddy/Caddyfile
 
-# 远程验证 + 生效
-# 注意：因全局配置了 admin off，caddy reload（走 admin API）会失败，必须用 restart
 ssh -i ~/.ssh/id_ed25519_alicloud -o IdentitiesOnly=yes root@45.154.215.0 \
     'caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile && systemctl restart caddy'
 ```
@@ -255,29 +203,21 @@ ssh -i ~/.ssh/id_ed25519_alicloud -o IdentitiesOnly=yes root@45.154.215.0 \
 ### 6.3 端到端验证（从 mac 走 CF）
 
 ```bash
-# 主页
 curl -sI https://raymond.agilear.org/ -o /dev/null \
   -w "HTTP=%{http_code} ip=%{remote_ip} time=%{time_total}s\n"
-curl -s https://raymond.agilear.org/ | grep -oE "<title>[^<]+</title>"
 
-# 关键资源
-for p in css/main.css js/main.js data/about.json assets/avatar.jpg; do
-  curl -sI https://raymond.agilear.org/$p -o /dev/null -w "  /$p → %{http_code}\n"
-done
-
-# CF 边缘节点（观察 cf-ray 末尾字母）
-curl -sI https://raymond.agilear.org/ | grep -i "cf-ray"
+# 检查线上 JS 是否与服务器磁盘一致（排查"改了没生效"类问题）
+diff <(curl -s https://raymond.agilear.org/js/scene/story.js) \
+     <(ssh overseas-vps cat /var/www/personal/js/scene/story.js) \
+  && echo IDENTICAL || echo STALE
 ```
 
-### 6.4 不经过 CF、直连源站排障
+### 6.4 绕过 CF、直连源站排障
 
 ```bash
-# 用 Host header 模拟，但 IP 直接打源站
 curl -sI -H "Host: raymond.agilear.org" http://45.154.215.0/ -o /dev/null \
   -w "HTTP=%{http_code} server=%{remote_ip}\n"
 ```
-
-预期 `HTTP=200`、`server=45.154.215.0`。若失败，问题在源站或本机出口链路，不是 CF。
 
 ---
 
@@ -285,7 +225,7 @@ curl -sI -H "Host: raymond.agilear.org" http://45.154.215.0/ -o /dev/null \
 
 站点在 GitHub 有一份**公开镜像**：`github.com/dengruihan/dengruihan.github.io`（同时是 GitHub Pages 站点）。
 
-**⚠️ 该仓库是 public，绝不可把本文件（DEPLOYMENT.md）推上去** —— 里面有 IP、端口、SSH 等全部基础设施细节。推送一律用「覆盖层」方式而不是直接推服务器本地仓库：
+**⚠️ 该仓库是 public，绝不可把本文件（DEPLOYMENT.md）推上去** —— 里面有 IP、端口、SSH 等全部基础设施细节。推送一律用「覆盖层」方式：
 
 ```bash
 # 1. 克隆公开仓库（只读无需认证）
@@ -299,71 +239,21 @@ rsync -a --exclude='.git' --exclude='DEPLOYMENT.md' --exclude='.zcode' --exclude
 cd /tmp/ghcheck && git add -A && git commit -m "..." && git push origin main
 ```
 
-- **服务器本地仓库**（/var/www/personal/.git）与 GitHub 仓库是**两套独立历史**：本地仓库含 DEPLOYMENT.md 用于私有版本控制；GitHub 仓库是干净的公开镜像。已配置 `origin` remote 仅供 fetch 对比，**不要直接 push**。
-- **推送认证**：专用 SSH 密钥 `~/.ssh/id_ed25519_github`（已登记在 GitHub 账号 SSH keys，Title "Tud Server"），`~/.ssh/config` 已为 github.com 指定此密钥。
-- 首次推送记录：2026-07-18，`a7fd652..d5334e6`（3D 场景层）。
-
-## 8. 待清理清单
-
-阿里云那台 47.98.161.252 上的残留物（不再影响 raymond 访问，但占磁盘 + 含泄露过的私钥）：
-
-```bash
-# 清理命令（确认无误后执行）
-ssh alicloud-server '
-  rm -f /etc/caddy/certs/raymond.agilear.org.crt
-  rm -f /etc/caddy/certs/raymond.agilear.org.key
-  rmdir /etc/caddy/certs 2>/dev/null
-  rm -rf /var/www/personal
-  rm -f /etc/caddy/Caddyfile.bak-*
-'
-```
-
-⚠ **外加必须由你在 Cloudflare 操作的作废步骤**：
-CF Dashboard → SSL/TLS → Origin Server → Edge Certificates 列表 → 找到签给 `raymond.agilear.org` 的那张 Origin CA 证书 → Revoke。
-
-原因：生成那张证书时的私钥曾整段粘贴到一次会话对话中，无论是否仍使用，私钥泄露后都应作废。
+- **服务器本地仓库**与 GitHub 仓库是**两套独立历史**，已配置 `origin` 仅供 fetch 对比，**不要直接 push**。
+- **推送认证**：专用 SSH 密钥 `~/.ssh/id_ed25519_github`（GitHub Title "Tud Server"），`~/.ssh/config` 已为 github.com 指定。
 
 ---
 
-## 8. 未来扩展路径（不必现在做）
-
-想做更严的安全 / 国外更稳的加速 / 国内合规，三选一：
-
-### 8.1 升级到 Full (strict) + Cloudflare Origin Rules（需 Pro）
-
-- caddy 改听 `127.0.0.1:8443`，自起 Let's Encrypt ACME 自动签证书
-- CF Dashboard → Rules → Origin Rules：if hostname == `raymond.agilear.org` → destination port = `8443`
-- SSL/TLS → Full (strict)
-
-### 8.2 Cloudflare Tunnel（推荐，免公网入站端口）
-
-- 服务器装 `cloudflared`
-- 在 CF Zero Trust → Tunnels 创建一条 tunnel，token 给 cloudflared run
-- caddy 监听 `127.0.0.1:8080`，cloudflared 路由 `raymond.agilear.org` → `http://127.0.0.1:8080`
-- 优点：源站不需开任何公网入站端口，无 ICP 风险，loom 与 caddy 完全隔离
-- 唯一注意：cloudflared 出口流量走 CF，需对 loom 的 vmess 流量做路由区分
-
-### 8.3 申请 ICP 备案后改回国服
-
-如果希望国内访问体验更好（直连不绕 CF 边缘），可走 ICP 备案路：
-
-- 域名所有者证件与备案主体一致 (`agilear.org` 在 Cloudflare Registrar，备案可能被退回 1-2 次要求补材料)
-- 备案成功后改 DNS 指向国内服务器，caddy 用 LE 自动签证书
-- 备案周期：7-20 工作日
-
----
-
-## 9. 紧急排障备忘
+## 8. 紧急排障备忘
 
 | 症状 | 可能原因 | 修复 |
 |---|---|---|
-| 525 SSL handshake failed | CF SSL 模式不是 Flexible / 源站 443 被 loom 干扰 | 切回 Flexible |
-| 521 Web server is down | caddy 进程挂了 / 80 未监听 | `systemctl status caddy`、`systemctl restart caddy` |
-| 522 Connection timed out | 源站网络中断 / 防火墙挡 | `ssh` 进去看 `ss -tlnp`，确认 `:80` 在 caddy 进程下 |
-| 523 Origin is unreachable | VPS 整机不可达 | 进云厂商控制台看实例状态 |
-| 524 A timeout occurred | caddy 卡死 | `journalctl -u caddy -n 200` 看是否有占用 |
-| 301/308 重定向循环 | SSL 模式设了 Flexible 同时 origin 强制 HTTPS 重定向 | caddy 不要监听 443 / 不要强制 HTTPS 重定向 |
-| 浏览器看到中文 ICP 备案页 | 走的是没备案的国内 IP | 检查 DNS 是否被改回阿里云 |
+| 525 SSL handshake failed | CF SSL 模式不是 Flexible | 切回 Flexible |
+| 521 Web server is down | caddy 进程挂了 / 80 未监听 | `systemctl restart caddy` |
+| 522 Connection timed out | 源站网络中断 / 防火墙挡 | `ssh` 进去看 `ss -tlnp` 确认 `:80` 在 caddy 下 |
+| 523 Origin is unreachable | VPS 整机不可达 | 云厂商控制台看实例 |
+| 301/308 重定向循环 | Flexible 模式下 origin 强制 HTTPS 跳转 | caddy 不要监听 443 / 不要强制 HTTPS 重定向 |
+| 改了代码线上不生效 | 浏览器缓存旧 ES 模块 | 硬刷新 Cmd/Ctrl+Shift+R；再用 6.3 的 diff 命令核对线上文件 |
 
 ### 排障最快的两条命令
 
@@ -374,31 +264,45 @@ curl -sI -H "Host: raymond.agilear.org" http://45.154.215.0/ -o /dev/null -w "%{
 # 2. 走 CF 看边缘是否健康
 curl -sI https://raymond.agilear.org/ -o /dev/null -w "%{http_code} %{remote_ip}\n"
 ```
+
 - 第 1 条返回 200 第 2 条 ≠ 200 → 问题在 CF 设置
-- 第 1 条就失败 → 问题在源站，`ssh root@45.154.215.0` 上去查
-- 第 1 条 timeout 但 SSH 仍可达 → 80 端口被防火墙挡了
+- 第 1 条就失败 → 问题在源站
 
 ---
 
-## 10. 关键文件清单（备份用）
+## 9. 关键文件清单（备份用）
 
 | 文件 | 在哪里 | 重要度 |
 |---|---|---|
 | `/etc/caddy/Caddyfile` | 海外 VPS | ★★★ 备份到本地 git |
-| `/var/www/personal/` 全部内容 | 海外 VPS | ★★★ 已与本地仓库同步 |
-| `/var/lib/caddy/` | caddy 持久化状态 | ★ 不需备份 |
+| `/var/www/personal/` 全部内容 | 海外 VPS | ★★★ 已与服务器 git 仓库同步 |
 | Cloudflare DNS / SSL 配置 | CF Dashboard | ★★ 截图存档 |
 | `~/.ssh/id_ed25519_alicloud` | 本机 | ★★★ 不可丢 |
+| `~/.ssh/id_ed25519_github` | 本机 | ★★★ 公开镜像推送用 |
 
 ---
 
-## 11. 当前状态快照（2026-07-18）
+## 10. 维护日志
 
-- ✅ https://raymond.agilear.org 经 CF 边缘返回 200
-- ✅ 主页 10682B，`<title>RuiHan Deng — Field Survey</title>`
-- ✅ CSS / JS / JSON / 图片 全 200
-- ✅ 命中 CF 阿姆斯特丹边缘节点（`cf-ray` 末尾 AMS）
-- ✅ caddy.service active，开机自启
-- ✅ loom.service 未受影响，443 仍由其占用
-- ⏳ 阿里云残留物待清理
-- ⏳ Cloudflare Origin 证书待 Revoke（私钥曾泄露）
+### 2026-07-19 — Hero 极简改造 + 加载页 + Field Notes 运镜三轮修复
+
+**Hero 改造**（commit `31a4e4b`）：hero 改为三栏极简构图（左文案 / 人物立绘 / 右侧大名），3D 服务器相机从侧前方特写改为正面平视、去掉闲置摇摆，立绘立于服务器前；立绘由 rembg+u2netp 自动抠图（完整 u2net 模型在本机 937MB 内存上 OOM，须用轻量版）。
+
+**Boot loader**（commit `8a93f52`）：内联脚本就绪清单 = fonts.ready + site:rendered + portrait load + scene 首帧（scene:ready/skipped），750ms 最短展示 + 6.5s 硬超时；hero/nav 入场动画改 `html.is-ready` 门控。调试参数 `?loader-hold`。
+
+**Field Notes 环绕运镜 —— 三轮修复记录**：
+
+需求：About 章节相机随滚动从左上到右下环绕服务器模型，hero 上滑服务器正常飞散。
+
+1. **尝试 1（轨道首版）**：About 关键帧改为轨道起点（左上），`cameraAt()` 加轨道段 `t∈[1,1.5]`，方位角 -0.55→0.75 rad，半径 8.6（后为防 DOM 遮挡收紧到 7.2）。
+   结果：用户看不到轨道——服务器在 Field Notes 居中时"卡住"，随后突然消散。
+2. **尝试 2（诊断停靠 + 释放首版）**：根因是 hero 推近（HERO_NEAR）的权重 `z=easeInOut(scrub[0])`，而 hero 区高恰好 100vh → `scrub[0]` 滚动 0.55vh 即饱和为 1 → `t<1` 全程相机被钉在前面板特写（约 100vh 滚动），t=1 时又硬切到轨道起点。加释放项 `1-smooth((t-0.55)/0.4)`，轨道窗口前移 `t∈[0.8,1.4]`、摆幅加宽到 -0.7→0.85 rad，溶解放慢到 `t∈[1.1,1.85]`。
+   结果：仍"停大半个视口"——释放起点 t=0.55 按章节度量折算 ≈ 滚动 60vh 才开始。
+3. **尝试 3（释放提前，当前线上版）**：释放改为 `1-smooth((t-0.02)/0.43)`——推近一完成拉回立即接续，特写停留 <2vh；相机路径：正面→轻探→拉回抬升→环绕→溶解，全程无停靠。
+   验证：playwright CDP（复用 `~/.cache/ms-playwright` 的 headless_shell，`executable_path` 指定）按 `?scene-goto=t` 逐点截图，t=0.04/0.29/0.59/0.99 四个位置机位各不相同。
+
+**教训（排查"改了没生效"的标准流程）**：先 `diff <(curl 线上文件) <(磁盘文件)` 排除 CF/部署问题，再怀疑浏览器缓存（硬刷新），最后才改逻辑。本次尝试 2 后线上文件其实已是新版，用户端旧行为来自浏览器缓存的旧 ES 模块。
+
+### 历史遗留安全待办
+
+- **Cloudflare Origin CA 证书待吊销**：阿里云时期签给 `raymond.agilear.org` 的 Origin 证书私钥曾在会话中泄露，需在 CF Dashboard → SSL/TLS → Origin Server 吊销该证书。（阿里云机器 47.98.161.252 已弃用，残留物清理与否不再影响本站。）
