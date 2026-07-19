@@ -290,7 +290,7 @@ curl -sI https://raymond.agilear.org/ -o /dev/null -w "%{http_code} %{remote_ip}
 
 **Boot loader**（commit `8a93f52`）：内联脚本就绪清单 = fonts.ready + site:rendered + portrait load + scene 首帧（scene:ready/skipped），750ms 最短展示 + 6.5s 硬超时；hero/nav 入场动画改 `html.is-ready` 门控。调试参数 `?loader-hold`。
 
-**Field Notes 环绕运镜 —— 三轮修复记录**：
+**Field Notes 环绕运镜 —— 四轮修复记录**：
 
 需求：About 章节相机随滚动从左上到右下环绕服务器模型，hero 上滑服务器正常飞散。
 
@@ -298,8 +298,14 @@ curl -sI https://raymond.agilear.org/ -o /dev/null -w "%{http_code} %{remote_ip}
    结果：用户看不到轨道——服务器在 Field Notes 居中时"卡住"，随后突然消散。
 2. **尝试 2（诊断停靠 + 释放首版）**：根因是 hero 推近（HERO_NEAR）的权重 `z=easeInOut(scrub[0])`，而 hero 区高恰好 100vh → `scrub[0]` 滚动 0.55vh 即饱和为 1 → `t<1` 全程相机被钉在前面板特写（约 100vh 滚动），t=1 时又硬切到轨道起点。加释放项 `1-smooth((t-0.55)/0.4)`，轨道窗口前移 `t∈[0.8,1.4]`、摆幅加宽到 -0.7→0.85 rad，溶解放慢到 `t∈[1.1,1.85]`。
    结果：仍"停大半个视口"——释放起点 t=0.55 按章节度量折算 ≈ 滚动 60vh 才开始。
-3. **尝试 3（释放提前，当前线上版）**：释放改为 `1-smooth((t-0.02)/0.43)`——推近一完成拉回立即接续，特写停留 <2vh；相机路径：正面→轻探→拉回抬升→环绕→溶解，全程无停靠。
+3. **尝试 3（释放提前）**：释放改为 `1-smooth((t-0.02)/0.43)`——推近一完成拉回立即接续，特写停留 <2vh；相机路径：正面→轻探→拉回抬升→环绕→溶解，全程无停靠。
    验证：playwright CDP（复用 `~/.cache/ms-playwright` 的 headless_shell，`executable_path` 指定）按 `?scene-goto=t` 逐点截图，t=0.04/0.29/0.59/0.99 四个位置机位各不相同。
+4. **尝试 4（内容退场，当前线上版）**：症状是"镜头左移一小段就卡住，随后直接溶解"。探针定位：**相机从未卡住**——camX 从 -4.11（t=0.89）扫到 +5.37（t=1.42）完全正常；根因是轨道窗口 t∈[0.8,1.4] 对应 scrollY 862→1476，而 about 的 2D 内容从 scrollY=900 起占满视口（高 1256px），**环绕全程在文字墙后面执行**；journey/blog/links 都在 3D 模式折叠 DOM 换 overlay，唯独 about 保留完整 2D 排版。修复：about 内容随滚动两段退场——A 组（header+about-grid）t∈[0.78,1.02]、B 组（goals-grid）t∈[0.88,1.14] 渐隐上移（engine.js 每帧写 `--about-exit-a/b`，scene.css 映射 opacity/transform，`about-exited` 类关 pointer-events），回滚上滑可恢复，2D/reduced-motion 回退不受影响。
+   验证：playwright 无缓存 profile 滚轮连滚 + 逐帧截图（t=1.0 左上视角、1.2 右前视角均清晰可见），opacity/class 断言三项全过。`window.__scene` 新增 `cam()` 探针（仅 `?scene-debug`）。
+
+**排查教训（"镜头卡住"类问题分层）**：① diff 线上 vs 磁盘排除部署；② 全新 profile 排除浏览器缓存；③ 探针量相机位置排除相机层；④ 隐藏 DOM 对比排除遮挡层。本次根因在第 ④ 层——**运镜的主体是否可见，和运镜本身是否执行，是两件事**。
+
+> ⚠️ 顺带发现：线上响应头 `cache-control: max-age=14400`（4h 浏览器硬缓存），与本文档 §3.2 Caddyfile 的 `no-cache` 不符——需核对 CF Browser Cache TTL 设置或服务器实际 Caddyfile。在此排查"改了没生效"时，注意 4 小时硬缓存窗口期内普通刷新拿不到新 ES 模块。
 
 **教训（排查"改了没生效"的标准流程）**：先 `diff <(curl 线上文件) <(磁盘文件)` 排除 CF/部署问题，再怀疑浏览器缓存（硬刷新），最后才改逻辑。本次尝试 2 后线上文件其实已是新版，用户端旧行为来自浏览器缓存的旧 ES 模块。
 
