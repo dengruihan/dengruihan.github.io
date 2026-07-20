@@ -39,11 +39,11 @@ const KEYFRAMES = [
 /* hero close-up target (scrubbed by chapter-0 progress) */
 const HERO_NEAR = { pos: [0.5, 0.85, 3.5], look: [-0.1, 0.7, 0.72] }
 
-const JOURNEY_LANES = [-3.2, 0.4, 3.4, -1.6]
 
 export class Story {
-  constructor({ scene, cubeField, formations, server, overlays, dom, lite }) {
+  constructor({ scene, camera, cubeField, formations, server, overlays, dom, lite }) {
     this.scene = scene
+    this.camera = camera
     this.field = cubeField
     this.formations = formations
     this.server = server
@@ -332,30 +332,53 @@ export class Story {
 
   _updateAnchors(t, holds, time, ci) {
     const field = this.field
-    const w3s = smooth(field.chapterWeight(3) * 1.3)
     const w4s = smooth(field.chapterWeight(4) * 1.3)
     const w5s = smooth(field.chapterWeight(5) * 1.3)
     const w6s = smooth(field.chapterWeight(6) * 1.3)
 
-    /* journey cards ride the wave right → left */
-    const vis3 = holds.vis[3]
-    const lanes = JOURNEY_LANES
+    /* journey cards travel one by one from the lower-left corner to the
+       upper-right, through screen center, bobbing gently with the wave.
+       Driven by the chapter float (not section visibility) and anchored
+       in CAMERA space: the camera is flying toward the projects pose for
+       most of the window, so a world-space path would drift out of frame.
+       The show opens only once the wave has fully assembled (t≥3) and
+       the last card exits just before the projects card fades in. */
+    const show = clamp01((t - 3.05) / 0.8)
+    const camP = this._camP || (this._camP = new THREE.Vector3())
+    const camL = this._camL || (this._camL = new THREE.Vector3())
+    const fwd = this._fwd || (this._fwd = new THREE.Vector3())
+    const right = this._right || (this._right = new THREE.Vector3())
+    const upv = this._upv || (this._upv = new THREE.Vector3())
+    const up = this._up || (this._up = new THREE.Vector3(0, 1, 0))
+    this.cameraAt(t, holds, time, camP, camL)
+    fwd.subVectors(camL, camP)
+    const depth = fwd.length()
+    fwd.normalize()
+    right.crossVectors(fwd, up).normalize()
+    upv.crossVectors(right, fwd)
+    // frustum half-extents at the look depth; the diagonal path runs
+    // corner-to-corner slightly beyond the frame
+    const halfH = depth * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2))
+    const halfW = halfH * this.camera.aspect
+    const uMax = halfW + 2.2
+    const vSpan = halfH + 1.5
     this.anchors.journey.forEach((a, i) => {
       const n = this.anchors.journey.length
       const spread = n * 0.55 + 0.45
-      const p = clamp01(vis3 * spread - i * 0.55)
-      const x = 15 - 30 * p
-      const lane = lanes[i % lanes.length]
-      const y = WAVE_BASE_Y + waveHeight(x, lane, time) * 1.3 + 1.35
-      const edge = smooth((14.2 - Math.abs(x)) / 2.5)
-      a.x = x
-      a.y = y
-      a.z = lane
-      a.opacity = w3s * edge
+      const p = clamp01(show * spread - i * 0.55)
+      const u = -uMax + 2 * uMax * p
+      const v = -vSpan + 2 * vSpan * p + waveHeight(u, 0, time) * 0.35
+      a.x = camP.x + fwd.x * depth + right.x * u + upv.x * v
+      a.y = camP.y + fwd.y * depth + right.y * u + upv.y * v
+      a.z = camP.z + fwd.z * depth + right.z * u + upv.z * v
+      a.opacity = smooth((p - 0.02) / 0.12) * (1 - smooth((p - 0.86) / 0.12))
       a.scale = 0.95
     })
 
-    /* project card rides beside its mosaic panel */
+    /* project card rides beside its mosaic panel — held back until the
+       last journey card has exited, so the two shows hand off instead
+       of overlapping center stage */
+    const w4Gate = smooth((t - 3.75) / 0.25)
     const { bases } = this.formations[4].extras
     const offX = this.lite ? 0 : 3.25
     const offY = this.lite ? -1.85 : -0.1
@@ -366,7 +389,7 @@ export class Story {
       a.x = base.x + offX
       a.y = base.y + pose.liftY + offY
       a.z = base.z + ci * DECK_SPACING
-      a.opacity = w4s * frontness
+      a.opacity = w4s * w4Gate * frontness
       a.scale = this.lite ? 0.82 : 1 - clamp01(pose.d) * 0.08
     })
 

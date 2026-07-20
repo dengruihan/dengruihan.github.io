@@ -70,7 +70,7 @@ export function startScene({ lite = false, onContextLost } = {}) {
   const server = buildServerModel()
   scene.add(server.group)
   const overlays = new OverlaySystem()
-  const story = new Story({ scene, cubeField, formations, server, overlays, dom, lite })
+  const story = new Story({ scene, camera, cubeField, formations, server, overlays, dom, lite })
 
   /* ---------- section metrics ---------- */
   const projectsZone = document.getElementById('projects-scroll-zone')
