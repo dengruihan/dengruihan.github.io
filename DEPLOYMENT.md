@@ -328,9 +328,10 @@ curl -sI https://raymond.agilear.org/ -o /dev/null -w "%{http_code} %{remote_ip}
 - 卡片进度改由章节浮点 t 驱动：`show=clamp01((t-3.05)/0.8)`——波浪 t=3 拼完后才开演，最后一张 t≈3.85 离场；
 - 锚定改**相机空间**：`_updateAnchors` 内调 `cameraAt()` 重建 pos/look 基向量，卡片放在 look 深度处、沿相机 right/up 基向量运动（视锥半宽半高随 fov/aspect 自适应）——任何机位下路径都不漂出画面；
 - 路径（按用户指定）：逐张自**左下角→右上角**对角线穿越屏幕中心，竖向叠加 `waveHeight(u,0,time)*0.35` 的轻微波浪浮动；透明度在行程两端（p∈[0.02,0.14]/[0.86,0.98]）淡入淡出；
-- projects 卡片加 `w4Gate=smooth((t-3.75)/0.25)`，等 journey 最后一张离场后再淡入，两章转场变成交接而非叠印。
+- projects 卡片加 `w4Gate=smooth((t-3.75)/0.25)`，等 journey 最后一张离场后再淡入，两章转场变成交接而非叠印；
+- **波浪保持**（engine.js `fieldT()`）：用户反馈"卡片还没走完波浪就变形了"——`blend(t)` 原本 t 一过 3 就开始 wave→deck 插值。改为对 field 时钟做分段重映射：t<3.85 钉在 formation 3（卡片演出全程波浪完整、涟漪权重不衰减），3→4 变形压缩进 t∈[3.85,4.0]，t≥4 恢复恒等。`chapterWeight()` 及 story.update 里所有 w 门控都跟随重映射后的 t，自动同步。
 
-验证：jd_*.png 帧条 + overlay DOM transform 读数——t≤3.03 全隐藏；card0 轨迹 (295,723)→(902,317)→(1567,-109) 过中心 (720,450)；t=3.89 journey 清空、project 卡片 op 0.45 淡入完成交接。
+验证：jd_/jw_*.png 帧条 + overlay DOM transform 读数——t≤3.03 卡片全隐藏；card0 轨迹 (295,723)→(902,317)→(1567,-109) 过中心 (720,450)；t=3.49/3.68 波浪仍完整成片；t=3.89 journey 清空、变形开始；t=3.97 deck 马赛克面板成型、project 卡片 op 0.76 完成交接。
 遗留：t≈3.4 起 projects 区标题 "Deployments"（sticky DOM）进入左中区域，后两张卡片对角上行时会短暂从其前方掠过——卡片不透明、可读，属分层转场，未做 DOM 级延迟。
 
 **教训**：overlay 卡片若锚在世界坐标，其屏幕位置 = f(世界轨迹, 相机轨迹)，任一变量的"章节内移动"都会让编排漂移；**需要精确屏幕编排的卡片应锚在相机空间**（engine 每帧 story.update→cameraAt 用同一 t，结果一致，可无成本复用）。
