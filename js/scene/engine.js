@@ -24,6 +24,8 @@ function collectDom() {
 }
 
 export function startScene({ lite = false, onContextLost } = {}) {
+  const rootEl = document.documentElement
+
   /* ---------- renderer ---------- */
   const canvas = document.createElement('canvas')
   canvas.className = 'scene-canvas'
@@ -115,7 +117,13 @@ export function startScene({ lite = false, onContextLost } = {}) {
       scrub[i] = Math.min(Math.max((sY - m.top) / Math.max(m.height - vh, vh * 0.55), 0), 1)
       vis[i] = Math.min(Math.max((sY + vh - m.top) / (m.height + vh), 0), 1)
     }
-    return { scrub, vis }
+    /* deck scrub starts only once the user has fully arrived at the
+       projects chapter (sY ≥ focus, field assembled at t=4) — before
+       that the panels hold their rest pose while the cubes fly in */
+    const m4 = metrics[4]
+    const zoneEnd = m4.top + m4.height - vh
+    const deck = Math.min(Math.max((sY - m4.focus) / Math.max(zoneEnd - m4.focus, 1), 0), 1)
+    return { scrub, vis, deck }
   }
 
   /* ---------- loop ---------- */
@@ -150,6 +158,11 @@ export function startScene({ lite = false, onContextLost } = {}) {
 
     const t = chapterAt(smoothScroll)
     const holds = holdsAt(smoothScroll)
+
+    // the projects pin (Deployments title) enters only as the wave
+    // starts morphing into the deck — not a pixel before
+    const enterRaw = Math.min(Math.max((t - 3.85) / 0.13, 0), 1)
+    rootEl.style.setProperty('--projects-enter', (enterRaw * enterRaw * (3 - 2 * enterRaw)).toFixed(3))
 
     cubeField.blend(fieldClock(t))
     story.update(t, holds, time)

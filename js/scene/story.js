@@ -237,9 +237,11 @@ export class Story {
       }
     }
 
-    /* -- ch4 projects: deck scrub (offset from rest pose) -- */
+    /* -- ch4 projects: deck scrub (offset from rest pose) — gated to
+          the chapter focus so panels only move once the field is in
+          place and the user has fully arrived -- */
     const w4 = w(4)
-    const ci = this._deckCi(holds.scrub[4])
+    const ci = this._deckCi(holds.deck)
     if (w4 > 0.01) {
       const { panelOf } = this.formations[4].extras
       const panelCount = this.dom.projects.length

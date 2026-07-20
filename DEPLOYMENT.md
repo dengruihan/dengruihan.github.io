@@ -331,7 +331,9 @@ curl -sI https://raymond.agilear.org/ -o /dev/null -w "%{http_code} %{remote_ip}
 - projects 卡片加 `w4Gate=smooth((t-3.75)/0.25)`，等 journey 最后一张离场后再淡入，两章转场变成交接而非叠印；
 - **章节时钟保持**（story.js 导出 `fieldClock()`，engine blend / cameraAt / fog 共用）：用户反馈"卡片还没走完波浪就变形了"、"timeline 部分不要有镜头移动"——`blend(t)` 原本 t 一过 3 就开始 wave→deck 插值，相机也同时从 journey 机位飞往 projects。改为对章节时钟做分段重映射：t<3.85 钉在 3（卡片演出全程波浪完整、涟漪权重不衰减、**相机停在 journey 机位**、fog 不变），3→4 的变形与飞行压缩进 t∈[3.85,4.0]，t≥4 恢复恒等。`chapterWeight()` 及 story.update 里所有 w 门控都跟随重映射后的 t，自动同步；journey 卡片本身锚在相机空间，不受镜头钉住影响。注意卡片演出窗口 `show=(t-3.05)/0.8` 和 projects 门控 `w4Gate` 用的是**原始 t**（滚动时序），不要改成重映射后的值。
 
-验证：jd_/jw_*.png 帧条 + overlay DOM transform 读数——t≤3.03 卡片全隐藏；card0 轨迹 (295,723)→(902,317)→(1567,-109) 过中心 (720,450)；t=3.49/3.68 波浪仍完整成片；t=3.89 journey 清空、变形开始；t=3.97 deck 马赛克面板成型、project 卡片 op 0.76 完成交接。
-遗留：t≈3.4 起 projects 区标题 "Deployments"（sticky DOM）进入左中区域，后两张卡片对角上行时会短暂从其前方掠过——卡片不透明、可读，属分层转场，未做 DOM 级延迟。
+- **Deployments 标题门控**：用户反馈标题在波浪变形前就出现——projects-pin 是 sticky DOM，t≈3.2 就随滚动升入视口，与 3D 编排无关。engine 每帧写 CSS 变量 `--projects-enter = smooth((t-3.85)/0.13)`（原始 t），scene.css `.projects-pin { opacity: var(--projects-enter, 1) }`——标题在波浪开始变形时才淡入，回滚对称恢复；2D/reduced-motion 回退不受影响；
+- **deck 面板延迟启动**：用户反馈方块还没归位面板就开始移动——deck 原本由 `scrub[4]`（整个 scroll zone 的滚动进度）驱动，到达章节中心时已消耗约一半滚动。engine 在 holds 里新增 `deck = clamp01((sY - focus4)/(zoneEnd - focus4))`，story 改用 `holds.deck` 算 `_deckCi`——t=4（方块就位）前面板全部静止，之后一片片上移，t≈4.53 最后一张到位（代价：每张面板的滚动行程约为原来的一半）。
+
+验证：jd_/jw_/pin_*.png 帧条 + overlay DOM transform 读数——t≤3.03 卡片全隐藏；card0 轨迹 (295,723)→(902,317)→(1567,-109) 过中心 (720,450)；t=3.49/3.68 波浪完整成片、相机钉住、Deployments opacity=0；t=3.89 journey 清空、变形开始；t=3.97 deck 成型、project 卡片 op 0.76、标题 opacity 0.93 完成交接。
 
 **教训**：overlay 卡片若锚在世界坐标，其屏幕位置 = f(世界轨迹, 相机轨迹)，任一变量的"章节内移动"都会让编排漂移；**需要精确屏幕编排的卡片应锚在相机空间**（engine 每帧 story.update→cameraAt 用同一 t，结果一致，可无成本复用）。

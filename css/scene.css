@@ -91,6 +91,8 @@ html.scene-3d .projects-pin {
   top: var(--projects-pin-top, 4rem);
   height: calc(100vh - var(--projects-pin-top, 4rem));
   overflow: hidden;
+  /* engine gates the title's entrance to the wave→deck morph start */
+  opacity: var(--projects-enter, 1);
 }
 
 /* ---------- readability scrims over the 3D backdrop ---------- */
