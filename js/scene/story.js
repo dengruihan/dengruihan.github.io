@@ -24,6 +24,16 @@ const easeOutCubic = (x) => 1 - Math.pow(1 - clamp01(x), 3)
 const easeInOut = (x) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2)
 const lerp = (a, b, k) => a + (b - a) * k
 
+/* journey-chapter clock: hold everything at the journey beat while its
+   cards play (no camera flight, no wave morph, show ends at t≈3.85);
+   the transition to projects is then compressed into t∈[3.85,4.0].
+   Shared by the cube field (engine blend) and the camera (cameraAt). */
+export function fieldClock(t) {
+  if (t < 3.85) return Math.min(t, 3)
+  if (t < 4) return 3 + (t - 3.85) / 0.15
+  return t
+}
+
 /* camera + fog keyframes per chapter */
 const KEYFRAMES = [
   { pos: [0, 0.55, 7.6], look: [0, 0.3, 0], fog: [10, 30] }, // 0 hero (server squared up front)
@@ -320,9 +330,10 @@ export class Story {
     this.starMat.opacity = Math.max(0.15, w(5) * 0.8)
     this.stars.rotation.y = time * 0.005
 
-    /* -- fog blend between chapters -- */
-    const i0 = Math.min(Math.floor(t), this.keyframes.length - 2)
-    const f = clamp01(t - i0)
+    /* -- fog blend between chapters (follows the held journey clock) -- */
+    const ft = fieldClock(t)
+    const i0 = Math.min(Math.floor(ft), this.keyframes.length - 2)
+    const f = clamp01(ft - i0)
     const kf = smooth(f)
     this.fog.near = lerp(this.keyframes[i0].fog[0], this.keyframes[i0 + 1].fog[0], kf)
     this.fog.far = lerp(this.keyframes[i0].fog[1], this.keyframes[i0 + 1].fog[1], kf)
@@ -427,6 +438,9 @@ export class Story {
 
   /* camera pose at chapter-float t */
   cameraAt(t, holds, time, outPos, outLook) {
+    /* timeline chapter: no camera movement while the cards play — hold
+       the journey pose, then fly to projects in the compressed window */
+    t = fieldClock(t)
     const i0 = Math.min(Math.max(Math.floor(t), 0), this.keyframes.length - 2)
     const f = smooth(clamp01(t - i0))
     const A = this.keyframes[i0]

@@ -329,7 +329,7 @@ curl -sI https://raymond.agilear.org/ -o /dev/null -w "%{http_code} %{remote_ip}
 - 锚定改**相机空间**：`_updateAnchors` 内调 `cameraAt()` 重建 pos/look 基向量，卡片放在 look 深度处、沿相机 right/up 基向量运动（视锥半宽半高随 fov/aspect 自适应）——任何机位下路径都不漂出画面；
 - 路径（按用户指定）：逐张自**左下角→右上角**对角线穿越屏幕中心，竖向叠加 `waveHeight(u,0,time)*0.35` 的轻微波浪浮动；透明度在行程两端（p∈[0.02,0.14]/[0.86,0.98]）淡入淡出；
 - projects 卡片加 `w4Gate=smooth((t-3.75)/0.25)`，等 journey 最后一张离场后再淡入，两章转场变成交接而非叠印；
-- **波浪保持**（engine.js `fieldT()`）：用户反馈"卡片还没走完波浪就变形了"——`blend(t)` 原本 t 一过 3 就开始 wave→deck 插值。改为对 field 时钟做分段重映射：t<3.85 钉在 formation 3（卡片演出全程波浪完整、涟漪权重不衰减），3→4 变形压缩进 t∈[3.85,4.0]，t≥4 恢复恒等。`chapterWeight()` 及 story.update 里所有 w 门控都跟随重映射后的 t，自动同步。
+- **章节时钟保持**（story.js 导出 `fieldClock()`，engine blend / cameraAt / fog 共用）：用户反馈"卡片还没走完波浪就变形了"、"timeline 部分不要有镜头移动"——`blend(t)` 原本 t 一过 3 就开始 wave→deck 插值，相机也同时从 journey 机位飞往 projects。改为对章节时钟做分段重映射：t<3.85 钉在 3（卡片演出全程波浪完整、涟漪权重不衰减、**相机停在 journey 机位**、fog 不变），3→4 的变形与飞行压缩进 t∈[3.85,4.0]，t≥4 恢复恒等。`chapterWeight()` 及 story.update 里所有 w 门控都跟随重映射后的 t，自动同步；journey 卡片本身锚在相机空间，不受镜头钉住影响。注意卡片演出窗口 `show=(t-3.05)/0.8` 和 projects 门控 `w4Gate` 用的是**原始 t**（滚动时序），不要改成重映射后的值。
 
 验证：jd_/jw_*.png 帧条 + overlay DOM transform 读数——t≤3.03 卡片全隐藏；card0 轨迹 (295,723)→(902,317)→(1567,-109) 过中心 (720,450)；t=3.49/3.68 波浪仍完整成片；t=3.89 journey 清空、变形开始；t=3.97 deck 马赛克面板成型、project 卡片 op 0.76 完成交接。
 遗留：t≈3.4 起 projects 区标题 "Deployments"（sticky DOM）进入左中区域，后两张卡片对角上行时会短暂从其前方掠过——卡片不透明、可读，属分层转场，未做 DOM 级延迟。

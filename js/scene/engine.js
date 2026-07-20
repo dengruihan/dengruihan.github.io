@@ -6,7 +6,7 @@ import { buildAllFormations, setGraphScale } from './formations.js'
 import { CubeField } from './morph.js'
 import { buildServerModel } from './server-model.js'
 import { OverlaySystem } from './overlays.js'
-import { Story } from './story.js'
+import { Story, fieldClock } from './story.js'
 
 const CHAPTER_IDS = ['hero', 'about', 'skills', 'journey', 'projects', 'blog', 'links', 'contact']
 const CHAPTER_COUNT = CHAPTER_IDS.length
@@ -118,17 +118,6 @@ export function startScene({ lite = false, onContextLost } = {}) {
     return { scrub, vis }
   }
 
-  /* cube-field clock: the journey wave holds fully assembled while its
-     cards finish crossing (show ends at t≈3.85); the 3→4 morph then
-     plays compressed just before the projects chapter. chapterWeight()
-     and every w-gate in story.update follow this remapped t, so the wave
-     ripples and deck poses stay in sync with the held/morphing field. */
-  function fieldT(t) {
-    if (t < 3.85) return Math.min(t, 3)
-    if (t < 4) return 3 + (t - 3.85) / 0.15
-    return t
-  }
-
   /* ---------- loop ---------- */
   const camPos = new THREE.Vector3()
   const camLook = new THREE.Vector3()
@@ -162,7 +151,7 @@ export function startScene({ lite = false, onContextLost } = {}) {
     const t = chapterAt(smoothScroll)
     const holds = holdsAt(smoothScroll)
 
-    cubeField.blend(fieldT(t))
+    cubeField.blend(fieldClock(t))
     story.update(t, holds, time)
     story.cameraAt(t, holds, time, camPos, camLook)
     camera.position.copy(camPos)
