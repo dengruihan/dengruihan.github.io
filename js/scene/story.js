@@ -24,16 +24,6 @@ const easeOutCubic = (x) => 1 - Math.pow(1 - clamp01(x), 3)
 const easeInOut = (x) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2)
 const lerp = (a, b, k) => a + (b - a) * k
 
-/* journey-chapter clock: hold everything at the journey beat while its
-   cards play (no camera flight, no wave morph, show ends at t≈3.85);
-   the transition to projects is then compressed into t∈[3.85,4.0].
-   Shared by the cube field (engine blend) and the camera (cameraAt). */
-export function fieldClock(t) {
-  if (t < 3.85) return Math.min(t, 3)
-  if (t < 4) return 3 + (t - 3.85) / 0.15
-  return t
-}
-
 /* camera + fog keyframes per chapter */
 const KEYFRAMES = [
   { pos: [0, 0.55, 7.6], look: [0, 0.3, 0], fog: [10, 30] }, // 0 hero (server squared up front)
@@ -187,13 +177,15 @@ export class Story {
     )
   }
 
-  /* deck scrub: continuous card index with dwell at each integer */
+  /* deck scrub: continuous card index with dwell at each integer —
+     half of each panel's scroll is reading time; during the transition
+     the mosaic+card pair flies up and out together */
   _deckCi(scrub) {
     const count = this.dom.projects.length
     const raw = clamp01(scrub) * (count - 1)
     const step = Math.floor(raw)
     const frac = raw - step
-    const e = smooth((frac - 0.22) / 0.56)
+    const e = smooth((frac - 0.25) / 0.5)
     return Math.min(step + e, count - 1)
   }
 
@@ -256,7 +248,7 @@ export class Story {
         const pose = this._deckPoseCache[p]
         pos[i * 3 + 1] += pose.liftY * w4
         pos[i * 3 + 2] += ci * DECK_SPACING * w4
-        scale[i] *= 1 - pose.lift * 0.85 * w4
+        scale[i] *= 1 - pose.lift * 0.25 * w4 // mostly intact while flying out
       }
     }
 
@@ -332,8 +324,8 @@ export class Story {
     this.starMat.opacity = Math.max(0.15, w(5) * 0.8)
     this.stars.rotation.y = time * 0.005
 
-    /* -- fog blend between chapters (follows the held journey clock) -- */
-    const ft = fieldClock(t)
+    /* -- fog blend between chapters (follows the held chapter clock) -- */
+    const ft = holds.ft ?? t
     const i0 = Math.min(Math.floor(ft), this.keyframes.length - 2)
     const f = clamp01(ft - i0)
     const kf = smooth(f)
@@ -363,7 +355,7 @@ export class Story {
     const right = this._right || (this._right = new THREE.Vector3())
     const upv = this._upv || (this._upv = new THREE.Vector3())
     const up = this._up || (this._up = new THREE.Vector3(0, 1, 0))
-    this.cameraAt(t, holds, time, camP, camL)
+    this.cameraAt(holds.ft ?? t, holds, time, camP, camL)
     fwd.subVectors(camL, camP)
     const depth = fwd.length()
     fwd.normalize()
@@ -398,7 +390,13 @@ export class Story {
     this.anchors.projects.forEach((a, j) => {
       const pose = deckPanelPose(j, ci)
       const base = bases[j]
-      const frontness = clamp01(1 - Math.abs(pose.d - 0.1) * 2.0)
+      /* incoming fades in as it's revealed; outgoing rides the same
+         liftY as its mosaic (flying off the top together) and only
+         fades at the very end of the flight */
+      const frontness =
+        pose.d >= 0
+          ? 0.8 * clamp01((0.85 - pose.d) * 1.5)
+          : 0.8 * clamp01(1 - Math.max(0, -pose.d - 0.55) * 2.5)
       a.x = base.x + offX
       a.y = base.y + pose.liftY + offY
       a.z = base.z + ci * DECK_SPACING
@@ -438,11 +436,10 @@ export class Story {
     })
   }
 
-  /* camera pose at chapter-float t */
+  /* camera pose at chapter-float t — engine passes the remapped clock
+     (holds.ft): held at the journey/projects beats while their shows
+     play, so no camera movement happens mid-show */
   cameraAt(t, holds, time, outPos, outLook) {
-    /* timeline chapter: no camera movement while the cards play — hold
-       the journey pose, then fly to projects in the compressed window */
-    t = fieldClock(t)
     const i0 = Math.min(Math.max(Math.floor(t), 0), this.keyframes.length - 2)
     const f = smooth(clamp01(t - i0))
     const A = this.keyframes[i0]

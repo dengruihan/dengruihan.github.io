@@ -226,12 +226,15 @@ export function buildDeck(N, rng, panelCount) {
   return f
 }
 
-/* Per-frame deck pose. ci = continuous "card index" (0 .. panelCount-1). */
+/* Per-frame deck pose. ci = continuous "card index" (0 .. panelCount-1).
+   Exiting panels (d<0) fly straight up out of frame — the project
+   card rides the same liftY, so the mosaic+card pair leaves together
+   and the next pair is revealed behind. */
 export function deckPanelPose(j, ci) {
   const d = j - ci // >0 behind front, <0 exiting
   const z = -d * DECK_SPACING
-  const lift = d < 0 ? Math.min(1, -d * 1.5) : 0
-  return { z, liftY: lift * 3.8, lift, d }
+  const lift = d < 0 ? Math.min(1, -d * 1.15) : 0
+  return { z, liftY: lift * 9, lift, d }
 }
 
 /* --- CH 5: deep-space wall (Blog) --- */

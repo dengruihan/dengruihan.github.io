@@ -6,7 +6,7 @@ import { buildAllFormations, setGraphScale } from './formations.js'
 import { CubeField } from './morph.js'
 import { buildServerModel } from './server-model.js'
 import { OverlaySystem } from './overlays.js'
-import { Story, fieldClock } from './story.js'
+import { Story } from './story.js'
 
 const CHAPTER_IDS = ['hero', 'about', 'skills', 'journey', 'projects', 'blog', 'links', 'contact']
 const CHAPTER_COUNT = CHAPTER_IDS.length
@@ -126,6 +126,25 @@ export function startScene({ lite = false, onContextLost } = {}) {
     return { scrub, vis, deck }
   }
 
+  /* chapter clock for the cube field / camera / fog: hold at each
+     chapter beat while its show plays, then compress the outgoing
+     transition —
+       journey:   hold at 3 while its cards cross (until t=3.85)
+       projects:  hold at 4 while the deck flips (until the scroll zone
+                  is exhausted); the blog morph plays over the remaining
+                  scroll up to the blog focus */
+  function fieldClock(t, sY) {
+    if (t < 3.85) return Math.min(t, 3)
+    if (t < 4) return 3 + (t - 3.85) / 0.15
+    if (t < 5) {
+      const vh = window.innerHeight
+      const zoneEnd = metrics[4].top + metrics[4].height - vh
+      const k = (sY - zoneEnd) / Math.max(metrics[5].focus - zoneEnd, 1)
+      return 4 + Math.min(Math.max(k, 0), 1)
+    }
+    return t
+  }
+
   /* ---------- loop ---------- */
   const camPos = new THREE.Vector3()
   const camLook = new THREE.Vector3()
@@ -158,15 +177,16 @@ export function startScene({ lite = false, onContextLost } = {}) {
 
     const t = chapterAt(smoothScroll)
     const holds = holdsAt(smoothScroll)
+    holds.ft = fieldClock(t, smoothScroll)
 
     // the projects pin (Deployments title) enters only as the wave
     // starts morphing into the deck — not a pixel before
     const enterRaw = Math.min(Math.max((t - 3.85) / 0.13, 0), 1)
     rootEl.style.setProperty('--projects-enter', (enterRaw * enterRaw * (3 - 2 * enterRaw)).toFixed(3))
 
-    cubeField.blend(fieldClock(t))
+    cubeField.blend(holds.ft)
     story.update(t, holds, time)
-    story.cameraAt(t, holds, time, camPos, camLook)
+    story.cameraAt(holds.ft, holds, time, camPos, camLook)
     camera.position.copy(camPos)
     camera.lookAt(camLook)
     overlays.sync(camera, t)
