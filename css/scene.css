@@ -193,6 +193,14 @@ html.scene-3d .section-about {
 
 /* ---------- scene-lite (mobile / low-power) ---------- */
 
+/* the grain layer is normally inset:-50% — a 4×-viewport composited layer
+   repainted over the WebGL canvas every frame; shrink it to the viewport
+   and dim it on low-power devices */
+html.scene-lite body::after {
+  inset: 0;
+  opacity: 0.04;
+}
+
 /* intro copy stacks over the server on small screens — dim a card behind it */
 html.scene-lite .hero-intro {
   background: rgba(10, 20, 16, 0.55);
