@@ -4,6 +4,7 @@
    Each registered card supplies getState() → { x, y, z, opacity, scale }
    in world space; sync() projects once per frame after the camera moves. */
 import * as THREE from 'three'
+import { isNarrow } from '../viewport.js'
 
 export class OverlaySystem {
   constructor() {
@@ -14,8 +15,6 @@ export class OverlaySystem {
     this._v = new THREE.Vector3()
     this._camDir = new THREE.Vector3()
     this._toAnchor = new THREE.Vector3()
-    // lite mode: keep cards inside the narrow viewport instead of clipping
-    this.clampToViewport = window.matchMedia('(max-width: 768px)').matches
   }
 
   /**
@@ -46,6 +45,9 @@ export class OverlaySystem {
     camera.getWorldDirection(this._camDir)
     const w = window.innerWidth
     const h = window.innerHeight
+    // narrow viewport: keep cards inside the frame instead of clipping
+    // (live check — follows resize/orientation, not latched at boot)
+    const clamp = isNarrow()
     for (const { el, getState } of this.items) {
       const s = getState(t)
       if (!s || s.opacity <= 0.01) {
@@ -65,7 +67,7 @@ export class OverlaySystem {
       this._v.set(s.x, s.y, s.z).project(camera)
       let px = (this._v.x * 0.5 + 0.5) * w
       let py = (-this._v.y * 0.5 + 0.5) * h
-      if (this.clampToViewport) {
+      if (clamp) {
         px = Math.min(Math.max(px, w * 0.08), w * 0.92)
         py = Math.min(Math.max(py, h * 0.07), h * 0.88)
       }

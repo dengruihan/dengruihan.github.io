@@ -1,3 +1,5 @@
+import { isNarrow } from './viewport.js'
+
 const DATA_BASE = 'data/'
 
 const PROJECT_STATS = {
@@ -220,7 +222,7 @@ function setupProjectsScroll() {
   const apply = () => {
     // In 3D scene mode the scene engine owns the scroll-zone height.
     if (document.documentElement.classList.contains('scene-3d')) return
-    if (window.matchMedia('(max-width: 768px)').matches) {
+    if (isNarrow()) {
       zone.style.removeProperty('--projects-scroll-h')
       zone.style.removeProperty('--projects-translate')
       track.style.removeProperty('transform')

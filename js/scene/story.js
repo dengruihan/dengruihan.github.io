@@ -10,10 +10,12 @@ import {
   DECK_SPACING,
   deckPanelPose,
   blogSlot,
+  BLOG_WALL_Z,
   graphNodePose,
   OUTRO_CENTER,
   mulberry32,
 } from './formations.js'
+import { isNarrow } from '../viewport.js'
 
 const clamp01 = (x) => Math.min(1, Math.max(0, x))
 const smooth = (x) => {
@@ -39,6 +41,11 @@ const KEYFRAMES = [
 /* hero close-up target (scrubbed by chapter-0 progress) */
 const HERO_NEAR = { pos: [0.5, 0.85, 3.5], look: [-0.1, 0.7, 0.72] }
 
+/* portrait framing: how strongly each chapter's camera pulls back along
+   its view axis as the aspect ratio narrows (wide chapters need the most;
+   hero is untouched — it's already a centered close-up) */
+const PULLBACK = [0, 0.3, 0.5, 1, 0.6, 1, 1, 0.5]
+
 
 export class Story {
   constructor({ scene, camera, cubeField, formations, server, overlays, dom, lite }) {
@@ -54,13 +61,13 @@ export class Story {
     this.fog = new THREE.Fog(COLORS.ink, 10, 30)
     scene.fog = this.fog
 
-    // portrait screens see a narrower slice of the world — pull the
-    // camera back for the wide chapters
+    // portrait screens see a narrower slice of the world — the camera
+    // pulls back dynamically in cameraAt() via PULLBACK + _aspectPull(),
+    // so framing follows the live aspect ratio instead of boot-time lite
     this.keyframes = KEYFRAMES.map((k) => ({ pos: [...k.pos], look: [...k.look], fog: [...k.fog] }))
-    if (lite) {
-      for (const i of [3, 6]) {
-        this.keyframes[i].pos = this.keyframes[i].pos.map((v) => v * 1.18)
-      }
+    this.viewport = {
+      aspect: window.innerWidth / window.innerHeight,
+      narrow: isNarrow(),
     }
 
     this._buildStars()
@@ -68,6 +75,18 @@ export class Story {
     this._buildGraphLines()
     this._buildAnchors()
     this._registerOverlays()
+  }
+
+  /* engine pushes live viewport state on every resize/orientation change */
+  setViewport({ aspect, narrow }) {
+    this.viewport.aspect = aspect
+    this.viewport.narrow = narrow
+  }
+
+  /* 0 in landscape, up to ~0.8 on a tall phone — scales the PULLBACK
+     weights so the framing widens exactly as much as the crop demands */
+  _aspectPull() {
+    return clamp01((0.8 - this.viewport.aspect) / 0.8) * 0.8
   }
 
   /* ---------- static-ish scene furniture ---------- */
@@ -362,11 +381,13 @@ export class Story {
     right.crossVectors(fwd, up).normalize()
     upv.crossVectors(right, fwd)
     // frustum half-extents at the look depth; the diagonal path runs
-    // corner-to-corner slightly beyond the frame
+    // corner-to-corner slightly beyond the frame. Narrow screens get a
+    // tighter margin — halfW is already small there, and the wide 2.2
+    // overshoot would make cards flash across the visible strip
     const halfH = depth * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2))
     const halfW = halfH * this.camera.aspect
-    const uMax = halfW + 2.2
-    const vSpan = halfH + 1.5
+    const uMax = halfW + (this.viewport.narrow ? 1.0 : 2.2)
+    const vSpan = halfH + (this.viewport.narrow ? 0.8 : 1.5)
     this.anchors.journey.forEach((a, i) => {
       const n = this.anchors.journey.length
       const spread = n * 0.55 + 0.45
@@ -385,8 +406,10 @@ export class Story {
        of overlapping center stage */
     const w4Gate = smooth((t - 3.75) / 0.25)
     const { bases } = this.formations[4].extras
-    const offX = this.lite ? 0 : 3.25
-    const offY = this.lite ? -1.85 : -0.1
+    // narrow screens: card rides below its mosaic panel — 3.25 world
+    // units to the right would be off-frame in portrait
+    const offX = this.viewport.narrow ? 0 : 3.25
+    const offY = this.viewport.narrow ? -1.85 : -0.1
     this.anchors.projects.forEach((a, j) => {
       const pose = deckPanelPose(j, ci)
       const base = bases[j]
@@ -401,25 +424,43 @@ export class Story {
       a.y = base.y + pose.liftY + offY
       a.z = base.z + ci * DECK_SPACING
       a.opacity = w4s * w4Gate * frontness
-      a.scale = this.lite ? 0.82 : 1 - clamp01(pose.d) * 0.08
+      a.scale = this.viewport.narrow ? 0.82 : 1 - clamp01(pose.d) * 0.08
     })
 
-    /* blog cards fly from behind the camera onto the wall */
+    /* blog cards fly from behind the camera onto the wall — a horizontal
+       row on wide screens, a vertical column on narrow ones (the row's
+       ±5.6-unit spread is off-frame in portrait). The column needs wide
+       spacing + a smaller card scale: overlay cards are fixed pixel size,
+       so three of them only fit the tall axis with room to spare */
     const vis5 = holds.vis[5]
+    const blogCount = this.anchors.blog.length
+    const narrow = this.viewport.narrow
     this.anchors.blog.forEach((a, j) => {
       const q = clamp01(vis5 * 4.2 - j * 0.7)
       const e = easeOutCubic(q)
-      const slot = blogSlot(j, this.anchors.blog.length)
+      const slot = narrow
+        ? { x: 0, y: 0.95 - (j - (blogCount - 1) / 2) * 6.2, z: BLOG_WALL_Z + 0.4 }
+        : blogSlot(j, blogCount)
       a.x = lerp(a.start.x, slot.x, e) + Math.sin(e * Math.PI) * a.sway
       a.y = lerp(a.start.y, slot.y, e)
       a.z = lerp(a.start.z, slot.z, e)
       a.opacity = w5s * clamp01(q * 4)
-      a.scale = 0.85 + 0.15 * e
+      a.scale = narrow ? 0.55 + 0.1 * e : 0.85 + 0.15 * e
     })
 
-    /* friend cards hover at graph nodes */
+    /* friend cards hover at graph nodes — except on narrow screens, where
+       the compressed graph packs the nodes closer than the fixed-pixel
+       cards; there they stack in a clear vertical column instead */
     const count = this.dom.links.length
     this.anchors.links.forEach((a, k) => {
+      if (this.viewport.narrow) {
+        a.x = 0
+        a.y = 0.95 - (k - (count - 1) / 2) * 3.1
+        a.z = 0
+        a.opacity = w6s
+        a.scale = 0.9
+        return
+      }
       const pose = (this._nodePoses && this._nodePoses[k]) || graphNodePose(k, count, this.dom.teacherIndex, time)
       if (k === this.dom.teacherIndex) {
         // teacher card hangs below the central node
@@ -455,6 +496,17 @@ export class Story {
       lerp(A.look[2], B.look[2], f)
     )
 
+    /* portrait framing: push the camera away from its look target along
+       the view axis, weighted per chapter — follows the live aspect, so
+       window resizes and rotations re-frame smoothly */
+    const pull = this._aspectPull()
+    if (pull > 0) {
+      const wPull = lerp(PULLBACK[i0], PULLBACK[i0 + 1], f) * pull
+      if (wPull > 0.001) {
+        outPos.sub(outLook).multiplyScalar(1 + wPull).add(outLook)
+      }
+    }
+
     /* hero: a quick dip toward the front panel over the first half-viewport,
        then the camera immediately pulls back out — no parking at the
        close-up; the pull-back flows straight into the Field Notes orbit */
@@ -478,8 +530,10 @@ export class Story {
       if (w > 0.001) {
         const e = p * p
         const az = lerp(-0.7, 0.85, e)
+        // widen the orbit in portrait (chapter weight 0.3, same as PULLBACK)
+        const radius = 7.2 * (1 + this._aspectPull() * 0.3)
         outPos.lerp(
-          new THREE.Vector3(Math.sin(az) * 7.2, lerp(3.4, 0.8, e), Math.cos(az) * 7.2),
+          new THREE.Vector3(Math.sin(az) * radius, lerp(3.4, 0.8, e), Math.cos(az) * radius),
           w
         )
         outLook.lerp(new THREE.Vector3(0, lerp(0.6, 0.15, e), 0), w)

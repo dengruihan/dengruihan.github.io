@@ -1,6 +1,8 @@
 /* Scene entry — capability gates, then lazy-load the WebGL layer.
    Falls back silently to the classic 2D page whenever anything is missing. */
-(function bootScene() {
+import { narrowMQ, coarseMQ } from '../viewport.js'
+
+;(function bootScene() {
   // tell the boot loader once that no 3D is coming (never more than once)
   let skipSent = false
   function skipScene() {
@@ -23,11 +25,13 @@
     return
   }
 
-  // lite = small touch device or low-memory; a desktop with a touchscreen
-  // (pointer: coarse alone) still gets the full scene
-  const coarseNarrow = window.matchMedia('(pointer: coarse)').matches && window.innerWidth < 1024
+  // lite = power tier, judged once at boot: small touch device, narrow
+  // screen, or low memory. A desktop with a touchscreen (pointer: coarse
+  // alone) still gets the full scene. Width-driven LAYOUT decisions are
+  // not here — they re-evaluate live via js/viewport.js.
+  const coarseNarrow = coarseMQ.matches && window.innerWidth < 1024
   const lite =
-    coarseNarrow || window.innerWidth < 768 || (navigator.deviceMemory && navigator.deviceMemory <= 2)
+    coarseNarrow || narrowMQ.matches || (navigator.deviceMemory && navigator.deviceMemory <= 2)
 
   let started = false
   let controller = null

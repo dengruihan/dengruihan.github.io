@@ -7,6 +7,7 @@ import { CubeField } from './morph.js'
 import { buildServerModel } from './server-model.js'
 import { OverlaySystem } from './overlays.js'
 import { Story } from './story.js'
+import { isNarrow } from '../viewport.js'
 
 const CHAPTER_IDS = ['hero', 'about', 'skills', 'journey', 'projects', 'blog', 'links', 'contact']
 const CHAPTER_COUNT = CHAPTER_IDS.length
@@ -80,7 +81,9 @@ export function startScene({ lite = false, onContextLost } = {}) {
 
   function setProjectsHeight() {
     if (projectsZone) {
-      const perCard = lite ? 1.15 : 1.35
+      // narrower screens read faster — shorter scrub per card; live check
+      // so rotation re-measures instead of staying latched to boot state
+      const perCard = isNarrow() ? 1.15 : 1.35
       const h = Math.ceil(window.innerHeight * (1 + dom.projects.length * perCard))
       projectsZone.style.setProperty('--projects-scroll-h', `${h}px`)
     }
@@ -218,6 +221,7 @@ export function startScene({ lite = false, onContextLost } = {}) {
     camera.fov = w / h < 0.8 ? 55 : 42
     camera.updateProjectionMatrix()
     renderer.setSize(w, h)
+    story.setViewport({ aspect: w / h, narrow: isNarrow() })
     measure()
   }
 
@@ -242,6 +246,9 @@ export function startScene({ lite = false, onContextLost } = {}) {
   }
 
   window.addEventListener('resize', onResize)
+  // mobile URL bars resize the visual viewport without always firing a
+  // window resize — re-measure so chapter metrics track the real height
+  window.visualViewport?.addEventListener('resize', onResize)
   window.addEventListener('load', measure)
   document.addEventListener('visibilitychange', onVisibility)
   canvas.addEventListener('webglcontextlost', onLost)
@@ -295,6 +302,7 @@ export function startScene({ lite = false, onContextLost } = {}) {
       running = false
       cancelAnimationFrame(rafId)
       window.removeEventListener('resize', onResize)
+      window.visualViewport?.removeEventListener('resize', onResize)
       window.removeEventListener('load', measure)
       document.removeEventListener('visibilitychange', onVisibility)
       overlays.destroy()
