@@ -129,8 +129,19 @@
 
     <header class="site-nav" role="banner">
       <nav aria-label="Section navigation">
-        <a href="#hero" class="nav-logo">RD</a>
-        <ul class="nav-links">
+        <button
+          class="nav-toggle"
+          id="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="nav-links"
+          aria-label="Open menu"
+        >
+          <span class="nav-toggle-line"></span>
+          <span class="nav-toggle-line"></span>
+          <span class="nav-toggle-line"></span>
+        </button>
+        <ul class="nav-links" id="nav-links">
           <li><a href="#about">About</a></li>
           <li><a href="#skills">Skills</a></li>
           <li><a href="#journey">Journey</a></li>

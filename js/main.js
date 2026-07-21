@@ -393,6 +393,42 @@ function restoreGitHubPagesRedirect() {
   }
 }
 
+/* Nav menu — the hamburger box at the top right toggles the section
+   link panel; it closes on link click, Escape, or an outside click. */
+function setupNavMenu() {
+  const root = document.documentElement
+  const toggle = document.getElementById('nav-toggle')
+  const links = document.getElementById('nav-links')
+  if (!toggle || !links) return
+
+  const setOpen = (open) => {
+    root.classList.toggle('nav-menu-open', open)
+    toggle.setAttribute('aria-expanded', String(open))
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu')
+  }
+
+  toggle.addEventListener('click', () => {
+    setOpen(!root.classList.contains('nav-menu-open'))
+  })
+
+  links.addEventListener('click', (e) => {
+    if (e.target.closest('a')) setOpen(false)
+  })
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && root.classList.contains('nav-menu-open')) {
+      setOpen(false)
+      toggle.focus()
+    }
+  })
+
+  document.addEventListener('click', (e) => {
+    if (root.classList.contains('nav-menu-open') && !e.target.closest('.site-nav')) {
+      setOpen(false)
+    }
+  })
+}
+
 function setupTimelineActiveState() {
   const items = document.querySelectorAll('.timeline-item')
   if (!items.length || !('IntersectionObserver' in window)) return
@@ -525,6 +561,7 @@ function setupTitleScramble() {
 async function init() {
   restoreGitHubPagesRedirect()
   document.getElementById('year').textContent = new Date().getFullYear()
+  setupNavMenu()
 
   const data = await loadData()
   renderAbout(data.about)
