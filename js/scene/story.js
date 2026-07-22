@@ -23,7 +23,6 @@ const smooth = (x) => {
   return x * x * (3 - 2 * x)
 }
 const easeOutCubic = (x) => 1 - Math.pow(1 - clamp01(x), 3)
-const easeInOut = (x) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2)
 const lerp = (a, b, k) => a + (b - a) * k
 
 /* camera + fog keyframes per chapter */
@@ -37,9 +36,6 @@ const KEYFRAMES = [
   { pos: [0, 2.2, 11.6], look: [0, 0.95, 0], fog: [9, 28] }, // 6 links
   { pos: [0, 1.6, 9.6], look: [0, 0.2, -8], fog: [8, 26] }, // 7 contact
 ]
-
-/* hero close-up target (scrubbed by chapter-0 progress) */
-const HERO_NEAR = { pos: [0.5, 0.85, 3.5], look: [-0.1, 0.7, 0.72] }
 
 /* portrait framing: how strongly each chapter's camera pulls back along
    its view axis as the aspect ratio narrows (wide chapters need the most;
@@ -507,36 +503,46 @@ export class Story {
       }
     }
 
-    /* hero: a quick dip toward the front panel over the first half-viewport,
-       then the camera immediately pulls back out — no parking at the
-       close-up; the pull-back flows straight into the Field Notes orbit */
-    if (t < 1) {
-      const push = easeInOut(holds.scrub[0])
-      const hold = 1 - smooth((t - 0.02) / 0.43)
-      const z = push * hold
-      outPos.lerp(new THREE.Vector3(...HERO_NEAR.pos), z)
-      outLook.lerp(new THREE.Vector3(...HERO_NEAR.look), z)
-    }
+    /* hero → Capabilities: one continuous three-beat move —
+       1. first scroll: push in toward the server while swinging up-left,
+          settling on a 45° side angle and holding it there
+       2. Field Notes: descend along the held angle while the chassis
+          dissolves into the cube field
+       3. run-up to Capabilities: a slow rightward arc that lands exactly
+          on the skills keyframe, where the base track takes over */
+    if (t < 2.0) {
+      const k0 = this.keyframes[0]
+      const k2 = this.keyframes[2]
+      const push = smooth(t / 0.75) //           beat 1: dolly in + swing up-left
+      const down = smooth((t - 0.9) / 0.7) //      beat 2: Field Notes descent
+      const right = smooth((t - 1.5) / 0.48) //    beat 3: slow arc onto Capabilities
+      // portrait widens the arc once the camera leaves the hero close-up
+      const widen = 1 + this._aspectPull() * 0.3 * push
 
-    /* Field Notes: scroll-scrubbed orbit around the server —
-       a gentle right-down drift begins before the chapter fully
-       centers; the main sweep plays on the cleared stage once the
-       content has scrolled past, while the chassis dissolves into
-       the cube field. Back-loaded easing (p²): slow early, strong
-       after the stage clears. */
-    if (t >= 0.6 && t < 2.0) {
-      const p = clamp01((t - 0.6) / 1.15)
-      const w = smooth((t - 0.6) / 0.12) * (1 - smooth((t - 1.75) / 0.2))
+      const az = lerp(
+        lerp(Math.atan2(k0.pos[0], k0.pos[2]), -Math.PI / 4, push),
+        Math.atan2(k2.pos[0], k2.pos[2]),
+        right
+      )
+      const radius =
+        lerp(
+          lerp(lerp(Math.hypot(k0.pos[0], k0.pos[2]), 5.0, push), 7.3, down),
+          Math.hypot(k2.pos[0], k2.pos[2]),
+          right
+        ) * widen
+      const y = lerp(lerp(lerp(k0.pos[1], 3.2, push), 1.05, down), k2.pos[1], right)
+
+      const w = 1 - smooth((t - 1.9) / 0.1)
       if (w > 0.001) {
-        const e = p * p
-        const az = lerp(-0.7, 0.85, e)
-        // widen the orbit in portrait (chapter weight 0.3, same as PULLBACK)
-        const radius = 7.2 * (1 + this._aspectPull() * 0.3)
-        outPos.lerp(
-          new THREE.Vector3(Math.sin(az) * radius, lerp(3.4, 0.8, e), Math.cos(az) * radius),
+        outPos.lerp(new THREE.Vector3(Math.sin(az) * radius, y, Math.cos(az) * radius), w)
+        outLook.lerp(
+          new THREE.Vector3(
+            lerp(k0.look[0], k2.look[0], right),
+            lerp(lerp(lerp(k0.look[1], 0.7, push), 0.15, down), k2.look[1], right),
+            lerp(k0.look[2], k2.look[2], right)
+          ),
           w
         )
-        outLook.lerp(new THREE.Vector3(0, lerp(0.6, 0.15, e), 0), w)
       }
     }
 
