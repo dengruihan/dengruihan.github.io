@@ -1,253 +1,42 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="RuiHan Deng — Full Stack Developer & Creative Thinker. Student developer building AI-powered ecological monitoring tools."
-    />
-    <title>RuiHan Deng — Field Survey</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/tokens.css" />
-    <link rel="stylesheet" href="css/main.css" />
-    <link rel="stylesheet" href="css/animations.css" />
-    <link rel="stylesheet" href="css/friend-links.css" />
-    <link rel="stylesheet" href="css/scene.css" />
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "./assets/vendor/three.module.js"
-        }
-      }
-    </script>
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-
-    <!-- River thread signature -->
-    <aside class="river-thread" aria-hidden="true">
-      <svg class="river-svg" viewBox="0 0 48 2000" preserveAspectRatio="none">
-        <defs>
-          <clipPath id="river-clip">
-            <rect id="river-clip-rect" x="0" y="0" width="48" height="0" />
-          </clipPath>
-        </defs>
-        <path
-          class="river-path"
-          clip-path="url(#river-clip)"
-          d="M24 0 C 2 250, 46 500, 24 750 C 2 1000, 46 1250, 24 1500 C 2 1750, 46 1950, 24 2000"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </aside>
-
-    <header class="site-nav" role="banner">
-      <nav aria-label="Section navigation">
-        <a href="#hero" class="nav-logo">RD</a>
-        <ul class="nav-links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#skills">Skills</a></li>
-          <li><a href="#journey">Journey</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#blog">Blog</a></li>
-          <li><a href="#links">Links</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
-    </header>
-
-    <main id="main">
-      <!-- Hero -->
-      <section id="hero" class="section section-hero" data-section="hero" aria-label="Introduction">
-        <div class="hero-pin">
-          <div class="hero-contours" aria-hidden="true"></div>
-          <div class="hero-glow" aria-hidden="true"></div>
-          <div class="hero-scan" aria-hidden="true"></div>
-          <div class="hud-frame" aria-hidden="true">
-            <span class="hud-corner hud-corner--tl"></span>
-            <span class="hud-corner hud-corner--tr"></span>
-            <span class="hud-corner hud-corner--bl"></span>
-            <span class="hud-corner hud-corner--br"></span>
-            <span class="hud-tag hud-tag--tl">FIELD FEED · WETLAND SURVEY <i class="rec-dot"></i></span>
-            <span class="hud-tag hud-tag--tr">30.2741° N · 120.1551° E</span>
-            <span class="hud-tag hud-tag--bl">SPECIMEN <em>P. CANALICULATA</em></span>
-            <span class="hud-tag hud-tag--br">CONF 0.91 · YOLO BASELINE 0.838</span>
-          </div>
-          <div class="hero-content">
-            <p class="eyebrow">SURVEY 00 / INTRO</p>
-            <h1 class="hero-name">
-              <span class="hero-word">RuiHan</span>
-              <span class="hero-word hero-word--italic">Deng</span>
-            </h1>
-            <p class="hero-tagline">Full Stack Developer &amp; <em>Creative Thinker</em></p>
-            <p class="hero-bio">
-              Passionate about building creative and contributory products.
-              Specialize in Python, LLM, and ecological monitoring.
-            </p>
-            <div class="hero-actions">
-              <a href="mailto:Raymond.dengruihan@yungu.org" class="btn btn--primary">Email Me</a>
-              <a href="https://github.com/dengruihan" class="btn btn--ghost" target="_blank" rel="noopener noreferrer">GitHub</a>
-            </div>
-            <div class="hero-datum" aria-hidden="true">
-              <span class="datum-item">STATION 00 · HANGZHOU WETLAND</span>
-              <span class="datum-item">30.2741° N · 120.1551° E</span>
-              <span class="datum-item">SPECIMEN <em>POMACEA CANALICULATA</em></span>
-            </div>
-            <p class="scroll-cue" aria-hidden="true">
-              <span>Scroll to survey</span>
-              <span class="scroll-cue-arrow">↓</span>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- About -->
-      <section id="about" class="section section-about" data-section="about" aria-labelledby="about-heading">
-        <div class="section-inner">
-          <header class="section-header">
-            <p class="eyebrow">SURVEY 01 / ABOUT</p>
-            <h2 id="about-heading" class="section-title">Field Notes</h2>
-          </header>
-          <div class="about-grid">
-            <div class="about-profile">
-              <img
-                src="assets/avatar.jpg"
-                alt="Portrait of RuiHan Deng"
-                class="about-avatar"
-                width="280"
-                height="280"
-                loading="lazy"
-              />
-              <div class="about-facts" id="quick-facts"></div>
-            </div>
-            <div class="about-story">
-              <p class="lead-text" id="about-lead"></p>
-              <div id="about-paragraphs"></div>
-              <div class="about-meta">
-                <div class="meta-block">
-                  <h3 class="meta-label">Current Focus</h3>
-                  <p id="current-focus"></p>
-                </div>
-                <div class="meta-block">
-                  <h3 class="meta-label">Hobbies</h3>
-                  <p id="hobbies"></p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="goals-grid" id="goals-grid" aria-label="Goals"></div>
-        </div>
-      </section>
-
-      <!-- Skills -->
-      <section id="skills" class="section section-skills" data-section="skills" aria-labelledby="skills-heading">
-        <div class="section-inner">
-          <header class="section-header">
-            <p class="eyebrow">SURVEY 02 / SKILLS</p>
-            <h2 id="skills-heading" class="section-title">Capabilities</h2>
-          </header>
-          <div class="skills-list" id="skills-list"></div>
-        </div>
-      </section>
-
-      <!-- Journey -->
-      <section id="journey" class="section section-journey" data-section="journey" aria-labelledby="journey-heading">
-        <div class="section-inner">
-          <header class="section-header">
-            <p class="eyebrow">SURVEY 03 / JOURNEY</p>
-            <h2 id="journey-heading" class="section-title">Timeline</h2>
-          </header>
-          <div class="timeline">
-            <div class="timeline-line" aria-hidden="true"></div>
-            <ol class="timeline-list" id="timeline-list"></ol>
-          </div>
-        </div>
-      </section>
-
-      <!-- Projects -->
-      <section id="projects" class="section section-projects" data-section="projects" aria-labelledby="projects-heading">
-        <div class="section-inner section-inner--wide">
-          <div class="projects-scroll-zone" id="projects-scroll-zone">
-            <div class="projects-pin">
-              <header class="section-header section-header--sticky">
-                <p class="eyebrow">SURVEY 04 / PROJECTS</p>
-                <h2 id="projects-heading" class="section-title">Deployments</h2>
-              </header>
-              <div class="projects-track" id="projects-track"></div>
-            </div>
-          </div>
-          <div class="projects-stack" id="projects-stack" aria-label="Projects list"></div>
-        </div>
-      </section>
-
-      <!-- Blog -->
-      <section id="blog" class="section section-blog" data-section="blog" aria-labelledby="blog-heading">
-        <div class="section-inner">
-          <header class="section-header">
-            <p class="eyebrow">SURVEY 05 / BLOG</p>
-            <h2 id="blog-heading" class="section-title">Dispatches</h2>
-          </header>
-          <div class="blog-grid" id="blog-grid"></div>
-        </div>
-      </section>
-
-      <!-- Friend links -->
-      <section id="links" class="section section-links" data-section="links" aria-labelledby="links-heading">
-        <div class="section-inner">
-          <header class="section-header">
-            <p class="eyebrow">SURVEY 06 / LINKS</p>
-            <h2 id="links-heading" class="section-title">友情链接</h2>
-            <p class="section-lead">老师与同学的个人站点</p>
-          </header>
-          <div id="friend-links-root" class="friend-links-stage"></div>
-        </div>
-      </section>
-
-      <!-- Updates + Contact -->
-      <section id="contact" class="section section-contact" data-section="contact" aria-labelledby="contact-heading">
-        <div class="section-inner">
-          <header class="section-header">
-            <p class="eyebrow">SURVEY 07 / UPDATES</p>
-            <h2 id="contact-heading" class="section-title">Latest Transmissions</h2>
-          </header>
-          <ul class="updates-list" id="updates-list"></ul>
-          <footer class="site-footer">
-            <a href="mailto:Raymond.dengruihan@yungu.org" class="footer-email">Raymond.dengruihan@yungu.org</a>
-            <div class="footer-links">
-              <a href="https://github.com/dengruihan" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <span class="footer-dot" aria-hidden="true">·</span>
-              <span class="footer-copy">© <span id="year"></span> RuiHan Deng</span>
-            </div>
-          </footer>
-        </div>
-      </section>
-    </main>
-
-    <!-- Blog overlay -->
-    <div class="blog-overlay" id="blog-overlay" role="dialog" aria-modal="true" aria-labelledby="blog-overlay-title" hidden>
-      <div class="blog-overlay-progress" id="blog-overlay-progress" aria-hidden="true"></div>
-      <button class="blog-overlay-close" id="blog-overlay-close" type="button" aria-label="Close article">×</button>
-      <article class="blog-overlay-content">
-        <header class="blog-overlay-header">
-          <time class="blog-overlay-date" id="blog-overlay-date"></time>
-          <h2 id="blog-overlay-title"></h2>
-        </header>
-        <div class="blog-overlay-body" id="blog-overlay-body"></div>
-      </article>
-    </div>
-
-    <script src="js/main.js" defer></script>
-    <script type="module" src="js/scene/main.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网站已迁移 | Site Moved</title>
+  <meta http-equiv="refresh" content="0; url=https://raymond.agilear.org/">
+  <link rel="canonical" href="https://raymond.agilear.org/">
+  <meta name="robots" content="noindex">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f7f7f7;
+      color: #333;
+    }
+    .card {
+      text-align: center;
+      padding: 2rem;
+    }
+    a {
+      color: #2a6fdb;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>网站已迁移 / Site Moved</h1>
+    <p>正在跳转到新网站…… / Redirecting to the new site…</p>
+    <p>如果没有自动跳转，请点击：
+      <a href="https://raymond.agilear.org/">raymond.agilear.org</a>
+    </p>
+  </div>
+  <script>
+    window.location.replace("https://raymond.agilear.org/");
+  </script>
+</body>
 </html>
